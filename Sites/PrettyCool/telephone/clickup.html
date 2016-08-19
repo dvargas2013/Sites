@@ -1,0 +1,3 @@
+<p><b>Please enter your phone number:</b></p>
+<div style="display: inline;" id="P">(000) 000-0000 </div>
+<input id="+" type="button" value="+" onclick='a=parseInt(P.textContent.replace( /\D+/g, ""))+1; P.textContent = "("+("000" + Math.floor(a/10000000)).substr(-3)+") "+ ("000" + Math.floor(a/10000%1000)).substr(-3) +"-"+ ("0000" + a%10000).substr(-4)'> <input type="button" value="Submit">

@@ -1,0 +1,106 @@
+<html>
+<head>
+</head>
+<body>
+<canvas id=canvas>
+<script>
+ window.requestAnimationFrame = window.requestAnimationFrame
+                           || window.webkitRequestAnimationFrame
+                           || window.mozRequestAnimationFrame
+                           || window.msRequestAnimationFrame
+                           || function(func) { setTimeout(func, 16); };
+window.body = document.body; 
+ctx = canvas.getContext("2d");
+window.onresize = function() {
+    W = body.clientWidth * .95;
+    H = body.clientHeight * .95;
+    canvas.width = W;
+    canvas.height = H;
+}
+window.onresize();
+colors = ["RED","GREEN","BLUE"];
+Ball = function(){
+    this.x = Math.random() * W;
+    this.y = Math.random() * H;
+    this.r = Math.pow(Math.random() * 10 + 5,1.2);
+    this.c = colors[Math.floor(Math.random() * colors.length)];
+    this.vx = Math.random() * 6 - 3;
+    this.vy = Math.random() * 6 - 3;
+};
+Ball.prototype.move = function(){
+    this.x += this.vx;
+    this.y += this.vy;
+    if (this.x-this.r < 0) {this.x = 2*this.r-this.x; this.vx = -this.vx;}
+    if (this.x+this.r > W) {this.x = 2*(W-this.r)-this.x; this.vx = -this.vx;}
+    if (this.y-this.r < 0) {this.y = 2*this.r-this.y; this.vy = -this.vy;}
+    if (this.y+this.r > H) {this.y = 2*(H-this.r)-this.y; this.vy = -this.vy;}
+}
+Ball.prototype.draw = function(){
+    ctx.beginPath();
+    ctx.arc(this.x,this.y,this.r,0,2*Math.PI);
+    ctx.fillStyle = this.c;
+    ctx.fill();
+}
+function getC(c1,c2) {
+   if (c1===c2) return c1;
+   for (var i=0;i<colors.length;i++){
+       if (colors[i]!==c1 && colors[i]!==c2)
+           return colors[i];
+   }
+   return colors[Math.floor(Math.random() * colors.length)];
+}
+Ball.prototype.collide = function(ball) {
+    var dx = this.x - ball.x;
+    var dy = this.y - ball.y;
+
+    var rr = this.r + ball.r;
+    if (dx*dx + dy*dy < rr*rr) {
+        var mx = (this.x + ball.x) / 2;
+        var my = (this.y + ball.y) / 2;
+        var d1x = this.x-mx;
+        var d1y = this.y-my;
+        var d2x = ball.x-mx;
+        var d2y = ball.y-my;
+
+        //Multiply by 1.1 to make it go a little bit further apart than needed
+        //Make 100% sure they are separated
+        var t1 = 1.001*this.r / Math.sqrt( d1x*d1x + d1y*d1y );
+        var t2 = 1.001*ball.r / Math.sqrt( d2x*d2x + d2y*d2y );
+        
+        this.x = mx + t1*d1x;
+        this.y = my + t1*d1y;
+        ball.x = mx + t2*d2x;
+        ball.y = my + t2*d2y;       
+
+        var b1X = (this.vx * (this.r - ball.r) + (2 * ball.r * ball.vx)) / rr;
+        var b1Y = (this.vy * (this.r - ball.r) + (2 * ball.r * ball.vy)) / rr;
+        var b2X = (ball.vx * (ball.r - this.r) + (2 * this.r * this.vx)) / rr;
+        var b2Y = (ball.vy * (ball.r - this.r) + (2 * this.r * this.vy)) / rr;
+        
+        ball.c = this.c = getC(this.c,ball.c);
+
+        this.vx = b1X;
+        this.vy = b1Y;
+        ball.vx = b2X;
+        ball.vy = b2Y;
+    }
+}
+balls = [];
+for (var i=0;i<17;i++) balls.push(new Ball());
+f=function(){
+    ctx.clearRect(0,0,W,H);
+    ctx.beginPath(); ctx.rect(0,0,W-1,H-1); ctx.stroke();
+    for (var i=0; i<balls.length; i++) balls[i].move();
+    for (var i=0; i<balls.length; i++) {
+        for (var j=i+1; j<balls.length; j++) {
+            balls[i].collide(balls[j]);
+        }
+    }
+    for (var i=0; i<balls.length; i++) balls[i].draw();
+    requestAnimationFrame(f);
+}
+f();
+window.onresize();
+</script>
+</body>
+</html>

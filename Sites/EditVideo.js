@@ -1,0 +1,2 @@
+$('video').onclick = function() {if (this.paused) { this.play() } else { this.pause() }}
+$('body').onkeydown = function(e) {if (e.which===37) { $('video').currentTime -= 1; } else if (e.which===39) { $('video').currentTime -= 1; }}

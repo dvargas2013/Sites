@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<!-- saved from url=(0036)http://www.flaminglunchbox.net/curvy -->
+<html>
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+    <title>Curvy in HTML5</title>
+
+    <link rel="stylesheet" type="text/css" href="./Curvy in HTML5_files/curvy.css">
+    <script type="text/javascript" src="./Curvy in HTML5_files/jquery.min.js"></script>
+    <script type="text/javascript" src="./Curvy in HTML5_files/curvy_comp.js"></script>
+
+    <script type="text/javascript">
+        ;
+        window.Modernizr = function(a, b, c) {
+            function w(a, b) {
+                return !!~("" + a).indexOf(b)
+            }
+
+            function v(a, b) {
+                return typeof a === b
+            }
+
+            function u(a, b) {
+                return t(prefixes.join(a + ";") + (b || ""))
+            }
+
+            function t(a) {
+                j.cssText = a
+            }
+            var d = "2.0.4",
+                e = {},
+                f = b.documentElement,
+                g = b.head || b.getElementsByTagName("head")[0],
+                h = "modernizr",
+                i = b.createElement(h),
+                j = i.style,
+                k, l = Object.prototype.toString,
+                m = {},
+                n = {},
+                o = {},
+                p = [],
+                q, r = {}.hasOwnProperty,
+                s;
+            !v(r, c) && !v(r.call, c) ? s = function(a, b) {
+                return r.call(a, b)
+            } : s = function(a, b) {
+                return b in a && v(a.constructor.prototype[b], c)
+            }, m.canvas = function() {
+                var a = b.createElement("canvas");
+                return !!a.getContext && !!a.getContext("2d")
+            };
+            for (var x in m) s(m, x) && (q = x.toLowerCase(), e[q] = m[x](), p.push((e[q] ? "" : "no-") + q));
+            t(""), i = k = null, e._version = d;
+            return e
+        }(this, this.document);
+
+    </script>
+
+    <script type="text/javascript">
+        function resize() {
+            var ciconcanvas = $("#curvyicon");
+            ciconcanvas.attr("width", ciconcanvas.width());
+            ciconcanvas.attr("height", ciconcanvas.height());
+
+            var canvas = $("#curvycanvas");
+            canvas.attr("width", $(window).width());
+        }
+
+        function newpuzzle() {
+            complete = false;
+            curvy.newpuzzle(parseInt($("#cols").val()), parseInt($("#rows").val()), parseInt($("#colors").val()));
+            //console.log("---");
+            $("#newpuzzlemenu").hide();
+            $("#completemenu").hide();
+            $(".menu").hide();
+        }
+
+        function continuepuzzle() {
+            $('#intromenu').hide();
+        }
+
+        function newpuzzlemenu() {
+            $('#intromenu').hide();
+            $('#completemenu').hide();
+            $('#newpuzzlemenu').show();
+        }
+
+        function cancel() {
+            $('#newpuzzlemenu').hide();
+            $('#aboutmenu').hide();
+            $('#intromenu').show();
+        }
+
+        function about() {
+            $('#intromenu').hide();
+            $('#aboutmenu').show();
+        }
+
+        function menu() {
+            if (complete) {
+                $('#completemenu').toggle();
+            } else {
+                $('.menu').hide();
+                $('#continuepuzzlebutton').html('Continue');
+                cancel();
+            }
+        }
+
+        function bindbuttons() {
+            $('#newpuzzlemenubutton').click(newpuzzlemenu)
+            $('#changetypebutton').click(newpuzzlemenu)
+            $('#newpuzzlebutton').click(newpuzzle)
+            $('#continuepuzzlebutton').click(continuepuzzle)
+            $('#sametypebutton').click(newpuzzle);
+            $('#cancelbutton').click(cancel);
+            $('#backtomenubutton').click(cancel);
+            $('#aboutbutton').click(about);
+            $('#menubutton').click(menu);
+        }
+        $(document).ready(function() {
+            complete = false;
+            resize();
+            bindbuttons();
+
+            cicon = new Curvy(document.getElementById("curvyicon"), {
+                lineColor: {
+                    1: "#900",
+                    2: "#009"
+                },
+                background: "#555",
+                tileBackground: "#fff",
+                edge: "#333",
+                bevel: "#999"
+            }, 1, 1, 0);
+            cicon.prepicon();
+
+            curvy = new Curvy(document.getElementById("curvycanvas"), {
+                lineColor: {
+                    1: "#900",
+                    2: "#009"
+                },
+                background: "#222",
+                tileBackground: "#fff",
+                edge: "#333",
+                bevel: "#999"
+            }, 7, 5, 1);
+
+            curvy.complete(function() {
+                complete = true;
+                $(".menu").hide();
+                $("#completemenu").show();
+            });
+
+        });
+        $(window).resize(function() {
+            resize();
+            curvy.do_size();
+            cicon.do_size();
+            cicon.prepicon();
+        });
+
+    </script>
+</head>
+
+<body>
+    <div>
+        <canvas id="curvycanvas" width="972" height="597"></canvas>
+    </div>
+    <div id="bottom" style="height: 60px;">
+        <div style="float: left">
+            <button id="menubutton">Menu</button>
+        </div>
+    </div>
+
+    <div id="intromenu" class="menu">
+        <canvas id="curvyicon" width="240" height="240"></canvas>
+        <h1>Curvy</h1>
+        <button id="newpuzzlemenubutton">New Puzzle</button>
+        <br>
+        <button id="continuepuzzlebutton">Quick Start</button>
+        <button id="aboutbutton">About Curvy</button>
+
+        <p>A <a href="http://flaminglunchbox.net/">FlamingLunchbox</a> production.</p>
+    </div>
+
+    <div id="nocanvasmenu" class="menu hidden">
+        <h1>Curvy</h1>
+        <p>Curvy is a HTML5 puzzle game using the canvas element. Just rotate the tiles so that like colors connect.</p>
+        <h2>No Canvas Support?!</h2>
+        <p style="font-size: 110%;"><a href="http://modernizr.com/">Modernizr</a> tells me you don't have canvas support in your browser. Sadly, this game uses technology that's only in browsers with HTML5 support. We've tested <a href="http://www.google.com/chrome">Chrome 12</a>, <a href="http://www.mozilla.com/">Firefox 4</a> and <a href="http://www.opera.com/">Opera 11</a>.</p>
+    </div>
+    <div id="newpuzzlemenu" class="menu hidden">
+        <table width="100%">
+            <tbody>
+                <tr>
+                    <td><strong>Type:</strong></td>
+                    <td>
+                        <select name="colors" id="colors">
+                            <option value="0">One Color</option>
+                            <option value="1" selected="selected">Two Color</option>
+                            <option value="2">Two Color Dense</option>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td><strong>Columns:</strong></td>
+                    <td>
+                        <input id="cols" name="cols" type="text" value="7" size="2">
+                    </td>
+                </tr>
+                <tr>
+                    <td><strong>Rows:</strong></td>
+                    <td>
+                        <input id="rows" name="rows" type="text" value="5" size="2">
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <button id="newpuzzlebutton">Create</button>
+        <button id="cancelbutton">Cancel</button>
+    </div>
+
+    <div id="completemenu" class="menu hidden">
+        <h1>Complete!</h1>
+        <p style="text-size: 105%">To see the complete puzzle just click the menu button. Click it again when you'd like to continue.</p>
+        <button id="sametypebutton">New Puzzle</button>
+        <button id="changetypebutton">Change Type</button>
+    </div>
+
+    <div id="aboutmenu" class="menu hidden">
+        <h1>About Curvy</h1>
+        <strong>Presented to you by FlamingLunchbox is a puzzle, originally for Android phones, using a simple idea.  Connect the path and win the game. </strong>
+        <p>Each Curvy puzzle consists of a grid of hexagonal tiles. On each tile appears a single or double set of lines, and each set of lines has its own color. These tiles must be rotated to find a solution in which lines of the same color connect, with no loose ends.</p>
+        <p>Curvy allows a variety of different puzzle sizes, providing puzzles that can be quickly solved as well as more complex versions depending on the size you choose. Originally an Android application, you can now play Curvy online or on the go.</p>
+
+        <button id="backtomenubutton">Back to Menu</button>
+    </div>
+
+</body>
+
+</html>

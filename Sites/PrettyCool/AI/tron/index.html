@@ -1,0 +1,85 @@
+<html><meta charset="utf-8"><head></head><body><script src="tron.js"></script><script>
+BOARD = [
+    ['null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'C'   , 'null', 'null', 'null', 'null', 'null', 'null', 'null'],
+    ['null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null'],
+    ['null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null'],
+    ['null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null'],
+    ['null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null'],
+    ['null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null'],
+    ['null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null'],
+    ['null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null'],
+    ['null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null'],
+    ['null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null'],
+    ['null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null'],
+    ['null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null'],
+    ['null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null'],
+    ['null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null'],
+    ['null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null'],
+    ['null', 'null', 'null', 'null', 'null', 'null', 'null', 'P'   , 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null']
+];
+bot_loc = [15,7];
+opp_loc = [0,8];
+
+tabl = [];
+document.body.appendChild(message = document.createElement('p'))
+var t;
+document.body.appendChild(t = document.createElement('table'));
+for (var i=0;i<16;i++) {
+    var r,d,ri=[];
+    t.appendChild(r = document.createElement('tr'));
+    for (var j=0;j<16;j++) {
+        r.appendChild(d = document.createElement('td'));
+        ri.push(d);
+    }
+    tabl.push(ri);
+}
+inter = setInterval(function(){
+    BOARD.forEach(function(row, ri){
+        row.forEach(function(data, di){
+            if (data==="null") {
+                tabl[ri][di].textContent = "　　";
+            } else {
+                tabl[ri][di].textContent = data;
+            }
+        }); //Row
+    }); //Board
+},1); //Interval
+TURN = true;
+function hahabot(board, bot_loc, opp_loc) {
+    
+    if(bot_loc[0]-1 >= 0 && board[bot_loc[0]-1][bot_loc[1]]==="null"){
+        return "N";
+    }else{
+        if(bot_loc[0]+1 < board.length && board[bot_loc[0]+1][bot_loc[1]]==="null"){
+            return "S";
+        }else{
+            if(bot_loc[1]+1 < board.length && board[bot_loc[0]][bot_loc[1]+1]==="null"){
+                return "E";
+            }else{
+                if(bot_loc[1]-1 >= 0 && board[bot_loc[0]][bot_loc[1]-1]==="null"){
+                    return "W";
+                }else{
+                    return "N";
+                }
+            }
+        }
+    }
+    
+}
+
+document.onkeyup = function(e){
+	switch (e.keyCode) {case 37:case 38:case 39:case 40:case 32:break;default:return;}
+    var dir, temp;
+    if (TURN) {
+        dir = bot(BOARD,bot_loc,opp_loc);
+		temp = makeMove(BOARD,dir,bot_loc);
+		if (temp) { BOARD = temp[0]; bot_loc = temp[1];
+		} else { message.textContent = 'P made illegal move'; }
+    } else {
+		temp = makeMove(BOARD,hahabot(BOARD,opp_loc,bot_loc,e),opp_loc)
+		if (temp) { BOARD = temp[0]; opp_loc = temp[1];
+		} else { message.textContent = 'C made illegal move'; }
+    }
+    TURN = !TURN;
+};
+</script></body></html>

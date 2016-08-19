@@ -1,0 +1,18 @@
+char = {
+	Name:{char:{ _charname_ :"_display name_"}},
+	NickName: "__" // if has one
+	Species:"__",
+	Color:"__",
+	ColorPlus: {colors:{_bodypart1_:"_color1_",...}}
+	Gender:"__", // Male, Female, NonBinary
+	Age:"__", // Baby, Child, Young, Tween, Teen, Young Adult, Adult, Ancient
+	Power:"__",
+	twinPower:"__", // is has twin
+	Alignment:"__", // Lawful vs Chaotic, Good vs Evil, Neutral?
+	Generation: __, // a number
+	isVampire:"yes", // if is vampire
+	hasTail:"no", // if doesn't have tail
+	Extras:["_Extra_","_Stuff_",...],
+	Children:{char:{_charname_:"_display name_",...},
+	Parents:{char:{_charname_:"_display name_",...}
+};

@@ -1,0 +1,96 @@
+<embed id="billy" style="position:fixed;transform: translateX(650px);top:255px;" src="http://www.sheepproductions.com/billy/billy.swf?autoplay=true"
+ quality="high" wmode="transparent" width="200" height="10" name="billy" align="middle" type="application/x-shockwave-flash">
+ <script>
+ function shuffle(list) {
+     var i = list.length,
+         r,
+         item;
+     while (0 !== i) {
+         r = Math.floor(Math.random() * i);
+         item = list[i-=1];
+         list[i] = list[r];
+         list[r] = item;
+     }
+ }
+ var billy=document.getElementById('billy'),
+ dad=billy.parentElement,
+ srcAdd="https://5310725a70fab07f1dd03d7ec7ad5abf3c373241.googledrive.com/host/0B-BjS2XQUhJmblhnclFldVlHZ0k/",
+ largest=0,
+ lis = [
+	 {src:"Ae_Ae%20-%20A%20Moment%20Of%20Bliss.mp3",name:""},
+	 {src:"Ae_Ae%20-%20Moon%20Ballad.mp3",name:""},
+	 {src:"Ae_Ae%20-%20Touch%20The%20Sky%20With%20Me.mp3",name:""},
+	 {src:"An_An%20-%20Four%20Dash%20One.mp3",name:""},
+	 {src:"Ar_ReWaIi%20-%20Defense%20Of%20Canterlot.mp3",name:""},
+	 {src:"ArKh_ArKh%20-%20Masquerade%20Waltz.mp3",name:""},
+	 {src:"ArKh_ArKh%20-%20Toccata.mp3",name:""},
+	 {src:"Ba_AnMaNoPe%20-%20Minuet%20In%20G.mp3",name:""},
+	 {src:"Ba_LaStJo%20-%20Violin%20Concerto%20In%20A%20Minor%201St%20Mvt.mp3",name:""},
+	 {src:"Be_ThPiSo%20-%20Moonlight%20Sonata.mp3",name:""},
+	 {src:"Bl_ReFoGl%20-%20Oh%20Miah.mp3",name:""},
+	 {src:"BrBr_GrFaTh%20-%20Made%20Me%20Realize.mp3",name:""},
+	 {src:"Ca_Ca%20-%20Alone%20She%20Wait.mp3",name:""},
+	 {src:"Ca_Ca%20-%20I%20Dream%20In%2034%20Time.mp3",name:""},
+	 {src:"Ca_Ca%20-%20Nocturne%20In%20F%20Major%20%20Troubled%20Lullaby.mp3",name:""},
+	 {src:"Ca_Ca%20-%20We%20Once%20Strolled%20The%20Stars.mp3",name:""},
+	 {src:"CaMa_CaMa%20-%20Ascension.mp3",name:""},
+	 {src:"Ch_Ch%20-%20Nocturne%20In%20EFlat%20Major%20Opus%209%20No2.mp3",name:""},
+	 {src:"Cy_Cy%20-%20Octavian%20Breeze.mp3",name:""},
+	 {src:"DaVi_SiTa%20-%20Drift%20Of%20Rainbows.mp3",name:""},
+	 {src:"Dn_Dn%20-%20Believe.mp3",name:""},
+	 {src:"Dn_Dn%20-%20Wanderings.mp3",name:""},
+	 {src:"Ec_Fe%20-%20Cadences%20Heart.mp3",name:""},
+	 {src:"EvSt_EvSt%20-%20First%20Flight.mp3",name:""},
+	 {src:"F_F%20-%20Cane%20Swinging.mp3",name:""},
+	 {src:"F_LeFrPa%20-%20Adventure%20Fantasy.mp3",name:""},
+	 {src:"Fl_Fl%20-%20Joy%20Of%20Living.mp3",name:""},
+	 {src:"Hn_ZzRe%20-%20Zeitgeist.mp3",name:""},
+	 {src:"Ja_Ja%20-%20A%20Summers%20Day.mp3",name:""},
+	 {src:"JoPa_JoPa%20-%20Canon%20In%20C.mp3",name:""},
+	 {src:"JoSeBa_PaInEMa%20-%20Preludio.mp3",name:""},
+	 {src:"Ko_OrHo%20-%20Lunas%20Moon%20Dance.mp3",name:""},
+	 {src:"Li_MuBo%20-%20Gravity%20Falls%20Intro.mp3",name:""},
+	 {src:"LiSt_ShMe%20-%20Beyond%20The%20Veil.mp3",name:""},
+	 {src:"LiSt_ShMe%20-%20Crystallize.mp3",name:""},
+	 {src:"LiSt_ShMe%20-%20Elements.mp3",name:""},
+	 {src:"LiSt_ShMe%20-%20Shadows.mp3",name:""},
+	 {src:"LiSt_ShMe%20-%20Stars%20Align.mp3",name:""},
+	 {src:"LiSt_ShMe%20-%20Transcendence.mp3",name:""},
+	 {src:"Ma_SeBu%20-%20Deae%20Lunae.mp3",name:""},
+	 {src:"MaBr_HoVo%20-%20Hussie%20Hunt.mp3",name:""},
+	 {src:"MaBr_HoVo%20-%20Pumpkin%20Party%20In%20Sea%20Hitlers%20Water%20Apocalypse.mp3",name:""},
+	 {src:"MaBr_HoVo%20-%20Showtime%20Piano%20Refrain.mp3",name:""},
+	 {src:"MaHa_HoVo%20-%20Aggrievance.mp3",name:""},
+	 {src:"MCu_MCu%20-%20Magnetism.mp3",name:""},
+	 {src:"MCu_MCu%20-%20Pringle.mp3",name:""},
+	 {src:"Mi_VeLuVaNo%20-%20Lustrum.mp3",name:""},
+	 {src:"NiEsSi_ThBeOfBe%20-%20Symphony%20No%203%20In%20EFlat%20Major.mp3",name:""},
+	 {src:"OrDe_OrDe%20-%20Moonlit%20Dreams.mp3",name:""},
+	 {src:"OrDe_SfSc%20-%20Hearts%20And%20Hooves%20Day.mp3",name:""},
+	 {src:"PaGh_VpEp%20-%20Vpr.mp3",name:""},
+	 {src:"PePl_ImRe%20-%20The%20Hanging%20Tree.mp3",name:""},
+	 {src:"Po_Po%20-%20Batman%20Theme.mp3",name:""},
+	 {src:"RiSt_FiMuVo%20-%20Maid%20With%20The%20Flaxen%20Hair.mp3",name:""},
+	 {src:"SaJo_SaJo%20-%20Screwballs%20Music%20Box.mp3",name:""},
+	 {src:"Sh_Sh%20-%20Haunted.mp3",name:""},
+	 {src:"Th_Th%20-%20Last%20Whisper%20Of%20The%20Strings.mp3",name:""},
+	 {src:"Th_Th%20-%20Unity.mp3",name:""},
+	 {src:"Tr_OnLaSh%20-%20Fracture.mp3",name:""},
+	 {src:"Ve_Ho%20-%20Billy%20And%20The%20Whale.mp3",name:""},
+	 {src:"Ve_Ra%20-%20Still%20Remaining.mp3",name:""},
+	 {src:"ViRa_Pe%20-%20Taiheiyo.mp3",name:""},
+	 {src:"Wo_Wo%20-%20Rave%20N%20Dash.mp3",name:""},
+	 {src:"Xd_BaGl%20-%20My%20Inspiration.mp3",name:""},
+	 {src:"Yo_Hi%20-%20Pinkie%20Panther%20And%20The%20Mmmysterious%20Rhythm.mp3",name:""}
+ ];
+ shuffle(lis);
+ lis.forEach(function(item,i) {
+	 if (i<10){
+ 		billy.src+="&f"+i+"="+srcAdd+item.src+"&t"+i+"="+item.name;
+		largest=i+1;
+	}
+ });
+ billy.src+="&total="+largest;
+ billy.remove();
+ dad.appendChild(billy);
+ </script>

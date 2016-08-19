@@ -1,0 +1,781 @@
+<!DOCTYPE html>
+<!-- saved from url=(0043)https://discussions.apple.com/docs/DOC-3083 -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=EmulateIE9">	
+	<title>Setting up a local web server on OS X | Apple Support Communities</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+
+
+<meta charset="utf-8">
+<!--[if IE]><![endif]-->
+    
+
+
+<script type="text/javascript">
+    if (top != self) {
+        var isSafeTopUrl = false;
+        try {
+            var topUrl = top.location.href;
+            var topUrlQsIdx = topUrl.indexOf('?');
+            if (topUrlQsIdx > 0) {
+                topUrl = topUrl.substring(0, topUrlQsIdx);
+            }
+            topUrl = topUrl.toLowerCase();
+
+            var safeTopUrls = new Array(
+                'https://discussions.apple.com/skin-basic.jspa',
+                'https://discussions.apple.com/theme-site.jspa',
+                'https://discussions.apple.com/skin-advanced.jspa',
+                'https://discussions.apple.com/skin-advanced!UploadSkinZip.jspa'
+            );
+            for (var i = 0; i < safeTopUrls.length; i++) {
+                if (safeTopUrls[i].toLowerCase() == topUrl) {
+                    isSafeTopUrl = true;
+                    break;
+                }
+            }
+        } catch (err) {
+        }
+
+        if (!isSafeTopUrl) top.location = location;
+    }
+</script>
+
+        <link rel="stylesheet" href="./Local web server OS X_files/jive.css" type="text/css" media="all">
+    <link rel="stylesheet" href="./Local web server OS X_files/theme.css" type="text/css" media="all">
+
+    <link rel="stylesheet" href="./Local web server OS X_files/globalheader.css" type="text/css" media="all">
+ 
+
+<link rel="search" href="https://discussions.apple.com/opensearch.xml" title="Apple Support Communities" type="application/opensearchdescription+xml">
+
+
+<link rel="shortcut icon" href="https://ssl.apple.com/favicon.ico" type="image/x-icon">
+<link rel="icon" href="https://ssl.apple.com/favicon.ico" type="image/x-icon">
+
+
+
+
+
+
+
+
+<!-- macro to display the generic warning about the content object being in moderation, abuse hidden, or rejected -->
+
+<!--acclaim macro for new helpful button for JIRA story: RRP-53 CRS: Post Voting Features - Like RRP-79-->
+    <script type="text/javascript">
+        (function() {
+            var prepareUrl = function(url) {
+                if (url.indexOf(";") > 0) {
+                    url = url.substring(0, url.indexOf(";"));
+                }
+                if (url.charAt(url.length - 1) == '/') {
+                    url = url.substring(0, url.length - 1);
+                }
+                return url
+            };
+            if (typeof(window._jive_base_url) == "undefined") {
+                window._jive_base_url = prepareUrl("/")
+            }
+            if (typeof(window._jive_base_absolute_url) == "undefined") {
+                window._jive_base_absolute_url = prepareUrl("https://discussions.apple.com")
+            }
+            if (typeof(window._jive_resource_url) == "undefined") {
+                window._jive_resource_url = prepareUrl("/6.0.3.0/")
+            }
+            if (typeof(window._jive_theme_url) == "undefined") {
+                window._jive_theme_url = prepareUrl("/themes/apple")
+            }
+                if (typeof(window._jive_current_user) == "undefined") {
+                    window._jive_current_user = {
+                        anonymous: true,
+			            partner: false,
+                        visible: true,
+                        username: 'ANONYMOUS',
+                        ID: '-1',
+                        enabled: true,
+                        avatarID: '-1',
+                        displayName: ''
+                    };
+                }
+
+
+
+
+        })();
+
+        var _jive_effective_user_id = "-1";
+        var _jive_auth_token ="no-user";
+        var _jive_locale = "en_US";
+        var _jive_translation_language = "en"
+        var _jive_browser_event = {"providers":["activityStream.poll","appAlert.create"],"since":1438170624497};
+        var _jive_browser_event_polling_delay = 300000;
+        var _jive_timezoneoffset = -7;
+
+        var jive = jive || {};
+        jive.global = jive.global || {};
+        jive.global.containerType = 14;
+        jive.global.containerID = 2109;
+        jive.global.containerBrowseId = 5955205;
+
+    </script>
+<script>
+/* Kongregate Asychronous JavaScript Loader
+
+The MIT License
+
+Copyright (c) 2010 Kongregate Inc.
+*/function KJS(e){this._path=e&&e.path||"",this._d={}}KJS.prototype={require:function(){var e=Array.prototype.slice.call(arguments),t;typeof e[e.length-1]=="function"&&(t=e.pop());for(var n=0;n<e.length;n++)this.sat(e[n]+"--required");t&&this.run(t,e)},_load:function(e,t,n,r,i){var s=this,o=(n||[]).concat(e.split("?")[0]),u=this._path+e,a=this._origin(u)&&r,f=a?function(e){var t,n;try{r.call(s,e)}catch(i){n=i}finally{while(t=o.shift())s.sat(t);if(n)throw n}}:function(e){i.call(s,e,function(){var e;while(e=o.shift())s.sat(e)})};this.isSat(o)||(a?this.get(u,function(e){t&&t.length?s.run(function(){f(e)},t):f(e)}):t&&t.length?s.run(function(){f(u)},t):f(u))},load:function(e,t,n){var r=this;this._load(e,t,n,r.embed,r.link)},loadCSS:function(e,t,n){var r=this;r._load(e,t,n,null,r.linkCSS)},run:function(e,t,n){var r=this,i,s=n||[],o=s.length?function(){var t,n;if(!r.isSat(s))try{e()}catch(i){n=i}finally{while(t=s.pop())r.sat(t);if(n)throw n}}:e;if(!t.length)o();else if(1==t.length)i=o;else{var u=t.length;i=function(){--u||o()}}var a;while(a=t.pop())!0===this._d[a]?i():this._d[a]=this._d[a]?function(e,t){return function(){e(),t()}}(this._d[a],i):i},_css:/css(?:$|\?)/i,get:function(e,t){$j.ajax({url:e,dataType:e.match(this._css)?"text/css":"text/javascript",complete:function(e){t(e.responseText)}})},_firstScript:document.getElementsByTagName("script")[0],_head:document.getElementsByTagName("head")[0],embed:function(e){$j.globalEval(e)},link:function(e,t){var n=this,r=this._firstScript,i=r.parentNode,s=document.createElement("script"),o;s.src=e,s.onreadystatechange=s.onload=s.onerror=function(){if(!s.readyState||s.readyState=="loaded"||s.readyState=="complete")clearTimeout(o),s.onload=s.onreadystatechange=$j.noop,i.removeChild(s),t&&t()},o=setTimeout(s.onerror,5e3),i.insertBefore(s,r)},linkCSS:function(e,t){var n=this,r;document.createStyleSheet?r=document.createStyleSheet(e):(r=document.createElement("link"),r.href=e,r.rel="stylesheet",r.type="text/css",this._head.appendChild(r)),t&&t()},_origin:function(e){var t=location.origin||location.protocol+"//"+location.host,n=this._fullURL(e);return n.slice(0,t.length)===t},_fullURL:function(e){var t=document.createElement("div");return t.innerHTML='<a href="'+e+'">x</a>',t.firstChild.href},sat:function(e){this._d[e]&&!0!==this._d[e]&&this._d[e](),this._d[e]=!0},isSat:function(e){var t=0;for(var n=0;n<e.length;n++)!0===this._d[e[n]]&&t++;return t>0&&t===e.length}};var kjs=new KJS;
+(function() {var l=!0;
+function m(){var a=[].slice.call(arguments),e="string"===typeof a[0]?a.shift():void 0,c=1<a.length?a.shift():[],h=a[0],a=n.b(e,c,h);if(!1!==a){a&&(e=a[0],c=a[1],h=a[2]);var f=function(){for(var a=e,b=c,d=[],j=0;j<b.length;j++)d.push(o(b[j],e));b=h;d=typeof b==="function"?b.apply(void 0,d):b;b=n.a(a,d);if(b!==false){if(b){a=b[0];d=b[1]}if(d&&a){q[a]=d;r(a)}}},a=c,d,b=a.length;if(b)if(1===b)d=f;else{var g=b;d=function(){--g||f()}}else f();for(var k=0;k<b;k++){var j=s[a[k]];l===j?d():s[a[k]]=j?function(b){return function(){b();
+d()}}(j):d}}}function o(a,e){if("require"===a)return function(a){return o(a,e)};var c=n.c(a,e);return q[c&&c[0]||a]}function t(){}function r(a){if(s[a]&&l!==s[a])s[a]();s[a]=l}var q={},s={};m.amd={};var n={b:t,a:t,c:t};m("tAMD",n);r("require");this.require=this.define=m;
+define("tAMD/hooks",["tAMD"],function(a,e){function c(a,b){for(var g=h(a,"**").concat(h(a,b[0])),c,j,p=0;p<g.length;p++)!1!==c&&(j=g[p].apply(e,c||b),c=!1!==j&&(j||c));return c}function h(a,b){var c=f[a]=f[a]||{};return c[b]=c[b]||[]}var f={};a.b=function(){return c("define",arguments)};a.a=function(){return c("publish",arguments)};a.c=function(){return c("require",arguments)};return{on:function(a,b,c){c||(c=b,b="**");h(a,b).push(c)},off:function(a,b,c){"function"===typeof b&&(c=b,b="**");a=h(a,b||
+"**");for(b=0;b<a.length;b++)if(a[b]===c||!c)a.splice(b,1),b-=1}}});
+define("tAMD/loader",["tAMD/hooks","require"],function(a,e){function c(a){var c;!e(a)&&(c=d[a])?(h(c,b[a]),delete d[a],delete b[a]):k[a]=l}function h(a,b){if(a[0]){var c=a[0],d=function(){h(a.slice(1),b)},e=g[c];l===e?d&&d():d&&(g[c]=function(){e&&e();d()});if(!e){var k=document.getElementsByTagName("script")[0],u=k.parentNode,i=document.createElement("script");i.src=c;i.onreadystatechange=i.onload=i.onerror=function(){if(!i.readyState||"loaded"===i.readyState||"complete"===i.readyState)i.onload=
+i.onreadystatechange=i.onerror=f,u.removeChild(i),(g[c]||f)(),g[c]=l};u.insertBefore(i,k)}}else b&&b()}function f(){}var d={},b={},g={},k={};a.on("define",function(a,b){for(var d=0;d<b.length;d++)c(b[d])});return{map:function(a,e,h){var f,g;for(g=0;g<a.length;g++)f=a[g],d[f]=e,b[f]=h,k[f]&&c(f)}}});})();var reg;require(['tAMD/loader'],function(l){reg=l.map});
+    </script>
+
+
+
+      
+    
+    
+
+    <script type="text/javascript">
+        window.SPELL_LANGS = "English (Canada)=en_ca,English (United Kingdom)=en_gb,+English (United States)=en_us,French=fr,French (Canada)=fr_ca,German=de,Italian=it,Spanish=es";
+        window.CS_BASE_URL = "";
+        window.CS_RESOURCE_BASE_URL = "/6.0.3.0";
+        window.tinyMCEPreInit = {
+            suffix : "_src",
+            base : CS_BASE_URL + "/resources/scripts/tiny_mce3"
+        };
+        if (typeof(_jive_project_i18n) == "undefined") {
+            var _jive_project_i18n = new Array();
+            _jive_project_i18n['project.calendar.task'] = "Task";
+            _jive_project_i18n['project.calendar.tasks'] = "Tasks";
+            _jive_project_i18n['project.calendar.checkpoint'] = "Checkpoint";
+            _jive_project_i18n['project.calendar.checkpoints'] = "Checkpoints";
+            _jive_project_i18n['global.edit'] = "Edit";
+            _jive_project_i18n['global.delete'] = "Delete";
+            _jive_project_i18n['project.task.mark.complete'] = "Mark complete";
+            _jive_project_i18n['project.task.assign.to.me'] = "Assign to me";
+            _jive_project_i18n['task.incomplete.link'] = "Incomplete";
+            _jive_project_i18n['project.checkPoint.create.link'] = "Create a checkpoint";
+            _jive_project_i18n['project.task.create.link'] = "Create a task";
+        }
+    </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    
+<script>
+reg(["Zapatec.Calendar"], ["/6.0.3.0/resources/scripts/gen/c70d12e1db2925cb5b6fb0efb632b8c6.js"],function(){
+        kjs.loadCSS('/6.0.3.0/styles/zapatec/styles/aqua.css');
+
+        Zapatec.Calendar._TT["DEF_DATE_FORMAT"] = "%m/%d/%Y";
+        define('Zapatec.Calendar', function() {
+            return Zapatec.Calendar;
+        });
+
+
+
+});
+</script>
+
+
+
+
+
+        
+
+
+
+<script type="text/javascript">
+    var profileShortUrl = "/profile-short.jspa";
+    var profileLoadingTooltip = "Loading user profile";
+    var profileErrorTooltip = "There was an error loading that profile information.";
+
+    var containerShortUrl = "/container-short.jspa";
+
+    var videoShortUrl = "/view-video-short.jspa";
+
+    var followErrorMessage = "An internal error occurred while following the object.";
+
+    var ajaxErrorMessage = "An unexpected error has occurred. Please make sure that your session did not expire while viewing this page.";
+    var ajaxNotFoundMessage = "The specified item was not found.";
+    var ajaxUnauthorizedMessage = "You are not authorized to perform this operation. If you are not logged in please log in and try again.";
+
+    (function() {
+        var originalWrite = document.write;
+        document.write = function() {
+            if(typeof $j != 'undefined' && $j.isReady) {
+                console.warn("document.write called after document was loaded: ", arguments);
+            }
+            else {
+                // In IE before version 8 `document.write()` does not
+                // implement Function methods, like `apply()`.
+                return Function.prototype.apply.call(originalWrite, document, arguments);
+            }
+        }
+    })();
+</script>
+
+
+
+
+
+
+
+    <script type="text/javascript">
+        window.__JAF_DEBUG = 0;
+    </script>
+
+<!--[if lt IE 9]>
+<script src="/resources/scripts/vendor/html5shiv.min.js"></script>
+<![endif]-->
+
+
+
+<script src="./Local web server OS X_files/b10164b434b153ffda40b83d0bee9248.js"></script>
+<script>
+$j.ajaxSettings.traditional = true;
+
+$j(function(){define('documentReady',document);});
+
+        // begin list of custom CSS
+        jive.rte.defaultStyles = new Array();
+        // end list of custom CSS
+
+
+if (dwr == null) var dwr = {};
+if (dwr.engine == null) dwr.engine = {};
+if (DWREngine == null) var DWREngine = dwr.engine;
+
+DWREngine._origScriptSessionId = "19A8961C3DF740CE5EB8F280DE1EF40E";
+DWREngine._sessionCookieName = "JSESSIONID"; // JSESSIONID
+DWREngine._allowGetForSafariButMakeForgeryEasier = "true";
+DWREngine._scriptTagProtection = "throw 'allowScriptTagRemoting is false.';";
+DWREngine._defaultPath = "/dwr/interface";
+DWREngine._pollWithXhr = "false";
+if (jQuery.fn.message && DWREngine.setErrorHandler) {
+    DWREngine.setErrorHandler(function(message, ex) {
+        dwr.engine._debug('Error: ' + ex.name + ', ' + ex.message, true);
+        if (message == null || message == '') jQuery('<p>A server error has occurred.</p>').message({ style: 'error' });
+        // Ignore NS_ERROR_NOT_AVAILABLE if Mozilla is being narky
+        else if (message.indexOf('0x80040111') != -1) dwr.engine._debug(message);
+        else jQuery('<p/>').text(message).message({ style: 'error' });
+    })
+}
+
+
+        jive.rte.ExternalLinkModal("false", "" );
+
+
+            var jiveControl = new jive.model.Controller();
+            jive.rte.mobileUI = false;
+
+
+        jive.observable = jive.conc.observable;
+
+
+    $j(document).ready(function() {
+    var followView = new jive.FollowUserApp.ProfileFollowView({
+    i18n: {
+    startFollowingMessage: '<p>You are now following {0}.</p>',
+    stopFollowingMessage:  '<p>You have stopped following {0}.</p>',
+    pendingConnectionMessage: '<p>Note: {0} will need to approve your request</p>'
+    },
+    bidirectional: false
+    });
+    var jiveUserFollow = new jive.FollowUserApp.Main({
+    followView: followView
+    });
+
+    /* init placeholder text js */
+    $j("input[placeholder]").placeHeld();
+    });
+
+
+
+
+
+    var appsDisabled = new jive.JAF.Apps.Disabled({
+    apps_feature_disabled: "You may not be able be able to view this content as Apps have been disabled for this system. Please consult your System Administrator for more information."
+    }, { disabled: true } );
+
+
+</script>
+
+    <!-- plugin javascript -->
+<script src="./Local web server OS X_files/941e73ecdc7dc35796b0e8d2ebdac2eb.js"></script>
+
+    
+
+    <script>
+        window._jive_images_enabled = true;
+    </script>
+
+
+
+
+
+
+
+
+
+
+<script>
+reg(["jive.rte"], ["/6.0.3.0/resources/scripts/gen/a813c0cc2a527141b2264b4fae6a9a1a.js"],function(){
+    window.errorHandlerMessage = "An error occurred:";
+
+    window.editorErrorHandler = function(message, exception) {
+        // if the message is something other than a timeout, show the message plus the error code
+        if (message.indexOf('Timeout') == -1) {
+            $j('#dwr-error-text').text(errorHandlerMessage + ' Error Code: ' + message);
+            $j('#dwr-error-table').fadeIn();
+            setTimeout(function() {
+                $j('#dwr-error-table').fadeOut();
+            }, 10000);
+        }
+    };
+
+
+    
+    if(typeof(tinyMCE) != "undefined"){ // could be Safari 2, which dies with tinyMCE
+        tinyMCE.addI18n('en.jivemacros',{
+                    "unused.jive.key" : "nothing."
+        });
+    }
+    if(typeof(tinyMCE) != "undefined"){ // could be Safari 2, which dies with tinyMCE
+        tinyMCE.addI18n('en.jivemacros',{
+                    "unused.jive.key" : "nothing."
+        });
+    }
+    if(typeof(tinyMCE) != "undefined"){ // could be Safari 2, which dies with tinyMCE
+        tinyMCE.addI18n('en.jivemacros',{
+                    "unused.jive.key" : "nothing."
+        });
+    }
+    if(typeof(tinyMCE) != "undefined"){ // could be Safari 2, which dies with tinyMCE
+        tinyMCE.addI18n('en.jivemacros',{
+                    "unused.jive.key" : "nothing."
+        });
+    }
+    if(typeof(tinyMCE) != "undefined"){ // could be Safari 2, which dies with tinyMCE
+        tinyMCE.addI18n('en.jivemacros',{
+                    "unused.jive.key" : "nothing."
+        });
+    }
+    if(typeof(tinyMCE) != "undefined"){ // could be Safari 2, which dies with tinyMCE
+        tinyMCE.addI18n('en.jivemacros',{
+                    "unused.jive.key" : "nothing."
+        });
+    }
+    if(typeof(tinyMCE) != "undefined"){ // could be Safari 2, which dies with tinyMCE
+        tinyMCE.addI18n('en.jivemacros',{
+                    "unused.jive.key" : "nothing."
+        });
+    }
+    if(typeof(tinyMCE) != "undefined"){ // could be Safari 2, which dies with tinyMCE
+        tinyMCE.addI18n('en.jivemacros',{
+                    "unused.jive.key" : "nothing."
+        });
+    }
+    if(typeof(tinyMCE) != "undefined"){ // could be Safari 2, which dies with tinyMCE
+        tinyMCE.addI18n('en.jivemacros',{
+                    "unused.jive.key" : "nothing."
+        });
+    }
+    if(typeof(tinyMCE) != "undefined"){ // could be Safari 2, which dies with tinyMCE
+        tinyMCE.addI18n('en.jivemacros',{
+                    "unused.jive.key" : "nothing."
+        });
+    }
+    if(typeof(tinyMCE) != "undefined"){ // could be Safari 2, which dies with tinyMCE
+        tinyMCE.addI18n('en.jivemacros',{
+                    "unused.jive.key" : "nothing."
+        });
+    }
+    if(typeof(tinyMCE) != "undefined"){ // could be Safari 2, which dies with tinyMCE
+        tinyMCE.addI18n('en.jivemacros',{
+                    "unused.jive.key" : "nothing."
+        });
+    }
+    if(typeof(tinyMCE) != "undefined"){ // could be Safari 2, which dies with tinyMCE
+        tinyMCE.addI18n('en.jivemacros',{
+                    "unused.jive.key" : "nothing."
+        });
+    }
+    if(typeof(tinyMCE) != "undefined"){ // could be Safari 2, which dies with tinyMCE
+        tinyMCE.addI18n('en.jivemacros',{
+                    "unused.jive.key" : "nothing."
+        });
+    }
+    if(typeof(tinyMCE) != "undefined"){ // could be Safari 2, which dies with tinyMCE
+        tinyMCE.addI18n('en.jivemacros',{
+                    "unused.jive.key" : "nothing."
+        });
+    }
+    if(typeof(tinyMCE) != "undefined"){ // could be Safari 2, which dies with tinyMCE
+        tinyMCE.addI18n('en.jivemacros',{
+                    "unused.jive.key" : "nothing."
+        });
+    }
+    if(typeof(tinyMCE) != "undefined"){ // could be Safari 2, which dies with tinyMCE
+        tinyMCE.addI18n('en.jivemacros',{
+                    "unused.jive.key" : "nothing."
+        });
+    }
+    if(typeof(tinyMCE) != "undefined"){ // could be Safari 2, which dies with tinyMCE
+        tinyMCE.addI18n('en.jivemacros',{
+                    "unused.jive.key" : "nothing."
+        });
+    }
+    if(typeof(tinyMCE) != "undefined"){ // could be Safari 2, which dies with tinyMCE
+        tinyMCE.addI18n('en.jivemacros',{
+                    "unused.jive.key" : "nothing."
+        });
+    }
+    if(typeof(tinyMCE) != "undefined"){ // could be Safari 2, which dies with tinyMCE
+        tinyMCE.addI18n('en.jivemacros',{
+                    "unused.jive.key" : "nothing."
+        });
+    }
+
+
+        window.RawHTMLSaveFunction = function(element_id, html, body){
+            var text = $j('#wysiwygtext');
+            if (text.is(':not(:visible)')) {
+                return html;
+            }else{
+                return text.val();
+            }
+        }
+        jive.rte.multiRTE = new Array();
+
+        //Not used by RTEWrap, but we need this for backward compatibility; see CS-23883
+        window.refreshLinks = function() {
+            jive.rte.multiRTE.forEach(function(rteID) {
+                if ($j('#' + rteID + '_parent').length < 1) {
+                    // safari 2, text only
+                    $j('#' + rteID + '_toggle_html').hide();
+                    $j('#jivePreferredEditorModeLinkHREF').hide();
+                    return;
+                }
+
+                if(currentMode == 'rawhtml') {
+                    $j('#' + rteID + '_toggle_html').css('display', 'block');
+                }else{
+                    $j('#' + rteID + '_toggle_html').hide();
+                }
+
+                if (preferredMode == currentMode) {
+                    $j('#jivePreferredEditorModeLinkHREF').hide();
+                } else {
+                    $j('#jivePreferredEditorModeLinkHREF').css('display', 'block');
+                }
+            });
+        }
+
+    window.editor = new jive.ext.y.HashTable();
+
+
+       
+jive.rte.macros.push(new jive.rte.Macro("color","","TEXT", true, false, [], [{name: "0",value: ""},{name: "__default_attr",value: ""}], true,false));
+jive.rte.macros.push(new jive.rte.Macro("size","","TEXT", true, false, [], [{name: "0",value: ""},{name: "__default_attr",value: ""}], true,false));
+jive.rte.macros.push(new jive.rte.Macro("font","","TEXT", true, false, [], [{name: "0",value: ""},{name: "__default_attr",value: ""}], true,false));
+jive.rte.macros.push(new jive.rte.Macro("toc","","IMAGE", true, true, [], [], true,false));
+jive.rte.macros.push(new jive.rte.Macro("code","","TEXT", false, true, [{ name: "sql", deleteAll: true, params: [{ name: "__default_attr", value :"sql"} ]},{ name: "html", deleteAll: true, params: [{ name: "__default_attr", value :"html"} ]},{ name: "xml", deleteAll: true, params: [{ name: "__default_attr", value :"xml"} ]},{ name: "java", deleteAll: true, params: [{ name: "__default_attr", value :"java"} ]},{ name: "plain", deleteAll: true, params: [{ name: "__default_attr", value :"plain"} ]}], [{name: "__default_attr",value: ["sql","html","xml","java","plain"]}], true,false));
+jive.rte.macros.push(new jive.rte.Macro("noformat","","TEXT", true, false, [], [], true,false));
+jive.rte.macros.push(new jive.rte.Macro("thread","thread/","INLINE", true, false, [], [{name: "id",value: ""},{name: "__default_attr",value: ""},{name: "title",value: ""}], true,false));
+jive.rte.macros.push(new jive.rte.Macro("message","message/","INLINE", true, false, [], [{name: "id",value: ""},{name: "__default_attr",value: ""},{name: "title",value: ""}], true,false));
+jive.rte.macros.push(new jive.rte.Macro("external-site","bookmarks/","INLINE", false, false, [], [{name: "id",value: ""},{name: "__default_attr",value: ""},{name: "title",value: ""}], true,false));
+jive.rte.macros.push(new jive.rte.Macro("document","docs/","INLINE", true, false, [], [{name: "id",value: ""},{name: "__default_attr",value: ""},{name: "title",value: ""}], true,false));
+jive.rte.macros.push(new jive.rte.Macro("tag","tags/","INLINE", true, false, [], [{name: "id",value: ""},{name: "__default_attr",value: ""},{name: "title",value: ""},{name: "tag",value: ""}], true,false));
+jive.rte.macros.push(new jive.rte.Macro("microblog","status/","INLINE", true, false, [], [{name: "id",value: ""},{name: "__default_attr",value: ""},{name: "title",value: ""}], true,false));
+jive.rte.macros.push(new jive.rte.Macro("polls","polls/","INLINE", true, false, [], [{name: "id",value: ""},{name: "__default_attr",value: ""},{name: "title",value: ""}], true,false));
+jive.rte.macros.push(new jive.rte.Macro("blogpost","blogs/","INLINE", true, false, [], [{name: "id",value: ""},{name: "__default_attr",value: ""},{name: "title",value: ""}], true,false));
+jive.rte.macros.push(new jive.rte.Macro("blog","blogs/","INLINE", true, false, [], [{name: "id",value: ""},{name: "__default_attr",value: ""},{name: "title",value: ""},{name: "name",value: ""}], true,false));
+jive.rte.macros.push(new jive.rte.Macro("community","community/","INLINE", true, false, [], [{name: "id",value: ""},{name: "__default_attr",value: ""},{name: "title",value: ""}], true,false));
+jive.rte.macros.push(new jive.rte.Macro("space","community/","INLINE", true, false, [], [{name: "id",value: ""},{name: "__default_attr",value: ""},{name: "title",value: ""}], true,false));
+jive.rte.macros.push(new jive.rte.Macro("user","people/","INLINE", true, false, [], [{name: "id",value: ""},{name: "__default_attr",value: ""},{name: "title",value: ""},{name: "username",value: ""}], true,false));
+jive.rte.macros.push(new jive.rte.Macro("project","project/","INLINE", true, false, [], [{name: "id",value: ""},{name: "__default_attr",value: ""},{name: "title",value: ""}], true,false));
+jive.rte.macros.push(new jive.rte.Macro("task","view-task.jspa?task=","INLINE", true, false, [], [{name: "id",value: ""},{name: "__default_attr",value: ""},{name: "title",value: ""}], true,false));
+jive.rte.macros.push(new jive.rte.Macro("group","groups/","INLINE", true, false, [], [{name: "id",value: ""},{name: "__default_attr",value: ""},{name: "title",value: ""}], false,false));
+jive.rte.macros.push(new jive.rte.Macro("quote","","TEXT", false, true, [], [{name: "title",value: ""},{name: "__default_attr",value: ""}], true,false));
+jive.rte.macros.push(new jive.rte.Macro("vimeo","","IMAGE", false, false, [], [{name: "__default_attr",value: ""},{name: "width",value: ""},{name: "height",value: ""}], false,false));
+jive.rte.macros.push(new jive.rte.Macro("veoh","","IMAGE", false, false, [], [{name: "__default_attr",value: ""},{name: "width",value: ""},{name: "height",value: ""}], false,false));
+jive.rte.macros.push(new jive.rte.Macro("dailymotion","","IMAGE", false, false, [], [{name: "__default_attr",value: ""},{name: "width",value: ""},{name: "height",value: ""}], false,false));
+jive.rte.macros.push(new jive.rte.Macro("youtube","","IMAGE", false, false, [], [{name: "__default_attr",value: ""},{name: "width",value: ""},{name: "height",value: ""}], false,false));
+jive.rte.macros.push(new jive.rte.Macro("kaltura","","IMAGE", false, false, [], [{name: "__default_attr",value: ""},{name: "width",value: ""},{name: "height",value: ""},{name: "playerKey",value: ""},{name: "playerID",value: ""},{name: "partnerID",value: ""},{name: "playerColor",value: "#FFFFFF"}], false,false));
+jive.rte.macros.push(new jive.rte.Macro("brightcove","","IMAGE", false, false, [], [{name: "__default_attr",value: ""},{name: "width",value: ""},{name: "height",value: ""},{name: "playerKey",value: ""},{name: "playerID",value: ""},{name: "partnerID",value: ""},{name: "playerColor",value: "#FFFFFF"}], false,false));
+jive.rte.macros.push(new jive.rte.Macro("application","","INLINE", true, false, [], [{name: "id",value: ""},{name: "__default_attr",value: ""},{name: "__title",value: ""},{name: "__view",value: ""},{name: "__params",value: ""}], true,false));
+jive.rte.macros.push(new jive.rte.Macro("appEmbeddedView","","INLINE", true, false, [], [{name: "_default_attr",value: ""},{name: "_appuuid",value: ""},{name: "_title",value: ""},{name: "_view",value: ""},{name: "_context",value: ""},{name: "_url",value: ""},{name: "_previewimage",value: ""},{name: "_icon",value: ""},{name: "_action_id",value: ""}], true,false));
+
+
+
+        define('jive.rte', jive.rte);
+
+
+
+});
+</script>
+
+        <script>
+            define('coreApiPrereqs', {});
+        </script>
+
+    <script>
+        var containerType = 14;
+        var containerID = 2109;
+            var spotlightSearchURL = "/spotlight-search.jspa";
+    </script>
+
+    
+    
+
+    <link rel="stylesheet" href="./Local web server OS X_files/jive-content.css" type="text/css" media="all">
+    <link rel="stylesheet" href="./Local web server OS X_files/content.css" type="text/css" media="all">
+
+
+    
+
+
+
+
+
+
+
+
+    <script type="text/javascript">
+        var documentID = 3083;
+
+        function publishDraft() {
+            var form = $j('#documentPublishForm');
+            jive.util.securedForm(form).always(function() {
+                form.submit();
+            });
+        }
+
+        function restoreVersion(version) {
+            if (confirm('Are you sure you want to restore this version of the user tip text?')){
+                var form = $j('#documentRestoreForm');
+                jive.util.securedForm(form).always(function() {
+                    form.submit();
+                });
+            }
+        }
+
+    </script>
+
+    <!-- BEGIN action bar, only for non-binary documents -->
+
+    
+
+    <!-- END action bar -->
+
+    <!-- BEGIN: PS Customization to add Apple Implementation of featured topics -->
+
+    <!-- END: PS Customization to add Apple Implementation of featured topics -->
+
+
+
+    
+
+
+    <style type="text/css">/* custom-css */
+/*.j-reply-rte { display: none;} */
+
+
+/* hiding jive logo from unsupported-browser.jspa */
+
+#j-header h1#logo .j-header-logo {
+display: none;
+}
+
+/*<rdar://problem/15210952> New css class to align edit announcement header*/
+.apple-announcement-header {
+margin-left: 80px;
+}
+
+/*<rdar://problem/19378018> -- Discussions JP | "Close" button misaligned in "Like" green box*/
+.j-js-message-popup-close-button{
+font-size:12px;
+}
+/*<rdar://problem/20077374>--Aligned the icon and text in unfollow button */
+
+.j-social-actions li .jive-icon-med, .j-social-actions li .jive-icon-sml {
+    margin-right: -4px;
+   
+}
+.jive-icon-follow {
+    background-position: -79px -336px;
+}
+
+.filter-apple-discussions {
+display:none !important;
+}
+
+#apple-manage-subscripitons {
+    background-image: url("../plugins/mvp-plugin/resources/styles/images/manage_subscriptions.png");
+    background-repeat: no-repeat;
+    left: 0;
+    margin: -1px 5px 0 0 !important;
+}
+
+#jive-alert-global, #jive-alert-global .jive-alert-type{
+outline:none;
+}
+
+.gh-search-submit.gh-search-magnify {
+opacity:1;
+}
+
+//to fix the <rdar://problem/21321056> Discussions | Global Header Update (Post-WWDC) - ALL LOCALES
+#gh-svg-icons{
+	background: #ffffff;
+}
+
+.j-browse-details th.center
+{
+   width:130px !important;
+ }
+</style>
+    <style type="text/css">/* custom-css-container */</style>
+
+</head>
+
+<body class="jive-body-content j-doc " contenteditable="">
+
+            <div id="body-apple" class="anonymous">
+
+            <a name="top"></a>
+
+    <div id="jive-compliance" class="" style="display:none">
+        <span class="jive-icon-med "></span><strong>:</strong>
+
+
+    </div>
+
+<!-- BEGIN header -->
+<!-- Apple customization 1.4 -->
+
+
+<script type="text/javascript">
+    var searchSection = 'support';
+    var searchCountry = 'us';
+    var searchLocale = 'en_US';
+    var deactivateSearchShortcuts = false;
+</script>
+
+<script>
+    var enableAppleInstant = "yes";
+    var modelValue = "SupportApple";
+    var akamaiUrl = "https://km.support.apple.com.edgekey.net";
+</script>
+
+
+
+<nav id="globalheader" class="globalheader gh-selected-tab-support" role="navigation" aria-label="Global Navigation" data-hires="false" data-analytics-region="global nav" lang="en-US">
+    <div id="gh-content" class="gh-content">
+        <div><br></div></div></nav><section id="j-main" class="clearfix"><div id="jive-body" class="clearfix">
+<div id="jive-body-main" class="j-layout j-layout-ls clearfix">
+    <div class="j-column-wrap-l">
+        <div class="j-column j-column-l lg-margin">
+
+            <div id="object-follow-notify" class="jive-info-box" style="display:none" aria-live="polite" aria-atomic="true"></div>
+
+            <div id="content-featured-notify" class="jive-info-box" style="display:none" aria-live="polite" aria-atomic="true"></div>
+
+
+
+
+
+
+
+
+
+<!-- BEGIN document -->
+
+<div class="jive-content clearfix doc-page" role="main" aria-labeledby="main-doc-header">
+    <header>
+
+
+        <h1>Setting up a local web server on OS X</h1>
+
+    </header>
+
+
+    <section class="jive-content-body">
+
+
+<!-- [DocumentBodyStart:70b9160e-60a8-4747-b6d8-912402b9de3a] --><div class="jive-rendered-content"><p style="font-family: 'Lucida Grande', 'Lucida Grande', Lucida Grande, Arial, Verdana, sans-serif;">Here is my definitive guide to getting a local web server running on OS X. This is meant to be a development platform so that you can build and test your sites locally, then deploy to an internet server. This User Tip contains instructions for configuring the Apache and PHP. I have another User Tip for installing and configuring MySQL and Perl.</p><p style="font-family: 'Lucida Grande', 'Lucida Grande', Lucida Grande, Arial, Verdana, sans-serif;"><em><strong>Note: Yosemite introduces some significant changes. Pay attention to your OS version.</strong></em></p><p><em><strong style="font-family: 'Lucida Grande', 'Lucida Grande', 'Lucida Grande', Arial, Verdana, sans-serif;">Another note: These instructions apply to the client versions of OS X, not Server. Server does a few specific tricks really well and is a good choice for those. For things like <a class="jive-link-wiki-small" data-containerid="2109" data-containertype="14" data-objectid="3082" data-objecttype="102" href="https://discussions.apple.com/docs/DOC-3082">database</a>, web, and <a class="jive-link-wiki-small" data-containerid="2109" data-containertype="14" data-objectid="4161" data-objecttype="102" href="https://discussions.apple.com/docs/DOC-4161">mail</a> services, I have found it easier to just setup the client OS version manually.</strong></em></p><p><em style="font-family: 'Lucida Grande', 'Lucida Grande', 'Lucida Grande', Arial, Verdana, sans-serif;"><strong><br></strong></em></p><p style="font-family: 'Lucida Grande', 'Lucida Grande', Lucida Grande, Arial, Verdana, sans-serif;">Requirements:</p><ol style="list-style-position: initial; list-style-image: initial; margin-left: 10px; font-family: 'Lucida Grande', 'Lucida Grande', Lucida Grande, Arial, Verdana, sans-serif;"><li>Basic understanding of Terminal.app and how to run command-line programs.</li><li>Basic understanding of web servers.</li><li>Basic usage of vi. You can substitute nano if you want.</li></ol><p><span style="font-family: 'Lucida Grande', 'Lucida Grande', Lucida Grande, Arial, Verdana, sans-serif;"> </span><span style="font-family: 'Lucida Grande', 'Lucida Grande', Lucida Grande, Arial, Verdana, sans-serif;">Optional:</span></p><ol style="list-style-position: initial; list-style-image: initial; margin-left: 10px; font-family: 'Lucida Grande', 'Lucida Grande', Lucida Grande, Arial, Verdana, sans-serif;"><li>Xcode is required for adding PHP modules.</li></ol><p style="min-height: 8pt; height: 8pt; padding: 0px;">&nbsp;</p><p style="font-family: 'Lucida Grande', 'Lucida Grande', Lucida Grande, Arial, Verdana, sans-serif;">Lines in <strong>bold</strong> are what you will have to type in at the Terminal.</p><p style="font-family: 'Lucida Grande', 'Lucida Grande', Lucida Grande, Arial, Verdana, sans-serif;">Replace <strong>&lt;your local host&gt;</strong> with the name of your machine. Ideally, it should be a one-word name with no spaces or punctuation. It just makes life easier.</p><p style="font-family: 'Lucida Grande', 'Lucida Grande', Lucida Grande, Arial, Verdana, sans-serif;">Replace <strong>&lt;your short user name&gt;</strong> with your short user name.</p><p style="min-height: 8pt; height: 8pt; padding: 0px;">&nbsp;</p><p style="font-family: 'Lucida Grande', 'Lucida Grande', Lucida Grande, Arial, Verdana, sans-serif;">Here goes... Enjoy!</p><p style="min-height: 8pt; height: 8pt; padding: 0px;">&nbsp;</p><p style="font-size: 12px; font-family: Lucida Grande;">Lion and later versions no longer create personal web sites by default. If you already had a Sites folder in Snow Leopard, it should still be there. To create one manually, enter the following:</p><p style="font-size: 12px; font-family: Courier;"><strong>mkdir ~/Sites</strong></p><p style="font-size: 12px; font-family: Courier;"><strong>echo "&lt;html&gt;&lt;body&gt;&lt;h1&gt;My site works&lt;/h1&gt;&lt;/body&gt;&lt;/html&gt;" &gt; ~/Sites/index.html.en</strong></p><p style="min-height: 8pt; height: 8pt; padding: 0px;">&nbsp;</p><p style="font-size: 12px; font-family: Lucida Grande;">PHP is not enabled in recent versions of OS X. To enable it, do:</p><p style="font-size: 12px; font-family: Courier;"><strong>sudo vi /etc/apache2/httpd.conf</strong></p><p style="min-height: 8pt; height: 8pt; padding: 0px;">&nbsp;</p><p style="font-size: 12px; font-family: Lucida Grande;">Uncomment the following line:</p><p style="font-size: 12px; font-family: Courier;">#LoadModule php5_module libexec/apache2/libphp5.so</p><p style="font-size: 12px; font-family: Lucida Grande;">to</p><p style="font-size: 12px; font-family: Courier;"><strong>LoadModule php5_module libexec/apache2/libphp5.so</strong></p><p>(if you aren't familiar with vi, just press 'x' over the '#' character to delete it. Then type ':w!' to save and then 'ZZ' to quit.)</p><p><span style="font-family: 'Lucida Grande'; font-size: 12px;">10.7 Lion - line 111</span></p><p><span style="font-family: 'Lucida Grande'; font-size: 12px; line-height: 1.5em;">10.8 Mountain Lion - line 117</span></p><p><span style="font-family: 'Lucida Grande'; font-size: 12px;">10.9 Mavericks - line 118</span></p><p><span style="font-family: 'Lucida Grande'; font-size: 12px;">10.10 Yosemite - line 169<br></span></p><p style="min-height: 8pt; height: 8pt; padding: 0px;">&nbsp;</p><p style="font-size: 12px; font-family: Lucida Grande;">For Yosemite only, uncomment the following line at line 166:</p><p style="font-size: 12px; font-family: Courier;">#LoadModule userdir_module libexec/apache2/mod_userdir.so</p><p style="font-size: 12px; font-family: Lucida Grande;">to</p><p style="font-size: 12px; font-family: Courier;"><strong>LoadModule userdir_module libexec/apache2/mod_userdir.so</strong></p><p style="min-height: 8pt; height: 8pt; padding: 0px; font-size: 12px; font-family: 'Lucida Grande';">&nbsp;</p><p style="font-size: 12px; font-family: 'Lucida Grande';">and do the same at line 493:</p><p style="font-size: 12px; font-family: Courier;">#Include /private/etc/apache2/extra/httpd-userdir.conf</p><p style="font-size: 12px; font-family: 'Lucida Grande';">to</p><p style="font-size: 12px; font-family: Courier;"><strong>Include /private/etc/apache2/extra/httpd-userdir.conf</strong></p><p style="font-size: 12px; font-family: Courier;"><span style="font-family: 'Lucida Grande'; font-size: 12px;">Save and exit.</span></p><p style="min-height: 8pt; height: 8pt; padding: 0px; font-size: 12px; font-family: 'Lucida Grande';">&nbsp;</p><p style="font-size: 12px; font-family: 'Lucida Grande';">And again, for Yosemite only, open the file above with:</p><p style="font-size: 12px; font-family: 'Lucida Grande';"><span style="font-family: Courier; font-size: 12px;"><strong>sudo vi /etc/apache2/extra/httpd-userdir.conf</strong></span></p><p style="font-size: 12px; font-family: 'Lucida Grande';">and uncomment the following line at line 16:</p><p style="font-size: 12px; font-family: Courier;">#Include /private/etc/apache2/users/*.conf</p><p style="font-size: 12px; font-family: 'Lucida Grande';">to</p><p style="font-size: 12px; font-family: Courier;"><strong>Include /private/etc/apache2/users/*.conf</strong></p><p style="font-size: 12px; font-family: 'Lucida Grande';"><span style="font-family: 'Lucida Grande'; font-size: 12px;">Save and exit.</span></p><p style="min-height: 8pt; height: 8pt; padding: 0px;">&nbsp;</p><p>While you are in /etc/apache2, double-check to make sure you have a user config file. It should exist at the path: <span style="font-family: 'Lucida Grande', 'Lucida Grande', 'Lucida Grande', Arial, Verdana, sans-serif;"><strong>/etc/apache2/users/&lt;your short user name&gt;.conf. </strong></span>That file may not be created in Lion and if you upgrade to Mountain Lion, you still won't have it. It does appear to be created when you create a new user in Mountain Lion. If that file doesn't exist, you will need to create it with:</p><p style="min-height: 8pt; height: 8pt; padding: 0px;">&nbsp;</p><p style="font-size: 12px; font-family: Courier;"><strong>sudo vi /etc/apache2/users/&lt;your short user name&gt;.conf</strong></p><p><strong><br></strong></p><p>For all systems other than Yosemite, use the following as the content:</p><p><span style="font-family: 'courier new', courier;"><strong>&lt;Directory "/Users/&lt;your short user name&gt;/Sites/"&gt;</strong></span></p><p><span style="font-family: 'courier new', courier;"><strong>&nbsp;&nbsp;&nbsp; Options Indexes MultiViews</strong></span></p><p><span style="font-family: 'courier new', courier;"><strong>&nbsp;&nbsp;&nbsp; AllowOverride None</strong></span></p><p><span style="font-family: 'courier new', courier;"><strong>&nbsp;&nbsp;&nbsp; Order allow,deny</strong></span></p><p><span style="font-family: 'courier new', courier;"><strong>&nbsp;&nbsp;&nbsp; Allow from localhost</strong></span></p><p><span style="font-family: 'courier new', courier;"><strong>&lt;/Directory&gt;</strong></span></p><p style="min-height: 8pt; height: 8pt; padding: 0px;">&nbsp;</p><p>For Yosemite, use this content:</p><p><span style="font-family: 'courier new', courier;"><strong>&lt;Directory "/Users/&lt;your short user name&gt;/Sites/"&gt;</strong></span></p><p><span style="font-family: 'courier new', courier;"><strong>&nbsp;&nbsp;&nbsp; AddLanguage en .en</strong></span></p><p><span style="font-family: 'courier new', courier;"><strong>&nbsp;&nbsp;&nbsp; LanguagePriority en fr de</strong></span></p><p><span style="font-family: 'courier new', courier;"><strong>&nbsp;&nbsp;&nbsp; ForceLanguagePriority Fallback</strong></span></p><p><span style="font-family: 'courier new', courier;"><strong>&nbsp;&nbsp;&nbsp; Options Indexes MultiViews</strong></span></p><p><span style="font-family: 'courier new', courier;"><strong>&nbsp;&nbsp;&nbsp; AllowOverride None</strong></span></p><p><span style="font-family: 'courier new', courier;"><strong>&nbsp;&nbsp;&nbsp; Order allow,deny</strong></span></p><p><span style="font-family: 'courier new', courier;"><strong>&nbsp;&nbsp;&nbsp; Allow from localhost</strong></span></p><p><span style="font-family: 'courier new', courier;"><strong>&nbsp;&nbsp;&nbsp;&nbsp; Require all granted<br></strong></span></p><p><span style="font-family: 'courier new', courier;"><strong>&lt;/Directory&gt;</strong></span></p><p><span style="font-family: 'courier new', courier;"><strong><br></strong></span></p><p>In vi, press &lt;esc&gt; and then ZZ to save and quit.</p><p style="min-height: 8pt; height: 8pt; padding: 0px;">&nbsp;</p><p>If you want to run Perl scripts, you will have to do something similar:</p><p><em><strong>Note: This section cannot be done on Yosemite. Yosemite does not include /usr/libexec/apache2/mod_perl.so. It should be possible to build your own mod_perl, but that would be outside the scope of this User Tip.</strong></em></p><p style="min-height: 8pt; height: 8pt; padding: 0px;">&nbsp;</p><p style="font-size: 12px; font-family: Lucida Grande;">Uncomment the following line: (In Lion this is on line 110. In Mountain Lion it is on line 116. In Mavericks it is on 117.)</p><p style="font-size: 12px; font-family: Courier;">#LoadModule perl_module libexec/apache2/mod_perl.so</p><p style="font-size: 12px; font-family: Lucida Grande;">to</p><p style="font-size: 12px; font-family: Courier;"><strong>LoadModule perl_module libexec/apache2/mod_perl.so</strong></p><p style="min-height: 8pt; height: 8pt; padding: 0px;">&nbsp;</p><p>Then, in <span style="font-family: Courier; font-size: 12px;"><strong>/etc/apache2/users/&lt;your short user name&gt;.conf </strong></span>change the line that says:</p><p><span style="font-family: 'courier new', courier;"><strong>&nbsp;&nbsp;&nbsp; Options Indexes MultiViews</strong></span></p><p>to:</p><p><span style="font-family: 'courier new', courier;"><strong>&nbsp;&nbsp;&nbsp; AddHandler perl-script .pl</strong></span></p><p><span style="font-family: 'courier new', courier;"><strong>&nbsp;&nbsp;&nbsp; PerlHandler ModPerl::Registry</strong></span></p><p><span style="font-family: 'courier new', courier;"><strong>&nbsp;&nbsp;&nbsp; Options Indexes MultiViews FollowSymLinks ExecCGI</strong></span></p><p style="min-height: 8pt; height: 8pt; padding: 0px;">&nbsp;</p><p style="font-size: 12px; font-family: Lucida Grande;">Now you are ready to turn on Apache itself.</p><p style="min-height: 8pt; height: 8pt; padding: 0px;">&nbsp;</p><p style="font-size: 12px; font-family: Lucida Grande;"><span style="color: #0000ff;">In Lion, do the following:</span></p><p style="font-size: 12px; font-family: Lucida Grande;">To turn on Apache, go to System Preferences &gt; Sharing and enable Web Sharing.</p><p style="min-height: 8pt; height: 8pt; padding: 0px;">&nbsp;</p><p style="font-family: 'Lucida Grande', 'Lucida Grande', Lucida Grande, Arial, Verdana, sans-serif;"><span style="color: #ff0000;">NOTE: There appears to be a bug in Lion for which I haven't found a workaround. If web sharing doesn't start, just keep trying.</span></p><p style="min-height: 8pt; height: 8pt; padding: 0px;">&nbsp;</p><p style="font-size: 12px; font-family: Lucida Grande;"><span style="color: #0000ff;">In more recent versions of OS X, the Web Sharing checkbox in System Preferences &gt; Sharing is gone. Instead, do the following:</span></p><p style="font-size: 12px; font-family: Courier;"><strong>sudo launchctl load -w /System/Library/LaunchDaemons/org.apache.httpd.plist</strong></p><p style="min-height: 8pt; height: 8pt; padding: 0px;">&nbsp;</p><p style="font-size: 12px; font-family: Lucida Grande;">In Safari, navigate to your web site with the following address:</p><p style="font-size: 12px; font-family: Courier;"><strong><a class="jive-link-external-small" style="color: #0088cc;">http://</a>&lt;your local host&gt;/</strong></p><p style="min-height: 8pt; height: 8pt; padding: 0px;">&nbsp;</p><p style="font-size: 12px; font-family: Lucida Grande;">It should say:</p><p style="min-height: 8pt; height: 8pt; padding: 0px;">&nbsp;</p><p style="font-size: 32px; margin-bottom: 21px; font-family: Times;"><strong>It works!</strong></p><p style="font-size: 12px; font-family: Lucida Grande;">Now try your user home directory:</p><p style="font-size: 12px; font-family: Courier;"><strong><a class="jive-link-external-small" style="color: #0088cc;">http://</a>&lt;your local host&gt;/~&lt;your short user name&gt;</strong></p><p style="min-height: 8pt; height: 8pt; padding: 0px;">&nbsp;</p><p style="font-size: 12px; font-family: Lucida Grande;">It should say:</p><p style="min-height: 8pt; height: 8pt; padding: 0px;">&nbsp;</p><p style="font-size: 32px; margin-bottom: 21px; font-family: Times;"><strong>My site works</strong></p><p style="font-size: 12px; font-family: Lucida Grande;">Now try PHP. Create a PHP info file with:</p><p style="font-size: 12px; font-family: Courier;"><strong>echo "&lt;?php echo phpinfo(); ?&gt;" &gt; ~/Sites/info.php</strong></p><p style="min-height: 8pt; height: 8pt; padding: 0px;">&nbsp;</p><p style="font-size: 12px; font-family: Lucida Grande;">And test it by entering the following into Safari's address bar:</p><p style="font-size: 12px; font-family: Courier;"><strong><a class="jive-link-external-small" style="color: #0088cc;">http://</a>&lt;your local host&gt;/~&lt;your short user name&gt;/info.php</strong></p><p style="min-height: 8pt; height: 8pt; padding: 0px;">&nbsp;</p><p style="font-size: 12px; font-family: Lucida Grande;">You should see your PHP configuration information.</p><p style="min-height: 8pt; height: 8pt; padding: 0px;">&nbsp;</p><p style="font-size: 12px; font-family: Lucida Grande;">If you want to setup MySQL, see <a class="jive-link-wiki-small" data-containerid="2109" data-containertype="14" data-objectid="3082" data-objecttype="102" href="https://discussions.apple.com/docs/DOC-3082">my User Tip on Installing MySQL</a>.</p><p style="min-height: 8pt; height: 8pt; padding: 0px;">&nbsp;</p><p style="font-size: 12px; font-family: Lucida Grande;">If you want to add modules to PHP, I suggest <a class="jive-link-external-small" href="http://michaelgracie.com/2011/07/21/plugging-mcrypt-into-php-on-mac-os-x-lion-10-7/" style="color: #0088cc;">the following site</a>. I can't explain it any better.</p><p style="min-height: 8pt; height: 8pt; padding: 0px;">&nbsp;</p><p style="font-size: 12px; font-family: Lucida Grande;">If you want to make further changes to your Apache system or user config files, you will need to restart the Apache server with:</p><p style="font-size: 12px; font-family: Lucida Grande;"><span style="font-family: Courier; font-size: 12px;"><strong>sudo apachectl graceful</strong></span></p></div></section></div></div></div></div></div></section><div class="j-js-footer-wrap"><footer id="j-footer" role="contentinfo" aria-label="Site information"><div id="globalfooter" class="gf-980"><div class="gf-sosumi"><ul class="piped">
+		</ul>
+	</div>
+
+</div>                
+
+
+
+
+<script type="text/javascript">
+    $j(window).load(function(){
+        if (false && jive.ActivityStream.StreamSource) {
+            var streamServices = new jive.ActivityStream.StreamSource();
+            streamServices.newCount().addCallback(function (data) {
+                jive.switchboard.emit('activityStream.poll', data);
+            });
+        }
+        jive.onLoadEventComplete = true;
+    });
+</script>
+
+
+<script src="./Local web server OS X_files/theme.js"></script>
+<script src="./Local web server OS X_files/browserdetect.js" type="text/javascript" charset="utf-8"></script>
+<script type="text/javascript">
+    
+
+
+
+
+
+</script>
+
+    <script type="text/javascript" src="./Local web server OS X_files/accsoffer.js" charset="utf-8"></script>
+
+            </footer>
+        </div>
+
+        <div class="j-alert-container" role="alert" aria-live="polite" aria-atomic="true"></div>
+
+        <span id="j-speak-accessibility" class="j-508-label" role="status" aria-live="polite" aria-relevant="all" aria-atomic="true"></span>
+
+
+        
+        
+
+
+    </div>
+
+
+
+<div id="modal-container" class="jive-modal" style="display: none;"></div><style type="text/css">
+    #body-apple{
+        padding:0;  /* fixing this as per jeff's comment on the white line on the header */
+    }
+</style></body></html>

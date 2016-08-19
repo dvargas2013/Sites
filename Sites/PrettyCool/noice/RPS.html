@@ -1,0 +1,237 @@
+<html>
+<head>
+</head>
+<body>
+<canvas id=canvas>
+<script>
+ window.requestAnimationFrame = window.requestAnimationFrame
+                           || window.webkitRequestAnimationFrame
+                           || window.mozRequestAnimationFrame
+                           || window.msRequestAnimationFrame
+                           || function(func) { setTimeout(func, 16); };
+window.body = document.body; 
+ctx = canvas.getContext("2d");
+window.onresize = function() {
+    W = body.clientWidth * .95;
+    H = body.clientHeight * .95;
+    canvas.width = W;
+    canvas.height = H;
+};
+window.onresize();
+
+balls = [];
+
+BALL = function(x,y,r,c){
+    this.a = this.l = 0;
+    this.x = x || Math.random()*W;
+    this.y = y || Math.random()*H;
+    this.r = r || 10;
+    this.c = c || "BLACK";
+    balls.push(this);
+};
+ROK = function(x,y){
+    BALL.call(this, x,y,10,"GRAY");
+};
+PAP = function(x,y) {
+    BALL.call(this, x,y,10,"BROWN");
+};
+SIS = function(x,y) {
+    BALL.call(this, x,y,10,"RED");
+};
+R=P=S=0;
+BALL.prototype = {
+    calc : function(ball) {
+        var dx = this.x - ball.x;
+        var dy = this.y - ball.y;
+        return dx*dx + dy*dy;
+    },
+    coll : function(ball) {
+        var dx = this.x - ball.x;
+        var dy = this.y - ball.y;
+        var rr = this.r + ball.r;
+        return dx*dx + dy*dy < rr*rr;
+    },
+    draw : function(){
+        ctx.beginPath();
+        ctx.arc(this.x,this.y,this.r,0,2*Math.PI);
+        ctx.fillStyle = this.c;
+        ctx.fill();
+    },
+    edge : function(){
+//         if (this.a-this.l > 500) {
+            if (this.x-this.r < 0) {this.x = 2*(W-this.r)-(W-this.x);this.l = this.a;}
+            if (this.x+this.r > W) {this.x = 2*this.r-(W-this.x);this.l = this.a;}
+            if (this.y-this.r < 0) {this.y = 2*(H-this.r)-(H-this.y);this.l = this.a;}
+            if (this.y+this.r > H) {this.y = 2*this.r-(H-this.y);this.l = this.a;}
+//         } else {
+//             if (this.x-this.r < 0) {this.x = 2*this.r-this.x;}
+//             if (this.x+this.r > W) {this.x = 2*(W-this.r)-this.x;}
+//             if (this.y-this.r < 0) {this.y = 2*this.r-this.y;}
+//             if (this.y+this.r > H) {this.y = 2*(H-this.r)-this.y;}
+//         }
+    },
+    type : function(TYPE) {
+        var save = undefined;
+        var savecalc = Infinity;
+        for (var i=0; i<balls.length; i++) {
+            var it = balls[i];
+            if (it === this) continue;
+            if (it instanceof TYPE) {
+                var ii = this.calc(it);
+                if (ii < savecalc) {
+                    save = it;
+                    savecalc = ii;
+                }
+            }
+        }
+        return save;
+    },
+    remove : function() {
+        this.x = Math.random() * W;
+        this.y = Math.random() * H;
+        switch(this.name()) {
+            case "ROK": R++; break;
+            case "SIS": P++; break;
+            case "PAP": S++; break;
+        }
+//         var i = balls.indexOf(this);
+//         if (i < 0) return false;
+//         balls.splice(i,1);
+//         return true;
+    },
+    pm : function(p,m) { 
+        this.a++;
+        var DX = 0, DY = 0;
+        for (var i=0; i<balls.length;i++) {
+            var item = balls[i];
+            if (item === this) continue;
+            var dx = [this.x - item.x,this.x-W-item.x,W-item.x+this.x].reduce(redux),
+                dy = [this.y - item.y,this.y-H-item.y,H-item.y+this.y].reduce(redux),
+                dxdx = dx*dx,
+                dydy = dy*dy,
+                r2 = dxdx + dydy;
+
+            if (item.name() === p) {
+                if (r2 < 100) {
+                    item.remove();
+                }
+                DX -= dx/r2;
+                DY -= dy/r2;
+            }
+            else if (item.name() === m) {
+                if (r2 < 100) {
+                    this.remove();            
+                }
+                DX += dx/r2;
+                DY += dy/r2;
+            }
+            else if (r2 < 200) {
+                DX += dx/r2;
+                DY += dy/r2;
+            }
+
+        }
+        var R = Math.sqrt(DX*DX + DY*DY);
+        if (R > 0) {
+            this.x += 2*DX/R;
+            this.y += 2*DY/R;
+        }
+        this.edge();
+    }
+};
+redux = function(a,b){ return Math.abs(a)<Math.abs(b)?a:b; };
+SIS.prototype = {
+    calc : BALL.prototype.calc,
+    coll : BALL.prototype.coll, 
+    draw : BALL.prototype.draw, 
+    edge : BALL.prototype.edge, 
+    type : BALL.prototype.type, 
+    remove : BALL.prototype.remove,
+    pm : BALL.prototype.pm
+};
+PAP.prototype = {
+    calc : BALL.prototype.calc,
+    coll : BALL.prototype.coll, 
+    draw : BALL.prototype.draw, 
+    edge : BALL.prototype.edge, 
+    type : BALL.prototype.type, 
+    remove : BALL.prototype.remove,
+    pm : BALL.prototype.pm,
+};
+ROK.prototype = {
+    calc : BALL.prototype.calc,
+    coll : BALL.prototype.coll, 
+    draw : BALL.prototype.draw, 
+    edge : BALL.prototype.edge, 
+    type : BALL.prototype.type, 
+    remove : BALL.prototype.remove,
+    pm : BALL.prototype.pm
+};
+
+ROK.prototype.name = function() { return "ROK"; };
+PAP.prototype.name = function() { return "PAP"; };
+SIS.prototype.name = function() { return "SIS"; };
+
+ROK.prototype.move = function() {
+    this.pm("SIS","PAP");
+};
+PAP.prototype.move = function() {
+    this.pm("ROK","SIS");
+};
+SIS.prototype.move = function() {
+    this.pm("PAP","ROK");    
+};
+
+POINT = function(y,c) {
+    this.x = 700;
+    this.y = y;
+    this.c = c;
+}
+POINT.prototype.draw= function() {
+    ctx.beginPath();
+    ctx.arc(this.x,this.y,1,0,2*Math.PI);
+    ctx.fillStyle = this.c;
+    ctx.fill();
+}
+
+count = 0;
+points = [];
+BARS = true;
+bars = function() {
+    if (++count > 100) {
+        for (var i=0; i<points.length;i++) {
+            if (--points[i].x < 100)
+                points.splice(i--,1);
+        }
+        points.push(new POINT(R,"GRAY"));
+        points.push(new POINT(P,"BROWN"));
+        points.push(new POINT(S,"RED"));
+        count = 0;
+    }
+    if (BARS) {
+        for (var i=0; i<points.length;i++)
+        points[i].draw();
+
+        ctx.fillStyle = "GRAY";
+        ctx.fillRect(0,0,20,R); 
+        ctx.fillStyle = "BROWN";
+        ctx.fillRect(20,0,20,P); 
+        ctx.fillStyle = "RED";
+        ctx.fillRect(40,0,20,S);    
+    }
+}
+f=function(){
+    ctx.clearRect(0,0,W,H);
+    ctx.beginPath(); ctx.rect(0,0,W-1,H-1); ctx.stroke();
+    for (var i=0; i<balls.length; i++) balls[i].move();
+    for (var i=0; i<balls.length; i++) balls[i].draw();
+    bars();
+    requestAnimationFrame(f);
+};
+f();
+body.onkeyup = body.ondblclick = function() {
+    new PAP(); new SIS(); new ROK(); BARS = !BARS;
+};
+</script>
+</body>
+</html>

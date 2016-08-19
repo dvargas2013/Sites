@@ -1,0 +1,94 @@
+<style>
+.highlite { background-color: yellow; border: 3px yellow ridge; };
+</style>
+<table  border=3 cellspacing=3 cellpadding=3> 
+<thead>
+<tr>
+<td colspan="10" align=center><b id="swingText">Swing</b> <b id="shearText">Shear</b></td> 
+</tr>
+</thead>
+<tbody id="calendar">
+<tr><td align=center></td><td align=center></td><td align=center></td><td align=center></td><td align=center></td><td align=center></td><td align=center></td><td align=center></td><td align=center></td><td align=center></td></tr>
+<tr><td align=center></td><td align=center></td><td align=center></td><td align=center></td><td align=center></td><td align=center></td><td align=center></td><td align=center></td><td align=center></td><td align=center></td></tr>
+<tr><td align=center></td><td align=center></td><td align=center></td><td align=center></td><td align=center></td><td align=center></td><td align=center></td><td align=center></td><td align=center></td><td align=center></td></tr>
+<tr><td align=center></td><td align=center></td><td align=center></td><td align=center></td><td align=center></td><td align=center></td><td align=center></td><td align=center></td><td align=center></td><td align=center></td></tr>
+<tr><td align=center></td><td align=center></td><td align=center></td><td align=center></td><td align=center></td><td align=center></td><td align=center></td><td align=center></td><td align=center></td><td align=center></td></tr>
+<tr><td align=center></td><td align=center></td><td align=center></td><td align=center></td><td align=center></td><td align=center></td><td align=center></td><td align=center></td><td align=center></td><td align=center></td></tr>
+<tr><td align=center></td><td align=center></td><td align=center></td><td align=center></td><td align=center></td><td align=center></td><td align=center></td><td align=center></td><td align=center></td><td align=center></td></tr>
+<tr><td align=center></td><td align=center></td><td align=center></td><td align=center></td><td align=center></td><td align=center></td><td align=center></td><td align=center></td><td align=center></td><td align=center></td></tr>
+<tr><td align=center></td><td align=center></td><td align=center></td><td align=center></td><td align=center></td><td align=center></td><td align=center></td><td align=center></td><td align=center></td><td align=center></td></tr>
+<tr><td align=center></td><td align=center></td><td align=center></td><td align=center></td><td align=center></td><td align=center></td><td align=center></td><td align=center></td><td align=center></td><td align=center></td></tr>
+</tbody>
+</table>
+<input id="input" onkeydown="if (event.keyCode === 13) fillFromDate(this.value)">
+<script>
+Date.prototype.addDays=function(d){ return new Date(this.valueOf()+864E5*d); };
+var swingnames = ["Bien","Calentar","Morrelen","Fio","Hayee","Nan","Mosuo","Oyee","Theek","Zesto","Sharrot","Gamgi","Apposto","Nyano","Napipavati","Long"],
+	swingnums = [92,94,90,89,92,94,90,89,92,94,90,89,92,94,90,90],
+	swingcum = [92, 185, 276, 365, 457, 550, 641, 730, 822, 915, 1006, 1095, 1187, 1280, 1371, 1461],
+	inserts = calendar.getElementsByTagName('td');
+function binarySearch(items, val){
+	var a=0, b=items.length;
+	while (a<b) {
+	    var m = (a+b)>>>1;
+	    if (items[m]==val) { return m; }
+	    if (items[m]<val) { a=m+1; } else { b=m; }
+	}
+	return a;
+}
+
+var gtd;
+function fillFromDate(datestr) {
+	var date = new Date(datestr);
+	
+	var td = Math.floor( (date - new Date("19 Mar 2016 GMT")) / 1000/60/60/24 ),
+		ex=1;
+	if (isNaN(date.valueOf())) td = gtd;	
+
+	gtd = td;
+	date = (new Date("19 Mar 2016 GMT")).addDays(gtd)
+	input.value = date.toUTCString().split(' ').slice(1,4).join(' ')	
+	
+	if (td < 1) {
+		if (td === 0) ex -= 1;
+		var n = Math.floor( td / -46751 ) + 1;
+		td += 46751*n;
+		ex -= 32*n;
+	}
+		
+	var shear = Math.floor((td % 46751) / 1461) + Math.floor(td / 46751)*32 + ex,
+		day = (td  % 46751) % 1461;
+	if (day==0) {
+		if (td  % 46751 === 0) day=1460;
+		else day=1461;
+	}
+	var	swingdex = binarySearch(swingcum,day),
+		swing = swingnames[swingdex];
+	if (swingdex > 0) day -= swingcum[swingdex-1];
+
+	swingText.textContent = swing;
+	shearText.textContent = shear;
+	while (shearText.textContent.length < 3)
+		shearText.textContent = "0" + shearText.textContent;
+	for(var i=0; i<swingnums[swingdex];i++) {
+		inserts[i].textContent = i+1;
+		inserts[i].classList.remove('highlite');
+	}
+	for(var i=swingnums[swingdex]; i<100;i++) {
+		inserts[i].textContent = "";
+		inserts[i].classList.remove('highlite');
+	}
+	DAY = day;
+	inserts[day-1].classList.add('highlite');
+}
+fillFromDate(new Date())
+document.body.onkeydown = function(e){
+	if (e.srcElement!==this) return;
+	switch (e.keyCode) {
+		case 37: gtd-=1; fillFromDate(); break; 
+		case 38: gtd-=91;fillFromDate(); break;
+		case 39: gtd+=1; fillFromDate(); break;
+		case 40: gtd+=91;fillFromDate(); break;
+	}
+}
+</script>

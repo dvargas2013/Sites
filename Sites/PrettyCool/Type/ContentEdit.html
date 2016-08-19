@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<!-- saved from url=(0054)https://www.google.com/_/chrome/newtab?espv=2&ie=UTF-8 -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><style>body {
+  font: small arial,sans-serif;
+  margin: 0;
+  min-height: 616px;
+  text-align: -webkit-center;
+}</style></head><body contenteditable=""></body><script>
+String.prototype.hashCode = function() {
+    var hash = 0, i, chr, len;
+    if (this.length === 0) return hash;
+    for (i = 0, len = this.length; i < len; i++) {
+        chr   = this.charCodeAt(i);
+        hash  = ((hash << 5) - hash) + chr;
+        hash |= 0; // Convert to 32bit integer
+    }
+    return hash;
+};
+var saveKey=window.location.pathname.hashCode()+"CONTENTEDITBODYCONTENT",canStore=function(){var a;try{a=window.localStorage;a.setItem("test","1");a.removeItem("test");a.setItem("test","0");return a.getItem("test")=="0"}catch(b){return false}},storage=canStore()?window.localStorage:{data:{},setItem:function(a,b){this.data[a]=String(b);return this.data[a]},getItem:function(a){return this.data.hasOwnProperty(a)?this.data[a]:undefined},removeItem:function(a){return delete this.data[a]},clear:function(){return this.data={}}},save=function(){storage.setItem(saveKey,document.body.innerHTML)},load=function(){document.body.innerHTML=storage.getItem(saveKey)||""};load();document.body.onkeyup=save;
+</script></html>

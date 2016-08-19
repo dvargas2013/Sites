@@ -1,0 +1,23 @@
+<script src="ajax.js"></script>
+<script>
+ajaxget=function(){
+var mygetrequest=new ajaxRequest()
+mygetrequest.onreadystatechange=function(){
+if(mygetrequest.readyState==4){
+if(mygetrequest.status==200){
+document.getElementById("result").innerHTML=mygetrequest.responseText
+}}}
+var namevalue=encodeURIComponent(document.getElementById("name").value),
+agevalue=encodeURIComponent(document.getElementById("age").value)
+mygetrequest.open("GET","basicform.php?name="+namevalue+"&age="+agevalue,true)
+mygetrequest.send()
+}
+</script>
+
+<form method="get" action="">
+Your name: <input type="text" id="name" name="name" size="25" /> <br />
+Your age: <input type="text" id="age" name="age" size="25" /> <br />
+<input type="button" value="submit" onClick="ajaxget()" />
+</form>
+
+<div id="result"> </div>

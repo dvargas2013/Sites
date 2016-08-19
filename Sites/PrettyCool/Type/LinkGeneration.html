@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<style>#edit {
+  font: small arial,sans-serif;
+  margin: 0;
+  min-height: 616px;
+  text-align: -webkit-center;f
+}</style>
+</head>
+<body>
+	<button id="parser">Parse</button>
+	<input type="checkbox" checked id="editStatus">Editable<br>
+	<div id="edit" contenteditable></div>
+
+<script>
+editBox = document.getElementById('edit');
+editStatus = document.getElementById('editStatus');
+parser = document.getElementById('parser');
+makeA = function(item,i,a) {
+	if (item=="") return;
+	var tag = document.createElement('a'),p;
+	tag.target="_blank";
+	tag.onclick = function(e) { this.remove(); }
+	item = item.split(' ')[0];
+	if (item.slice(0,7) !== 'http://') { item = 'http://' + item; }
+	editBox.appendChild(tag).href=item;
+	tag.innerText = item;
+	editBox.appendChild(document.createElement('br'))
+}
+parser.onclick = function(e) {
+	var stuff = editBox.innerText.split('\n');
+	console.log(stuff);
+	editBox.innerText = "";
+	stuff.forEach(makeA);
+	save();
+}
+editStatus.onchange = function(e) {
+	editBox.contentEditable = editStatus.checked;
+}
+
+String.prototype.hashCode = function() {
+    var hash = 0, i, chr, len;
+    if (this.length === 0) return hash;
+    for (i = 0, len = this.length; i < len; i++) {
+        chr   = this.charCodeAt(i);
+        hash  = ((hash << 5) - hash) + chr;
+        hash |= 0; // Convert to 32bit integer
+    }
+    return hash;
+};
+var saveKey=window.location.pathname.hashCode()+"LINKGENERATIONEDITCONTENT",canStore=function(){var a;try{a=window.localStorage;a.setItem("test","1");a.removeItem("test");a.setItem("test","0");return a.getItem("test")=="0"}catch(b){return false}},storage=canStore()?window.localStorage:{data:{},setItem:function(a,b){this.data[a]=String(b);return this.data[a]},getItem:function(a){return this.data.hasOwnProperty(a)?this.data[a]:undefined},removeItem:function(a){return delete this.data[a]},clear:function(){return this.data={}}},save=function(){storage.setItem(saveKey,editBox.innerHTML)},load=function(){editBox.innerHTML=storage.getItem(saveKey)||""};load();editBox.onkeyup=save;
+</script>
+
+</body>
+</html>

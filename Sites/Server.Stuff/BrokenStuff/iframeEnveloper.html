@@ -1,0 +1,22 @@
+<script>
+window.onload = function() {
+setTimeout(function() {
+
+var $frame = $('<iframe />').css({
+    position: 'fixed',
+    top: 0,
+    left: 0,
+    width: '100%',
+    height: '100%'
+}).appendTo('body');
+
+var doc = $frame[0].contentDocument || $frame[0].contentWindow.document;
+doc.open();
+doc.write(decodeURI("%3C!DOCTYPE%20html%3E%3Chtml%3E%3Chead%3E%3Ctitle%3E%3C/title%3E%3C/head%3E%3Cbody%3E%3C/body%3E%3C/html%3E"));
+doc.close();
+
+$('head').children().appendTo($frame.contents().find('head'));
+$('body').children().not($frame).appendTo($frame.contents().find('body'));
+
+},1000);
+};</script>

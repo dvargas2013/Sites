@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<!-- saved from url=(0031)http://annimon.github.io/16384/ -->
+<html>
+
+<head>
+    <title>16384</title>
+    <link href="style.css" type="text/css" rel="stylesheet">
+    <link href="main8.css" rel="stylesheet" type="text/css">
+    <link rel="shortcut icon" href="http://annimon.github.io/16384/favicon.ico">
+
+</head>
+
+<body>
+    <div class="container">
+        <div class="heading">
+            <div class="scores-container">
+                <div class="score-container">0</div>
+                <div class="best-container">0</div>
+            </div>
+        </div>
+
+        <div class="above-game">
+            <p class="game-intro">Join the numbers and get to the <strong>2048 tile!</strong>
+            </p>
+            <a class="restart-button">New Game</a>
+        </div>
+
+        <div class="game-container">
+            <div class="game-message">
+                <div class="lower">
+                    <a class="retry-button">Try again</a>
+                </div>
+            </div>
+
+            <div class="grid-container">
+                <div class="grid-row">
+                    <div class="grid-cell"></div>
+                    <div class="grid-cell"></div>
+                    <div class="grid-cell"></div>
+                    <div class="grid-cell"></div>
+                    <div class="grid-cell"></div>
+                    <div class="grid-cell"></div>
+                    <div class="grid-cell"></div>
+                    <div class="grid-cell"></div>
+                </div>
+                <div class="grid-row">
+                    <div class="grid-cell"></div>
+                    <div class="grid-cell"></div>
+                    <div class="grid-cell"></div>
+                    <div class="grid-cell"></div>
+                    <div class="grid-cell"></div>
+                    <div class="grid-cell"></div>
+                    <div class="grid-cell"></div>
+                    <div class="grid-cell"></div>
+                </div>
+                <div class="grid-row">
+                    <div class="grid-cell"></div>
+                    <div class="grid-cell"></div>
+                    <div class="grid-cell"></div>
+                    <div class="grid-cell"></div>
+                    <div class="grid-cell"></div>
+                    <div class="grid-cell"></div>
+                    <div class="grid-cell"></div>
+                    <div class="grid-cell"></div>
+                </div>
+                <div class="grid-row">
+                    <div class="grid-cell"></div>
+                    <div class="grid-cell"></div>
+                    <div class="grid-cell"></div>
+                    <div class="grid-cell"></div>
+                    <div class="grid-cell"></div>
+                    <div class="grid-cell"></div>
+                    <div class="grid-cell"></div>
+                    <div class="grid-cell"></div>
+                </div>
+                <div class="grid-row">
+                    <div class="grid-cell"></div>
+                    <div class="grid-cell"></div>
+                    <div class="grid-cell"></div>
+                    <div class="grid-cell"></div>
+                    <div class="grid-cell"></div>
+                    <div class="grid-cell"></div>
+                    <div class="grid-cell"></div>
+                    <div class="grid-cell"></div>
+                </div>
+                <div class="grid-row">
+                    <div class="grid-cell"></div>
+                    <div class="grid-cell"></div>
+                    <div class="grid-cell"></div>
+                    <div class="grid-cell"></div>
+                    <div class="grid-cell"></div>
+                    <div class="grid-cell"></div>
+                    <div class="grid-cell"></div>
+                    <div class="grid-cell"></div>
+                </div>
+                <div class="grid-row">
+                    <div class="grid-cell"></div>
+                    <div class="grid-cell"></div>
+                    <div class="grid-cell"></div>
+                    <div class="grid-cell"></div>
+                    <div class="grid-cell"></div>
+                    <div class="grid-cell"></div>
+                    <div class="grid-cell"></div>
+                    <div class="grid-cell"></div>
+                </div>
+                <div class="grid-row">
+                    <div class="grid-cell"></div>
+                    <div class="grid-cell"></div>
+                    <div class="grid-cell"></div>
+                    <div class="grid-cell"></div>
+                    <div class="grid-cell"></div>
+                    <div class="grid-cell"></div>
+                    <div class="grid-cell"></div>
+                    <div class="grid-cell"></div>
+                </div>
+            </div>
+
+            <div class="tile-container"></div>
+        </div>
+    </div>
+
+    <script src="KIM.js"></script>
+    <script src="GM.js"></script>
+    <script src="LSM.js"></script>
+    <script src="HTMLA.js"></script>
+    <script>
+        window.fakeStorage = {
+            data: {},
+
+            setItem: function (id, val) {
+                this.data[id] = String(val);
+                return this.data[id];
+            },
+
+            getItem: function (id) {
+                return this.data.hasOwnProperty(id) ? this.data[id] : undefined;
+            },
+
+            removeItem: function (id) {
+                return delete this.data[id];
+            },
+
+            clear: function () {
+                this.data = {};
+                return this.data;
+            }
+        };
+
+        window.requestAnimationFrame(function () {
+            gameM = new GameManager(8, KeyboardInputManager, HTMLActuator, LocalStorageManager);
+        });
+        var save = [0,0,0,0];
+        function main(i, time) {
+            switch (i) {
+            case 1: if (!save[1] && !save[3]) { gameM.move(0); }
+            case 3: save[i] = gameM.move(i); break;
+            case 0: case 2: save[2] = gameM.move(2); break;
+            }
+            setTimeout(function () {
+                if (!save[2]) { i = (i + 1) % 4; }
+                main(i);
+            }, time);
+        }
+        
+        document.body.onclick = function() {main(2,1); document.body.onclick = null;}
+    </script>
+</body>
+
+</html>

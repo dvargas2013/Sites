@@ -1,0 +1,34 @@
+<meta http-equiv="Content-Type" content="text/html;
+charset=UTF-8">
+<meta name="title" content="This is a great Title">
+<input id="omnom"/>
+<script>
+function getMetaContent(type,property) { 
+   var metas = document.getElementsByTagName('meta'); 
+
+   for (var i=0; i<metas.length; i++) { 
+      if (metas[i].getAttribute(type) === property) { 
+         return metas[i].getAttribute("content"); 
+      } 
+   } 
+
+    return "";
+} 
+function shiftTitle(title, i, len, timeout, sym) {
+	title =  new Array(len).join('⋅') + title + new Array(len).join('⋅');
+	clearInterval(inter);
+	inter = setInterval(
+		function () {
+			if (i+++len<title.length) {
+				document.title = title.substr(i,len);
+			} else {
+				i = 0;
+			}
+		}, timeout);
+}
+inter=0;
+IN = document.getElementById('omnom');
+IN.value=getMetaContent('name','title');
+shiftTitle(IN.value,0,20,200);
+IN.onchange = function() { shiftTitle(IN.value,0,20,200); }
+</script>

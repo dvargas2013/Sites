@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><style>body {
+  font: small arial,sans-serif;
+  margin: 100;
+  min-height: 616px;
+  } p { display: inline-table; } input { display: inline-table; margin-left: 5px;}
+</style></head><body></body>
+
+<script>
+var storage=(function(){var a;try{a=window.localStorage;a.setItem("test","1");a.removeItem("test");a.setItem("test","0");if(a.getItem("test")=="0")return a}catch(d){}return{data:{},setItem:function(a,b){this.data[a]=String(b);return this.data[a]},getItem:function(a){return this.data.hasOwnProperty(a)?this.data[a]:undefined},removeItem:function(a){return delete this.data[a]},clear:function(){return this.data={}}}})();
+
+del = function() {
+	storage.removeItem(this.id.split('+')[1]);
+	this.parentElement.textContent="";
+};
+dpar = function() {
+	this.parentElement.textContent="";
+}
+sh = function() { 
+	var text = document.createElement("p");
+	var bd=document.createElement('input'); 
+	bd.type="button"; bd.value="delete para"; bd.onclick=dpar;
+	
+	text.textContent = storage.getItem(this.id.split('+')[1]);
+	text.insertBefore(bd,text.firstChild);
+	this.parentElement.appendChild(text);
+};
+
+(function(){
+var div,text,buttonD, buttonS;
+for (var i in storage) {
+	div=document.createElement('div'); document.body.appendChild(div);
+	text=document.createElement('p'); div.appendChild(text); text.textContent=i;
+	buttonD=document.createElement('input'); div.appendChild(buttonD); buttonD.type="button"; buttonD.id="D+"+i; buttonD.value="delete"; buttonD.onclick=del;
+	buttonS=document.createElement('input'); div.appendChild(buttonS); buttonS.type="button"; buttonS.id="S+"+i; buttonS.value="show content"; buttonS.onclick=sh;
+}
+})();
+</script></html>

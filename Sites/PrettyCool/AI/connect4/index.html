@@ -1,0 +1,52 @@
+<html><meta charset="utf-8"><head></head><body><script src="connectfour.js"></script><script>
+BOARD = [ 
+	[ "null", "null", "null", "null", "null", "null", "null" ],  
+	[ "null", "null", "null", "null", "null", "null", "null" ],  
+	[ "null", "null", "null", "null", "null", "null", "null" ],  
+	[ "null", "null", "null", "null", "null", "null", "null" ],  
+	[ "null", "null", "null", "null", "null", "null", "null" ],  
+	[ "null", "null", "null", "null", "null", "null", "null" ] 
+];
+
+tabl = [];
+document.body.appendChild(message = document.createElement('p'))
+var t;
+document.body.appendChild(t = document.createElement('table'));
+for (var i=0;i<6;i++) {
+    var r,d,ri=[];
+    t.appendChild(r = document.createElement('tr'));
+    for (var j=0;j<7;j++) {
+        r.appendChild(d = document.createElement('td'));
+        ri.push(d);
+    }
+    tabl.push(ri);
+}
+inter = setInterval(function(){
+    BOARD.forEach(function(row, ri){
+        row.forEach(function(data, di){
+            if (data==="null") {
+                tabl[ri][di].textContent = "O";
+            } else {
+                tabl[ri][di].textContent = data;
+            }
+        }); //Row
+    }); //Board
+},1); //Interval
+TURN = true;
+document.onkeyup = function(e){
+    if (e.keyCode !== 32) return;
+	message.textContent = "";
+    var dir;
+    if (TURN) {
+        dir = bot(BOARD);
+        if (valid(BOARD, dir)) { BOARD = move(BOARD,dir,"P");
+        } else { message.textContent = 'P made illegal move'; }
+    } else {
+        dir = bot(BOARD);
+        if (valid(BOARD, dir)) { BOARD = move(BOARD,dir,"C");
+        } else { message.textContent = 'C made illegal move'; }
+    }
+    TURN = !TURN;
+	if (dir = Win(BOARD)) { message.textContent += " "+dir+" has won."; }
+};
+</script></body></html>

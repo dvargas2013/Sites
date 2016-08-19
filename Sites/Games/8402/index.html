@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<!-- saved from url=(0045)http://sphere.chronosempire.org.uk/~HEx/8402/ -->
+<html>
+
+<head>
+    <title>8402</title>
+    <link href="main.css" rel="stylesheet" type="text/css">
+    <link rel="shortcut icon" href="http://sphere.chronosempire.org.uk/~HEx/8402/favicon.ico">
+</head>
+
+<body>
+    <div class="container">
+        <div class="heading">
+            <h1 class="title">2048</h1>
+            <div class="score-container"></div>
+        </div>
+        <p class="game-intro">Prevent the evil AI player from reaching the <strong>2048 tile!</strong>
+        </p>
+
+        <div class="game-container">
+            <div class="game-message">
+                <div class="lower">
+                    <a class="retry-button">Try again</a>
+                </div>
+            </div>
+
+            <div class="grid-container">
+                <div class="grid-row">
+                    <div class="grid-cell"></div>
+                    <div class="grid-cell"></div>
+                    <div class="grid-cell"></div>
+                    <div class="grid-cell"></div>
+                </div>
+                <div class="grid-row">
+                    <div class="grid-cell"></div>
+                    <div class="grid-cell"></div>
+                    <div class="grid-cell"></div>
+                    <div class="grid-cell"></div>
+                </div>
+                <div class="grid-row">
+                    <div class="grid-cell"></div>
+                    <div class="grid-cell"></div>
+                    <div class="grid-cell"></div>
+                    <div class="grid-cell"></div>
+                </div>
+                <div class="grid-row">
+                    <div class="grid-cell"></div>
+                    <div class="grid-cell"></div>
+                    <div class="grid-cell"></div>
+                    <div class="grid-cell"></div>
+                </div>
+            </div>
+
+            <div class="tile-container"></div>
+        </div>
+    </div>
+
+    <script src="keyboard_input_manager.js"></script>
+    <script src="html_actuator.js"></script>
+    <script src="game_manager.js"></script>
+    <script>
+        animationDelay = 100;
+        minSearchTime = 100;
+        
+        window.requestAnimationFrame(function () {
+            manager = new GameManager(4, KeyboardInputManager, HTMLActuator);
+        });
+    </script>
+</body>
+
+</html>

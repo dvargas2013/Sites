@@ -1,0 +1,102 @@
+<script>
+LETTER = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+
+reset = function reset() {
+	letters = input?input.value:"";
+	currmin = 0;
+	currmax = 25;
+	existsnext = true;
+	displayQuestion();
+}
+
+string = "Is the (n)(th) letter after and including (l)?"
+
+nextLetter = function nextLetter() {
+	currmin = 0;
+	currmax = 25;
+	existsnext = true;
+}
+
+getTH = function getTH(i) { // valid up to about 100 - only need up to 26
+	var j = i % 10;
+	switch(i%10) {
+	case 1: return "st";
+	case 2: return "nd";
+	case 3: return "rd";
+	default: return "th";
+	}
+}
+
+nextQuestion = function nextQuestion() {
+	if (existsnext) {
+		if (currmax - currmin < 2) {
+			return "Is the letter "+LETTER[ currmin ]+"?";
+		} else {
+			n =	letters.length + 1;
+			th = getTH(n);
+			mid = (currmin + currmax +1) >> 1;
+			l = LETTER[ mid ];
+			minmax = "<br>(";
+			for (var i=currmin; i<=currmax;i++) {
+				if (i==mid) minmax += "<span>";
+				minmax += " "+LETTER[i]+",";
+			}
+			return string.replace('(n)',n).replace('(th)',th).replace('(l)',l) + minmax.substr(0,minmax.length-1)+" </span>)";
+		}
+	} else {
+		return "Is there at least one more letter?";
+	}
+}
+
+answerQuestion = function answerQuestion(ny) {
+	if (existsnext) {
+		if (currmax - currmin < 2) {
+			if (ny) {
+				currmax = currmin;
+			} else {
+				currmin++;
+			}
+		} else {
+			if (ny) {
+				currmin = mid;
+			} else {
+				currmax = mid-1;
+			}
+		}
+
+		if (currmin == currmax) {
+			letters += LETTER[currmin];
+			existsnext = false;
+		}
+	} else {
+		if (ny)
+			nextLetter();
+	}
+
+	return displayQuestion();
+}
+
+displayQuestion = function displayQuestion() {
+	input.value = letters;
+	return question.innerHTML = nextQuestion();
+}
+</script>
+
+<input id='input' onkeyup="if (event.which===13) reset();"></input>
+<p id='question'></p>
+<div id="answers">
+<div id='YES' onclick="answerQuestion(1)"><p>YES</p></div>
+<div id='NO' onclick="answerQuestion(0)"><p>NO</p></div>
+</div>
+<style>
+div {width:50%;display:flex;}
+span {background-color: yellow;}
+div p {text-align: center;    margin-left: auto;  margin-right: auto;}
+#answers {cursor:hand;}
+#NO {background-color: red;}
+#YES {background-color: green;}
+</style>
+<script>
+reset();
+displayQuestion();
+</script>

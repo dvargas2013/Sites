@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<!-- saved from url=(0038)http://gabrielecirulli.github.io/2048/ -->
+<html>
+
+<head>
+    <title>2048</title>
+    <link href="style.css" type="text/css" rel="stylesheet">
+    <link href="main4.css" rel="stylesheet" type="text/css">
+    <link rel="shortcut icon" href="http://gabrielecirulli.github.io/2048/favicon.ico">
+    <meta property="og:description" content="Join the numbers and get to the 2048 tile! Careful: this game is extremely addictive!">
+    <meta property="og:image" content="http://gabrielecirulli.github.io/2048/meta/og_image.png">
+</head>
+
+<body>
+    <div class="container">
+        <div class="heading">
+            <h1 class="title">2048</h1>
+            <div class="scores-container">
+                <div class="score-container">0</div>
+                <div class="best-container">0</div>
+            </div>
+        </div>
+
+        <div class="above-game">
+            <p class="game-intro">Join the numbers and get to the <strong>2048 tile!</strong>
+            </p>
+            <a class="restart-button">New Game</a>
+        </div>
+
+        <div class="game-container">
+            <div class="game-message">
+                <div class="lower">
+                    <a class="retry-button">Try again</a>
+                </div>
+            </div>
+
+            <div class="grid-container">
+                <div class="grid-row">
+                    <div class="grid-cell"></div>
+                    <div class="grid-cell"></div>
+                    <div class="grid-cell"></div>
+                    <div class="grid-cell"></div>
+                </div>
+                <div class="grid-row">
+                    <div class="grid-cell"></div>
+                    <div class="grid-cell"></div>
+                    <div class="grid-cell"></div>
+                    <div class="grid-cell"></div>
+                </div>
+                <div class="grid-row">
+                    <div class="grid-cell"></div>
+                    <div class="grid-cell"></div>
+                    <div class="grid-cell"></div>
+                    <div class="grid-cell"></div>
+                </div>
+                <div class="grid-row">
+                    <div class="grid-cell"></div>
+                    <div class="grid-cell"></div>
+                    <div class="grid-cell"></div>
+                    <div class="grid-cell"></div>
+                </div>
+            </div>
+
+            <div class="tile-container"></div>
+        </div>
+    </div>
+
+    <script src="KIM.js"></script>
+    <script src="GM.js"></script>
+    <script src="LSM.js"></script>
+    <script src="HTMLA.js"></script>
+    <script>
+        window.fakeStorage = {
+            data: {},
+
+            setItem: function (id, val) {
+                this.data[id] = String(val);
+                return this.data[id];
+            },
+
+            getItem: function (id) {
+                return this.data.hasOwnProperty(id) ? this.data[id] : undefined;
+            },
+
+            removeItem: function (id) {
+                return delete this.data[id];
+            },
+
+            clear: function () {
+                this.data = {};
+                return this.data;
+            }
+        };
+
+        window.requestAnimationFrame(function () {
+            gameM = new GameManager(4, KeyboardInputManager, HTMLActuator, LocalStorageManager);
+        });
+        function main(i, time) {
+            setTimeout(function () {
+                gameM.move(i);
+                main((i + 1) % 4, time);
+            }, time);
+        }
+        
+        document.body.ondblclick = function() {main(0,500); document.body.ondblclick = null;}
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,56 @@
+CHARACTERS
+	+id - int not null auto unique
+	species - int -> _SPECIES(id)
+	main_color - text -> _COLORS(name)
+	gender - text -> _GENDER(gender)
+	age - text -> _AGE(type)
+	power - text
+	alignment - text -> _ALIGNMENTS(name)
+	generation - int
+	isVampire - int
+	hasTail - int
+NAMES
+	+id - int -> CHARACTERS(id)
+	+name - text not null
+BODYCOLORS
+	+id - int -> CHARACTERS(id)
+	+bodypart - text not null
+	color - text not null -> _COLORS(name)
+TWINS
+	+id1 - int not null -> CHARACTERS(id)
+	+id2 - int not null -> CHARACTERS(id)
+	description - text
+EXTRAINFO
+	+id - int not null -> CHARACTERS(id)
+	+text - text not null
+PARENTAGE 
+	+idparent - int not null -> CHARACTERS(id)
+	+idchild - int not null -> CHARACTERS(id)
+_SPECIES
+	+id - int not null auto unique
+	genus - text -> __GENUSES(genus)
+	species - text
+	UNIQUE (genus,species)
+__GENUSES
+	+genus - text unique
+_ALIGNMENTS
+	name - text not null unique
+_GENDERS
+	+gender - text not null unique
+_COLORS
+	+name - text not null unique
+	hex - int not null unique
+_AGE
+	+type - text not null unique
+	sortkey - int
+
+
+
+
+
+
+CREATE TABLE newtable (
+);
+INSERT INTO newtable SELECT * FROM oldtable;
+DROP TABLE oldtable;
+ALTER TABLE newtable RENAME TO oldtable;

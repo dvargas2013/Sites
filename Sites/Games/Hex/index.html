@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<!-- saved from url=(0033)http://hextris.github.io/hextris/ -->
+<html lang="en">
+
+<head>
+    <title>Hextris</title>
+    <link rel="icon" type="image/png" href="http://hextris.github.io/hextris/favicon.ico">
+    <link rel="stylesheet" type="text/css" href="./Hextris_files/style.css">
+    <script type="text/javascript" src="./Hextris_files/hammer.min.js"></script>
+    <script type="text/javascript" src="./Hextris_files/jsonfn.min.js"></script>
+    <script type="text/javascript" src="./Hextris_files/keypress.min.js"></script>
+    <script type="text/javascript" src="./Hextris_files/jquery-1.11.3.min.js"></script>
+    <script type="text/javascript" src="./Hextris_files/save-state.js"></script>
+    <script type="text/javascript" src="./Hextris_files/view.js"></script>
+    <script type="text/javascript" src="./Hextris_files/wavegen.js"></script>
+    <script type="text/javascript" src="./Hextris_files/math.js"></script>
+    <script type="text/javascript" src="./Hextris_files/Block.js"></script>
+    <script type="text/javascript" src="./Hextris_files/Hex.js"></script>
+    <script type="text/javascript" src="./Hextris_files/Text.js"></script>
+    <script type="text/javascript" src="./Hextris_files/comboTimer.js"></script>
+    <script type="text/javascript" src="./Hextris_files/checking.js"></script>
+    <script type="text/javascript" src="./Hextris_files/update.js"></script>
+    <script type="text/javascript" src="./Hextris_files/render.js"></script>
+    <script type="text/javascript" src="./Hextris_files/input.js"></script>
+    <script type="text/javascript" src="./Hextris_files/main.js"></script>
+    <script type="text/javascript" src="./Hextris_files/initialization.js"></script>
+</head>
+
+<body>
+    <canvas id="canvas"></canvas>
+    <div class="faded overlay" style="display: none;"></div>
+    <div id="startBtn" style="position: absolute; left: 40%; top: 38%; height: 25%; width: 25%; z-index: 99999999; cursor: pointer; display: block;"></div>
+    <div class="faded overlay" style="display: none;"></div>
+    <div id="pauseBtn" style="display: none;">
+        <div id="pauseBtnInner"><i class="fa fa-pause fa-2x"></i>
+        </div>
+    </div>
+    <div id="restartBtn" style="display: none;">
+        <div id="restartBtnInner"><i class="fa fa-refresh fa-2x"></i>
+        </div>
+    </div>
+</body>
+
+</html>

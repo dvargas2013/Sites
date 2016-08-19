@@ -1,0 +1,38 @@
+body {
+    background-color: #d4dfd0;
+    text-align: center;
+}
+
+h2 {
+    margin: 0 0 0 0;
+    font-family: Trebuchet MS;
+}
+
+div {
+    margin: 4px 2px 20px 2px;
+    border: 2px dashed;
+    border-color: #506256;
+    border-radius: 5px;
+    background-color: #d6ded4;
+    display: inline-block;
+}
+
+span {
+    display: inline-block;
+    font-size: 9pt;
+    border: 1px solid;
+    border-color: #a6b2a6;
+    padding: 2px 2px 2px 2px;
+    margin: 3px 2px 3px 2px;
+    background-color: #dae4d9;
+}
+
+a {
+    text-decoration: underline;
+    font-style: italic;
+    color: #0645ad;
+}
+
+img {
+    width: 50px;
+}

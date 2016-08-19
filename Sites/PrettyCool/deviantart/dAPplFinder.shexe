@@ -1,0 +1,9 @@
+#!/bin/bash
+dir="$( cd "$(dirname "${BASH_SOURCE[0]}")" && pwd )"$"/"
+cd "$dir"
+
+n='dzv13'
+if [ ${#1} -gt 1 ]; then n=$1; fi
+echo $n
+
+python3 deviants.py $n
