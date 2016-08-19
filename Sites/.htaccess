@@ -1,4 +1,0 @@
-# RewriteEngine On
-# RewriteCond %{REQUEST_URI} !^/~danv/PrettyCool
-# RewriteRule ^(.*)$ /~danv/$1 [L,QSA]
-# RewriteRule /~danv/Games/index.php /~dan/index.php
