@@ -14,7 +14,7 @@ function ListFolder($path) {
     //display the target folder.
     //echo "<li><a>$dirname</a>";
     while (false !== ($file = readdir($dir_handle))) {
-        if($file!="." && $file!="..") {
+        if($file[0]!=".") {
 			if (is_dir($path."/".$file)) {
 				if (strpos($file, '.') == false)
 				echo "<ul><a href=".$file.">".$file."/</a></ul>";
