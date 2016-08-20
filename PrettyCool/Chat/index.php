@@ -1,5 +1,5 @@
 <style>
-.you { background-color: rgb(255,0,0);}
+.you { background-color: #00c7ff;}
 .them { background-color: rgb(0,255,255);}
 </style>
 
@@ -43,7 +43,8 @@ request = function request(mess) {
 			a = (a<0)?0:a;
 			setTimeout(
 			function(){
-				document.body.innerHTML+="<div class='them'><p>"+req.responseText+"</p></div>";
+				data.innerHTML+="<div class='them'><p>"+req.responseText+"</p></div>";
+				data.scrollTop = data.scrollHeight;
 				blocking = false;
 				if (tapped) {
 					window.submit();
@@ -59,10 +60,13 @@ request = function request(mess) {
 submit = function submit() {
 	if (!blocking) {
 		var message = thecoolest.value;
-		document.body.innerHTML+="<div class='you'><p>"+thecoolest.value+"</p></div>";
-		var abss="",s=(document.body.children.length>8)?document.body.children.length-8:0;
-		for (var d=s; d<document.body.children.length; d++) {
-			abss += document.body.children[d].textContent + " ";
+		data.innerHTML+="<div class='you'><p>"+thecoolest.value+"</p></div>";
+		data.scrollTop = data.scrollHeight;
+		thecoolest.value = "";
+		thecoolest.blur();
+		var abss="",s=(data.children.length>8)?data.children.length-8:0;
+		for (var d=s; d<data.children.length; d++) {
+			abss += data.children[d].textContent + " ";
 		}
 		request(abss+" "+message);
 	} else {
@@ -75,6 +79,7 @@ submit = function submit() {
 	if (!file_exists("ChainedTalker/Chain/Cache/$name.txt"))
 		exec("ChainedTalker/gen.shexe $name");
 ?>
-<input id="thecoolest" style="width:100%;bottom: 0;height: 4em;right: 0;position: fixed;" onkeyup="if (13===(event.which | event.keyCode)) submit();"/>
+<div id="data" style="overflow:auto;height: calc(100% - 4em);width:100%"></div>
+<input id="thecoolest" style="width:100%;height: 4em;" onkeyup="if (13===(event.which | event.keyCode)) submit();"/>
 <?php
 }?>

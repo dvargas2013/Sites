@@ -6,15 +6,16 @@ def read(file, tag='r'):
         with open(file,tag) as f: return f.read()
     except: 
         with open(file,tag,encoding='latin_1') as f: return f.read()
-def main(name,words):
+def main(name,words,debug=0):
     sys.stdout.write(
         Chain(
             read("Cache/"+name+'.txt')
         ).generate(
             ask=words,
-            relationdepth=6,
-            lencutoff=60,
-            timeout=10
+            relationdepth=25,
+            lencutoff=75,
+            timeout=5,
+            debug=debug
         )+"\n"
     );
 if __name__ == '__main__':

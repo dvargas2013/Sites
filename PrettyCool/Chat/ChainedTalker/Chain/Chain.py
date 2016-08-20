@@ -129,4 +129,4 @@ class Chain():
 
 if __name__ == '__main__':
     c = Chain("Bruh do you even know how much of a good person I am?")
-    print( c.generate() )
+    print( c.generate(debug=1) )
