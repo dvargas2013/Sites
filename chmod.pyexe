@@ -1,0 +1,21 @@
+#!/usr/bin/env python3
+import os
+abspath = os.path.abspath(__file__)
+dname = os.path.dirname(abspath)
+os.chdir(dname)
+
+for r,ds,fs in os.walk('.'):
+    for d in list(ds):
+        if d.startswith('.'):
+            ds.remove(d)
+    for f in list(fs):
+        if f.startswith('.'):
+            fs.remove(f)
+    if len(ds):
+        ds = " ".join(['"%s"'%os.path.join(r,i) for i in ds])
+        print (ds)
+        os.system('chmod 777 %s'%ds) # all permissions
+    if len(fs):
+        fs = " ".join(['"%s"'%os.path.join(r,i) for i in fs])
+        print (fs)
+        os.system('chmod 755 %s'%fs) # dont write

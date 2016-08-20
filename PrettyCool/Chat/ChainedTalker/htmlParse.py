@@ -1,6 +1,41 @@
 #!/usr/bin/env python3
 
-from done.File import siteRead, write
+def siteRead(url,tries=17):
+    if not url.startswith('http'): url='http://'+url
+    try: 
+        from urllib.request import urlopen
+    except: 
+        from urllib import urlopen
+    for i in range(tries):
+        try: return urlopen(url).read().decode()
+        except:
+            from time import sleep
+            sleep(1)
+            print('Retrying: '+url)
+def write(s, file, tag='w', encoding="utf", onerror=['strict','replace','ignore','xmlcharrefreplace','backslashreplace'][3], pickled=False):
+    if pickled:
+        from pickle import dumps
+        s = dumps(s)
+    else:
+        if type(s)==dict: s="{\n\t%s\n}"%',\n\t'.join("%s:\t%s"%(repr(i),repr(j)) for i,j in s.items())
+        elif type(s)==list: s="[\n\t%s\n]"%',\n\t'.join(repr(i) for i in s)
+        elif type(s)==tuple:s="(\n\t%s\n)"%',\n\t'.join(repr(i) for i in s)
+        elif type(s)==set:  s="{\n\t%s\n}"%',\n\t'.join(repr(i) for i in s)
+    
+    if type(s)==str:
+        try: 
+            with open(file,tag,encoding=encoding) as f: 
+                f.write(s)
+                return True
+        except:
+            if encoding: s = s.encode(encoding,onerror)
+            else: s = s.encode('utf-8',onerror)
+    if type(s)==bytes: 
+        if 'b' not in tag: tag+='b'
+        with open(file,tag) as f: 
+            f.write(s)
+            return True
+    return False
 
 OAuthConsumer = {
 'Key':'az3aMQauHx08Aey3r1DgGKDA4CQF4OSQHTXRq4hUuSaVlXkpsS',

@@ -1,11 +1,38 @@
 #!/usr/bin/env python3
-
-from done.String import score
 from Graph import Graph
 from bisect import bisect
 from time import time
 from random import random
 from math import log
+
+def score(sA,sB):
+    sA, sB = sA.lower(), sB.lower()
+    aa, bb = len(sA), len(sB)
+    if not aa and not bb: return 0
+    window = max(aa,bb) // 2 - 1
+    if window < 0: window = 0
+    aFlags, bFlags = [0]*aa, [0]*bb
+    common = 0
+    for i, aChar in enumerate(sA):
+        lo = i-window if i>window else 0
+        hi = i+window+1 if i+window < bb else bb
+        for j in range(lo,hi):
+            if not bFlags[j] and sB[j]==aChar:
+                aFlags[i] = bFlags[j] = True
+                common += 1
+                break
+    if not common: return 0
+    k = trans = 0
+    for i, aFlag in enumerate(aFlags):
+        if aFlag:
+            for j in range(k,bb):
+                if bFlags[j]: 
+                    k = j+1
+                    break
+            if sA[i]!=sB[j]: trans+=1
+    trans /= 2
+    common = float(common)
+    return ( common/aa + common/bb + (common-trans)/common ) / 3 
 
 def choice(choices): 
     "_( [(1,100),(2,4),(3,1)] ) -> 1 most likely"

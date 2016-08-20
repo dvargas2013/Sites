@@ -11,3 +11,4 @@ if [ -z "$1" ]; then
 fi
 
 python3 Tumblr.py $1
+mv $1".txt" Chain/Cache/
