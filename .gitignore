@@ -2,4 +2,5 @@
 
 # python bins
 __pycache__/
+Cache/
 *.py[ocd]

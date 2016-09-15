@@ -1,5 +1,3 @@
-var whitelist = [ "myart","mycosplay",'mymusic','myvoice','me' ];
-var perPage = 5;
 var postWrapperClass,postWrapperID = "postwrapper";
 var nextLoad={},maxLoads={},cache={},posts=[],Pagination=$('#pagi'),timerA,timerB,timerC,sheet,requested={};
 (function(){whitelist.forEach(function(d){ nextLoad[d] = 0; maxLoads[d]=-1;}); })();//Initialize nextLoad and maxLoads
@@ -15,7 +13,7 @@ function addToCache(url,page){if (requested[url]) return; requested[url]=1;
 //from the posts u can organize the direction you want things.
 function addToPosts(tag,shift,page) {
 	request('/api/read/json?start='+shift*50+'&num=50&tagged='+tag,function(req) {
-		var data= JSON.parse(req.responseText.substring(22,req.responseText.length-2));
+		var data= JSON.parse(req.responseText.trim().replace(/^var tumblr_api_read = /,"").replace(/;$/,""));
 		maxLoads[tag] = parseInt(data["posts-total"])/perPage;
 		if (parseInt(data["posts-total"])<shift*50) { nextLoad[tag]=-1; }
 		posts = posts.concat(data.posts);posts.sort(function(a,b){ return b["unix-timestamp"] -  a["unix-timestamp"]; });

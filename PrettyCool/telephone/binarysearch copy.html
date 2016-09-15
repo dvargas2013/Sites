@@ -1,0 +1,7 @@
+<p id="P"></p>
+<input type="button" value="smaller" onclick="b=m; set();">
+<input type="button" value="bigger" onclick="s=m; set();">
+<input type="button" value="Submit" onclick="s = 0000;b = 1022;set();">
+<script>
+s = 0000;b = 1022;function set(){m=Math.floor((s+b)/2);P.textContent=("000"+Math.floor(m/10000000)).substr(-3)+"-"+("000"+Math.floor(m/10000%1000)).substr(-3)+"-"+("0000"+m%10000).substr(-4);}set();
+</script>
