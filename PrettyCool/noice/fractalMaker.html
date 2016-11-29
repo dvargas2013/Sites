@@ -1,0 +1,97 @@
+<button id="clearButton">Restart</button>
+<canvas id="canvas" style="border:1px dotted;display:block">
+<script>
+var context = canvas.getContext("2d");
+var click;
+var X=0,Y=1,W,H,H2;
+
+sizeSet = function(){
+	canvas.width = W = document.body.clientWidth * .95;
+	canvas.height = H = (document.body.clientHeight - clearButton.clientHeight) * .95;
+	H2=H/2;
+}
+sizeSet();
+
+clearButton.onclick = canvas.ondblclick = clear = function clear() {
+	window.onresize = clear;
+	sizeSet();
+	click = [];
+	redraw();
+}
+clear();
+
+function addClick(x, y) {
+	window.onresize = undefined;
+	click.push([x,y]);
+	redraw();
+}
+
+function redraw() {
+	context.clearRect(0, 0, W, H);
+	context.strokeStyle = "black";
+	context.lineJoin = "round";
+	context.lineWidth = 2;
+	
+	context.beginPath();
+	context.moveTo(0,H2);
+	for (var i = 0; i < click.length; i++)
+		context.lineTo(click[i][X], click[i][Y]);
+	context.lineTo(W,H2);
+	context.stroke();
+}
+canvas.onmouseup = function(e) {
+	addClick(e.pageX - canvas.offsetLeft, e.pageY - canvas.offsetTop);
+}
+document.onkeypress = function(e) {
+	if (e.code !== "Enter") return;
+	newclick = [];
+
+// TODO fractal part of it
+// I got sad cause I didn't get it to work in 1 shot
+// I need to brush up on scaling and resizing javascript
+// doing it mathematically isnt holding up
+
+	// horizontal line: [0 Y] , [W Y]
+	var y=H2;
+	var a,b,c=0,d=y;
+
+	for (var i=0;i<click.length+1;i++) {
+		// another line: [a b] , [c d]
+		a=c;b=d;
+		c=click[i]?click[i][X]:W;
+		d=click[i]?click[i][Y]:Y;
+		console.log("ab=("+a+","+b+") cd=("+c+","+d+")");
+
+		// map everything to between the new line
+		// [0 Y] [o p] = [a b]
+		// [W Y] [q r] = [c d]
+		// (2x2 matrix maths YEAH)
+		//
+		// opqr = 
+		// [-1/W 1/W][a b]
+		// [ 1/Y   0][c d]
+		//
+		// l' = (c-a)l/W+am/Y
+		// m' = (d-b)l/W+bm/Y
+		// (check ur work by plugging in lm=ab and lm=cd)
+		var ca = c-a,
+			db = d-b;
+		for (var j=0; j<click.length; j++) {
+			var l = click[j][X],
+				m = click[j][Y],
+				lw=l/W,
+				my=m/y;
+			console.log("lm=("+l+","+m+")");
+			newclick.push([ca*lw+a*my,db*lw+b*my]);
+			console.log("l'm'=("+newclick[j][X]+","+newclick[j][Y]+")");
+		}
+
+		// dont forget to keep the old point
+		if (click[i])
+			newclick.push(click[i]);
+	}
+	click = newclick;
+	redraw();
+	console.log(newclick);
+}
+</script>

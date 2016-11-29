@@ -19,7 +19,7 @@ var tds = document.getElementsByTagName('td');
 var len = 0;
 var showing = false;
 type = function type() {
-            instr.textContent = "Type out what you saw";
+        instr.textContent = "Type out what you saw";
         display.textContent = "";
         showing = false;
 }
@@ -28,8 +28,7 @@ mem = function mem(){
         display.textContent = PI.substr(0,++len);
         showing = true;
         setTimeout(function(){
-           if (showing)
-              type()
+           if (showing) type()
         },2000);
 }
 tdcall = function tdcall() {
@@ -47,7 +46,8 @@ tdcall = function tdcall() {
     } else {
         if (isNaN(num) || num < 0 || num > 9) return;
         instr.textContent = "Mistake. Click any to continue.";
-        len = 0;
+        len -= 2;
+        if (len < 0) len = 0;
         display.textContent = "";
     }
 }
