@@ -4,3 +4,6 @@
 __pycache__/
 Cache/
 *.py[ocd]
+Txt/
+current/
+PrettyCool/deviantart/main.js

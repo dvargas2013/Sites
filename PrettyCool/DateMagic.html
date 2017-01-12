@@ -1,0 +1,29 @@
+<input type="date" id="bday">
+<div id="fil"></div>
+<script>
+addline = function addline (line) {
+fil.innerHTML += "<p>"+line+"</p>"
+}
+
+bday.oninput = function(e) {
+    fil.innerHTML = "";
+    ymd = e.target.value.split('-');
+    addline(ymd);
+    addnums(ymd);
+    addline("<br>");
+    adddigits(ymd.join(''));
+}
+
+addnums = function addnums(ymd) {
+    var text = ymd.join('+'), sum = eval(text);
+    addline(text + " = " + sum);
+    adddigits(sum);
+}
+adddigits = function adddigits(num) {
+    num = ""+num;
+    if (num.length < 2) return;
+    var text = num.split('').join('+'), sum = eval(text);
+    addline(text + " = " + sum);
+    adddigits(sum);
+} 
+</script>
