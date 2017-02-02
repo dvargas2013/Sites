@@ -1,0 +1,61 @@
+<script>
+youtubes = {
+play: '{"event":"command","func":"playVideo","args":""}',
+pause: '{"event":"command","func":"pauseVideo","args":""}',
+create: function(eleven) { return "http://www.youtube.com/embed/" + eleven +  "?enablejsapi=1&autohide=1"; }
+};
+tumblrSound = function tumblrSound(idname,filename) {
+    var audiosource = document.getElementById(idname);
+    if (audiosource === null) { 
+        var divvy = document.createElement('div');
+        divvy.innerHTML += '<audio loop="loop" id="' + idname + '" autoplay="autoplay"><source src="https://a.tumblr.com/tumblr_' + filename + '.mp3" type="audio/mpeg" /><embed hidden="true" autostart="true" loop="loop" src="https://a.tumblr.com/tumblr_' + filename +'.mp3" /></audio>';
+        document.getElementById("sound").appendChild(divvy);
+    } else
+    if (audiosource.paused) audiosource.play();
+    else audiosource.pause();
+}
+youtubeSound = function youtubeSound(idname,filename) {
+    var youtubeframe = document.getElementById(idname);
+    if (youtubeframe === null) {
+        var divvy = document.createElement('div');
+        divvy.innerHTML += '<iframe id="' + idname + '" src="' + youtubes.create(filename) + '"> </iframe>';
+        document.getElementById("sound").appendChild(divvy);
+
+        document.getElementById(idname).onload = function() {
+            this.contentWindow.postMessage(youtubes.play, '*');
+            youtubes[idname+"ispaused"] = 1;
+        }
+    } else {
+        document.getElementById(idname).contentWindow.postMessage(youtubes[idname+"ispaused"]?youtubes.pause:youtubes.play, '*');
+        youtubes[idname+"ispaused"] = !youtubes[idname+"ispaused"];
+    }
+}
+</script>
+<style>
+#sound {display:none;}
+div { width: 50px; height: 50px; margin:15px; cursor: pointer; display: inline-flex;
+background-color:red;
+}
+</style>
+<span id="sound"></span>
+<div onclick="tumblrSound('rick','niuth4JFoS1r3cdkuo1_r1')"></div>
+<div onclick="youtubeSound('error','mKkLjJHwRec')"></div>
+<div onclick="youtubeSound('dance','qWx2Iyhqq4I')"></div>
+<div onclick="tumblrSound('sandroll','nilpljERtE1sqbm3to1')"></div>
+<div onclick="tumblrSound('walkalone','oitvr9PLgu1vjz8zao1')"></div>
+<div onclick="tumblrSound('daft','n4931qAtlg1qzgnzho1')"></div>
+<div onclick="tumblrSound('honk','me4ui5h23R1rrda62o1')"></div>
+<div onclick="youtubeSound('heman','32FB-gYr49Y')"></div>
+<div onclick="tumblrSound('chill','mtatiwnmWR1r2bwdmo1')"></div>
+<div onclick="tumblrSound('swingitty','mw4cgvSsN81r1il56o1')"></div>
+<div onclick="tumblrSound('skype','mgh6kkXGgN1r67ksxo1')"></div>
+<div onclick="tumblrSound('bubbles','nw3478ooj11qzmwczo1')"></div>
+<div onclick="tumblrSound('ghostie','mk1bp2n7w01r9a8sqo1')"></div>
+<div onclick="tumblrSound('coming','o2xt6zD61F1r6j8l8o1')"></div>
+<div onclick="tumblrSound('joe','mqpinxbHW21s5kpy4o1')"></div>
+<div onclick="tumblrSound('toxic','o298c5PR9u1ruclr9o1')"></div>
+<div onclick="youtubeSound('higher','lXMskKTw3Bc')"></div>
+<div onclick="tumblrSound('someBODY','n86g66s9G31rqt8wso1')"></div>
+<div onclick="tumblrSound('allllll','oah6iaRPTp1s4rppoo1')"></div>
+<div onclick="tumblrSound('bag','o0kup7Lsjg1seqn7ao1')"></div>
+<div onclick="youtubeSound('numberone','oNVfrxkHj1M')"></div>
