@@ -1,61 +1,194 @@
 <script>
+// SOUND LINKS AND PLAYERS
 youtubes = {
 play: '{"event":"command","func":"playVideo","args":""}',
 pause: '{"event":"command","func":"pauseVideo","args":""}',
-create: function(eleven) { return "http://www.youtube.com/embed/" + eleven +  "?enablejsapi=1&autohide=1"; }
+create: function(eleven) { return "http://www.youtube.com/embed/" + eleven +  "?enablejsapi=1"; }
 };
-tumblrSound = function tumblrSound(idname,filename) {
-    var audiosource = document.getElementById(idname);
-    if (audiosource === null) { 
-        var divvy = document.createElement('div');
-        divvy.innerHTML += '<audio loop="loop" id="' + idname + '" autoplay="autoplay"><source src="https://a.tumblr.com/tumblr_' + filename + '.mp3" type="audio/mpeg" /><embed hidden="true" autostart="true" loop="loop" src="https://a.tumblr.com/tumblr_' + filename +'.mp3" /></audio>';
-        document.getElementById("sound").appendChild(divvy);
-    } else
-    if (audiosource.paused) audiosource.play();
+tumblrSound = function tumblrSound() {
+	if (this.clicked = !this.clicked) 
+		 this.style.borderWidth = "7px"
+	else this.style.borderWidth = ""
+	var audiosource = this.children[0];
+    if (audiosource === undefined) {
+    	this.innerHTML += '<audio loop="loop" id="' + this.data + '" autoplay="autoplay"><source src="http://a.tumblr.com/tumblr_' + this.data + 'o1.mp3" type="audio/mpeg" /><embed hidden="true" autostart="true" loop="loop" src="http://a.tumblr.com/tumblr_' + this.data +'o1.mp3" /></audio>';
+    	//this.analyser = getAnalyser(this.children[0]);
+    } else if (audiosource.paused) audiosource.play();
     else audiosource.pause();
 }
-youtubeSound = function youtubeSound(idname,filename) {
-    var youtubeframe = document.getElementById(idname);
-    if (youtubeframe === null) {
-        var divvy = document.createElement('div');
-        divvy.innerHTML += '<iframe id="' + idname + '" src="' + youtubes.create(filename) + '"> </iframe>';
-        document.getElementById("sound").appendChild(divvy);
-
-        document.getElementById(idname).onload = function() {
+youtubeSound = function youtubeSound() {
+	if (this.clicked = !this.clicked) 
+		 this.style.borderWidth = "7px"
+	else this.style.borderWidth = ""
+    var youtubeframe = this.children[0];
+    if (youtubeframe === undefined) {
+        this.innerHTML += '<iframe id="' + this.data + '" src="' + youtubes.create(this.data) + '"></iframe>';
+        //this.analyser = getAnalyser(this.children[0]);
+        var daddy = this;
+        document.getElementById(this.data).onload = function() {
             this.contentWindow.postMessage(youtubes.play, '*');
-            youtubes[idname+"ispaused"] = 1;
+            youtubes[daddy.data+"ispaused"] = 1;
         }
     } else {
-        document.getElementById(idname).contentWindow.postMessage(youtubes[idname+"ispaused"]?youtubes.pause:youtubes.play, '*');
-        youtubes[idname+"ispaused"] = !youtubes[idname+"ispaused"];
+        document.getElementById(this.data).contentWindow.postMessage(youtubes[this.data+"ispaused"]?youtubes.pause:youtubes.play, '*');
+        youtubes[this.data+"ispaused"] = !youtubes[this.data+"ispaused"];
     }
 }
+// ANALYSIS OF SOUND - NON FUNCTIONAL
+// getAnalyser = function getAnalyser(audio) {
+// 	var audioSrc = ctx.createMediaElementSource(audio);
+// 	var analyser = ctx.createAnalyser();
+// 	//audioSrc.connect(analyser);
+// 	return analyser;
+// }
+// ctx = new (AudioContext || window.webkitAudioContext)();
+
+// META FOR MOVEMENT OF LINKS
+window.onresize = function() {
+   W = document.body.clientWidth -r-r;
+   H = document.body.clientHeight -r-r;
+}
+var hexDigits = ["0","1","2","3","4","5","6","7","8","9","a","b","c","d","e","f"]; 
+//Function to convert rgb color to hex format
+function rgb2hex(rgb) {
+ rgb = rgb.match(/^rgb\((\d+),\s*(\d+),\s*(\d+)\)$/);
+ return hex(rgb[1]) + hex(rgb[2]) + hex(rgb[3]);
+}
+function hex(x) { return isNaN(x) ? "00" : hexDigits[(x - x % 16) / 16] + hexDigits[x % 16]; }
+function getC(c1,c2) {
+	// ffffff
+	c1 = parseInt(rgb2hex(c1),16);
+	c2 = parseInt(rgb2hex(c2),16);
+
+	c = ((~(c1^c2))&16777215).toString(16);
+	while (c.length < 6) { c = '0' + c; }
+	return '#' + c;
+}
+r = 25;
+move = function move(thiss) {
+	thiss.x = parseFloat(thiss.style.left);
+	thiss.y = parseFloat(thiss.style.top);
+	var x = thiss.x += thiss.vx;
+	var y = thiss.y += thiss.vy;
+	if (x-r < 0) {thiss.x = 2*r-x;     thiss.vx = -thiss.vx;}
+    if (x+r > W) {thiss.x = 2*(W-r)-x; thiss.vx = -thiss.vx;}
+    if (y-r < 0) {thiss.y = 2*r-y;     thiss.vy = -thiss.vy;}
+    if (y+r > H) {thiss.y = 2*(H-r)-y; thiss.vy = -thiss.vy;}    
+    thiss.style.top  = thiss.y;
+	thiss.style.left = thiss.x;
+}
+collide = function collide(thiss,ball) {
+    var dx = thiss.x - ball.x;
+    var dy = thiss.y - ball.y;
+
+    var rr = r + r;
+    if (dx*dx + dy*dy < rr*rr) {
+        var mx = (thiss.x + ball.x) / 2;
+        var my = (thiss.y + ball.y) / 2;
+        var d1x = thiss.x-mx;
+        var d1y = thiss.y-my;
+        var d2x = ball.x-mx;
+        var d2y = ball.y-my;
+
+        var t1 = r / Math.sqrt( d1x*d1x + d1y*d1y );
+        var t2 = r / Math.sqrt( d2x*d2x + d2y*d2y );
+        
+        thiss.style.left = thiss.x = mx + t1*d1x;
+        thiss.style.top  = thiss.y = my + t1*d1y;
+        ball.style.left  = ball.x  = mx + t2*d2x;
+        ball.style.top   = ball.y  = my + t2*d2y;       
+
+		// ASSUMPTION : RADII ARE EQUAL
+        var b1X = ball.vx;
+        var b1Y = ball.vy;
+        var b2X = thiss.vx;
+        var b2Y = thiss.vy;
+        
+		var cc = getC(thiss.style.background, ball.style.background);
+		if (!thiss.clicked) thiss.style.background = cc;
+		if (!ball.clicked) ball.style.background = cc; 
+
+        thiss.vx = b1X;
+        thiss.vy = b1Y;
+        ball.vx = b2X;
+        ball.vy = b2Y;
+    }
+}
+
 </script>
 <style>
-#sound {display:none;}
-div { width: 50px; height: 50px; margin:15px; cursor: pointer; display: inline-flex;
-background-color:red;
-}
+div * {display:none;}
+div { width: 50px; height: 50px; margin:15px; border: 1px grey dashed; cursor: pointer; display: inline-flex; position: absolute; border-radius:25px;}
 </style>
-<span id="sound"></span>
-<div onclick="tumblrSound('rick','niuth4JFoS1r3cdkuo1_r1')"></div>
-<div onclick="youtubeSound('error','mKkLjJHwRec')"></div>
-<div onclick="youtubeSound('dance','qWx2Iyhqq4I')"></div>
-<div onclick="tumblrSound('sandroll','nilpljERtE1sqbm3to1')"></div>
-<div onclick="tumblrSound('walkalone','oitvr9PLgu1vjz8zao1')"></div>
-<div onclick="tumblrSound('daft','n4931qAtlg1qzgnzho1')"></div>
-<div onclick="tumblrSound('honk','me4ui5h23R1rrda62o1')"></div>
-<div onclick="youtubeSound('heman','32FB-gYr49Y')"></div>
-<div onclick="tumblrSound('chill','mtatiwnmWR1r2bwdmo1')"></div>
-<div onclick="tumblrSound('swingitty','mw4cgvSsN81r1il56o1')"></div>
-<div onclick="tumblrSound('skype','mgh6kkXGgN1r67ksxo1')"></div>
-<div onclick="tumblrSound('bubbles','nw3478ooj11qzmwczo1')"></div>
-<div onclick="tumblrSound('ghostie','mk1bp2n7w01r9a8sqo1')"></div>
-<div onclick="tumblrSound('coming','o2xt6zD61F1r6j8l8o1')"></div>
-<div onclick="tumblrSound('joe','mqpinxbHW21s5kpy4o1')"></div>
-<div onclick="tumblrSound('toxic','o298c5PR9u1ruclr9o1')"></div>
-<div onclick="youtubeSound('higher','lXMskKTw3Bc')"></div>
-<div onclick="tumblrSound('someBODY','n86g66s9G31rqt8wso1')"></div>
-<div onclick="tumblrSound('allllll','oah6iaRPTp1s4rppoo1')"></div>
-<div onclick="tumblrSound('bag','o0kup7Lsjg1seqn7ao1')"></div>
-<div onclick="youtubeSound('numberone','oNVfrxkHj1M')"></div>
+<script>
+// META FOR GENERATION OF SOUND LINKS
+gens = [
+{domain:'youtube', data:'qWx2Iyhqq4I'       }, // dance
+{domain:'youtube', data:'oNVfrxkHj1M'       }, // numberone
+{domain:'youtube', data:'mKkLjJHwRec'       }, // error
+{domain:'youtube', data:'32FB-gYr49Y'       }, // heman
+{domain:'tumblr' , data:'oitvr9PLgu1vjz8za' }, // walkalone
+{domain:'tumblr' , data:'oah6iaRPTp1s4rppo' }, // allllll
+{domain:'tumblr' , data:'o2xt6zD61F1r6j8l8' }, // coming
+{domain:'tumblr' , data:'o298c5PR9u1ruclr9' }, // toxic
+{domain:'tumblr' , data:'o0kup7Lsjg1seqn7a' }, // bag
+{domain:'tumblr' , data:'nw3478ooj11qzmwcz' }, // bubbles
+{domain:'tumblr' , data:'niuth4JFoS1r3cdku' }, // rick
+{domain:'tumblr' , data:'nilpljERtE1sqbm3t' }, // sandroll
+{domain:'tumblr' , data:'n86g66s9G31rqt8ws' }, // someBODY
+{domain:'tumblr' , data:'n4931qAtlg1qzgnzh' }, // daft
+{domain:'tumblr' , data:'mw4cgvSsN81r1il56' }, // swingitty
+{domain:'tumblr' , data:'mtatiwnmWR1r2bwdm' }, // chill
+{domain:'tumblr' , data:'mqpinxbHW21s5kpy4' }, // joe
+{domain:'tumblr' , data:'mk1bp2n7w01r9a8sq' }, // ghostie
+{domain:'tumblr' , data:'mgh6kkXGgN1r67ksx' }, // skype
+{domain:'tumblr' , data:'me4ui5h23R1rrda62' }, // honk
+];
+// FRAME BY FRAME ANALYSIS OF SOUND - NONFUNCTIONAL
+// function renderFrame() {
+// 	for (var i = 0; i<gens.length; i++) {
+// 		if (!gens[i].content || !gens[i].content.analyser) continue;
+// 		var analyser = gens[i].content.analyser;
+// 		var frequencyData = new Uint8Array(analyser.frequencyBinCount); // TODO dont keep creating and destroying em that's so DUMB
+// 		analyser.getByteFrequencyData(frequencyData);
+// 		console.log(frequencyData);
+// 	}
+// 	requestAnimationFrame(renderFrame);
+// }
+</script>
+<body>
+<script>
+// SET W, H
+window.onresize();
+// CREATE THE SOUND LINKS PHYSICALLY
+for (var i = 0; i<gens.length; i++) {
+	var f;
+	       if (gens[i].domain === 'youtube') { f = youtubeSound;
+	} else if (gens[i].domain === 'tumblr') {  f = tumblrSound;
+	} else continue;
+	document.body.appendChild(gens[i].content = document.createElement('div'));
+	gens[i].content.onclick = f;
+	gens[i].content.data = gens[i].data;
+	var bb = Math.floor(Math.random()*16777215).toString(16);
+	while (bb.length < 6) { bb = '0' + bb; }
+	gens[i].content.style.background = '#'+bb// ['#ff0000','#00ff00','#0000ff'][Math.floor(Math.random() * 3)];
+	gens[i].content.style.top = Math.random() * H;
+	gens[i].content.style.left = Math.random() * W;
+	gens[i].content.vx = Math.random() * 6 - 3;
+    gens[i].content.vy = Math.random() * 6 - 3;
+    move(gens[i].content);
+}
+//ACTIVATE SOUND ANALYSIS
+//renderFrame();
+// ACTIVATE MOVEMENT
+f=function(){
+    for (var i=0; i<gens.length; i++) move(gens[i].content);
+    for (var i=0; i<gens.length; i++) {
+        for (var j=i+1; j<gens.length; j++) {
+            collide(gens[i].content,gens[j].content);
+        }
+    }
+    requestAnimationFrame(f);
+}
+f();
+</script>

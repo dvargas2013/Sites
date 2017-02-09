@@ -12,10 +12,8 @@
 window.body = document.body; 
 ctx = canvas.getContext("2d");
 window.onresize = function() {
-    W = body.clientWidth * .95;
-    H = body.clientHeight * .95;
-    canvas.width = W;
-    canvas.height = H;
+   canvas.width =  W = body.clientWidth * .95;
+   canvas.height = H = body.clientHeight * .95;
 }
 window.onresize();
 colors = ["RED","GREEN","BLUE"];
