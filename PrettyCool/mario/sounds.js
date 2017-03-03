@@ -111,7 +111,7 @@ function soundStop(sound) {
 }
 
 function toggleMute() {
-  var level = !(localStorage.muted = data.muted = muted = !muted);
+  var level = !(localStorage.muted = muted = !muted); //data.muted =
   for(var i in sounds) sounds[i].volume = level;
 }
 
