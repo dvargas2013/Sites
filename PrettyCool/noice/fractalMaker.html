@@ -3,7 +3,7 @@
 <canvas id="canvas" style="border:1px dotted;display:block">
 <script>
 var context = canvas.getContext("2d");
-var click,calculating=false,interrupt=false;
+var click,interrupt=false;
 var W,H,H2;
 
 sizeSet = function(){
@@ -22,6 +22,7 @@ clearButton.onclick = canvas.ondblclick = clear = function clear() {
 	setTimeout(function(){
 		interrupt = false;
 		click = [];
+		canvas.onclick = undefined;
 		redraw();
 	},0);
 }
@@ -57,6 +58,7 @@ canvas.onmouseup = function(e) {
 }
 document.onkeypress = function(e) {
 	if (e.code !== "Enter") return;
+	canvas.onclick = clear;
 	var newclick = [], clilen = click.length;
 
 	for (var i=0;(i<click.length+1) && !interrupt;i++) {
