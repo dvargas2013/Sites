@@ -1,13 +1,14 @@
 <button id="clearButton">Restart</button>
+<div>Click on the Canvas and press [Enter]</div>
 <canvas id="canvas" style="border:1px dotted;display:block">
 <script>
 var context = canvas.getContext("2d");
-var click;
-var X=0,Y=1,W,H,H2;
+var click,calculating=false,interrupt=false;
+var W,H,H2;
 
 sizeSet = function(){
-	canvas.width = W = document.body.clientWidth * .95;
-	canvas.height = H = (document.body.clientHeight - clearButton.clientHeight) * .95;
+	canvas.width = W = document.body.clientWidth -16;
+	canvas.height = H = document.body.clientHeight - canvas.offsetTop -8;
 	H2=H/2;
 }
 sizeSet();
@@ -15,8 +16,14 @@ sizeSet();
 clearButton.onclick = canvas.ondblclick = clear = function clear() {
 	window.onresize = clear;
 	sizeSet();
-	click = [];
-	redraw();
+	interrupt = true;
+	
+	// Queue a redraw after all the calculations
+	setTimeout(function(){
+		interrupt = false;
+		click = [];
+		redraw();
+	},0);
 }
 clear();
 
@@ -26,6 +33,12 @@ function addClick(x, y) {
 	redraw();
 }
 
+function progress(i,l) {
+	context.clearRect(0, 0, W, H);
+	if (interrupt) context.fillStyle = "red";
+	else context.fillStyle = "green";
+	context.fillRect(0,0,W*i/l,H/10);
+}
 function redraw() {
 	context.clearRect(0, 0, W, H);
 	context.strokeStyle = "black";
@@ -35,7 +48,7 @@ function redraw() {
 	context.beginPath();
 	context.moveTo(0,H2);
 	for (var i = 0; i < click.length; i++)
-		context.lineTo(click[i][X], click[i][Y]);
+		context.lineTo(click[i][0], click[i][1]);
 	context.lineTo(W,H2);
 	context.stroke();
 }
@@ -44,54 +57,84 @@ canvas.onmouseup = function(e) {
 }
 document.onkeypress = function(e) {
 	if (e.code !== "Enter") return;
-	newclick = [];
+	var newclick = [], clilen = click.length;
 
-// TODO fractal part of it
-// I got sad cause I didn't get it to work in 1 shot
-// I need to brush up on scaling and resizing javascript
-// doing it mathematically isnt holding up
+	for (var i=0;(i<click.length+1) && !interrupt;i++) {
+		
+		// Queue Up click.length iterations
+		// Also passes in the iteration number
+		setTimeout(function(i){
+		
+		if (i%parseInt(clilen/100) == 1) progress(i,clilen);
+		if (interrupt) return;
 
-	// horizontal line: [0 Y] , [W Y]
-	var y=H2;
-	var a,b,c=0,d=y;
-
-	for (var i=0;i<click.length+1;i++) {
 		// another line: [a b] , [c d]
-		a=c;b=d;
-		c=click[i]?click[i][X]:W;
-		d=click[i]?click[i][Y]:Y;
-		console.log("ab=("+a+","+b+") cd=("+c+","+d+")");
+		a=click[i-1]?click[i-1][0]:0;;
+		b=click[i-1]?click[i-1][1]:H2;;
+		c=click[i]?click[i][0]:W;
+		d=click[i]?click[i][1]:H2;
 
-		// map everything to between the new line
-		// [0 Y] [o p] = [a b]
-		// [W Y] [q r] = [c d]
-		// (2x2 matrix maths YEAH)
-		//
-		// opqr = 
-		// [-1/W 1/W][a b]
-		// [ 1/Y   0][c d]
-		//
-		// l' = (c-a)l/W+am/Y
-		// m' = (d-b)l/W+bm/Y
-		// (check ur work by plugging in lm=ab and lm=cd)
-		var ca = c-a,
-			db = d-b;
-		for (var j=0; j<click.length; j++) {
-			var l = click[j][X],
-				m = click[j][Y],
-				lw=l/W,
-				my=m/y;
-			console.log("lm=("+l+","+m+")");
-			newclick.push([ca*lw+a*my,db*lw+b*my]);
-			console.log("l'm'=("+newclick[j][X]+","+newclick[j][Y]+")");
+		var SS = (d-b)/W,
+			SC = (c-a)/W,
+			o = a+H2*SS,
+			p = b-H2*SC;
+		// MAP(see documentation notes below) everything
+		for (var j=0; (j<click.length) && !interrupt; j++) {
+			var l = click[j][0],
+				m = click[j][1];
+			newclick.push([l*SC-m*SS+o,l*SS+m*SC+p]);
 		}
 
 		// dont forget to keep the old point
-		if (click[i])
-			newclick.push(click[i]);
+		if (click[i]) newclick.push(click[i]);
+
+		if (!interrupt && i==click.length) {
+			click = newclick;
+			redraw();
+		}
+
+		},0,i);
 	}
-	click = newclick;
-	redraw();
-	console.log(newclick);
 }
 </script>
+<!--
+given:
+horizontal line (0,Y) - (W,Y)
+point according to line (l,m)
+reference line (a,b) - (c,d)
+
+you must turn the point into domain of the reference line while preserving angles
+solve for l' m'
+
+SS = s*sin(r)
+SC = s*cos(r)
+
+T = [SC,-SS,o]
+	[SS, SC,p]
+	[ 0,  0,1]
+(Scale. Rotate. Translate.)
+
+A = [0,W,l]
+	[Y,Y,m]
+	[1,1,1]
+
+TA =[a,c,l']
+	[b,d,m']
+	[1,1,1 ]
+
+(Basically the Transformation T turns (0,Y) into (a,b) (W,Y) into (c,d) and (l,m) into (l',m'))
+
+a = o-Y*SS
+b = Y*SC+p
+c = W*SC-Y*SS+o
+d = W*SS+Y*SC+p
+l'= l*SC-m*SS+o
+m'= l*SS+m*SC+p
+
+a+Y*SS = o
+b-Y*SC = p
+(c-a)/W = SC
+(d-b)/W = SS
+
+l'= l*SC-m*SS+o
+m'= l*SS+m*SC+p-->
