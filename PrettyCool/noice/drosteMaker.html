@@ -1,0 +1,96 @@
+<style>
+	div {}
+	input {display:inline;}
+	p {display: inline;}
+</style>
+
+<div><input id="Scale"    type="range" min="-4"   max="4"   step="0.1"><p></p></div>
+<div><input id="Rotation" type="range" min="-180" max="180" step="1">  <p></p></div>
+<div><input id="XAxis"    type="range" min="0"    max="100" step="1">  <p></p></div>
+<div><input id="YAxis"    type="range" min="0"    max="100" step="1">  <p></p></div>
+<div><input id="Recurse"  type="range" min="1"    max="20"  step="1">  <p></p></div>
+
+<canvas id="canvas" style="border:1px dotted;display:block">
+<script>
+var context = canvas.getContext("2d");
+var click=[],interrupt=false;
+var W,H,W2,H2;
+
+Scale.oninput = function(){
+	this.nextElementSibling.textContent = this.id+":"+(2**this.value);
+	redraw();
+}
+Rotation.oninput = XAxis.oninput = YAxis.oninput = Recurse.oninput = function() {
+	this.nextElementSibling.textContent = this.id+":"+this.value;
+	redraw();
+}
+Scale.oninput()
+Rotation.oninput()
+XAxis.oninput()
+YAxis.oninput()
+Recurse.value = 1; Recurse.oninput(); 
+// TODO turn these into a transformation matrix
+// should be easy im just too tired atm. 
+
+window.onresize = canvas.ondblclick = clear = function clear() {
+	// define dimentions of drawable section
+	canvas.width  = W = document.body.clientWidth -16;
+	canvas.height = H = document.body.clientHeight - canvas.offsetTop -8;
+	H2=H/2;
+	W2=W/2;
+	
+	// if you're clearing since uve started drawing
+	if (click.length) {
+		window.onresize = clear
+		click = [];
+	}
+	
+	redraw();
+}
+clear();
+
+function addClick(x, y) {
+	// if its the first click after clearing
+	if (!click.length) window.onresize = undefined;
+	click.push([x,y]);
+	redraw();
+}
+
+canvas.onmouseup = function(e) {
+	addClick(e.pageX - canvas.offsetLeft, e.pageY - canvas.offsetTop);
+}
+
+function redraw() {
+	context.clearRect(0, 0, W, H);
+	context.strokeStyle = "black";
+	context.lineJoin = "round";
+	context.lineWidth = 2;
+	context.font = "32px sans-serif";
+	
+	if (click.length===0) context.strokeText('click here',W2,H2)
+	
+	context.beginPath();
+	if (click.length<3) context.moveTo(W2,H2);
+	for (var i = 0; i < click.length; i++)
+		context.lineTo(click[i][0], click[i][1]);
+	if (click.length<3) context.lineTo(W2,H2);
+	else context.lineTo(click[0][0], click[0][1]);
+	context.stroke();
+	
+	var x=W*XAxis.value/100,y=H*YAxis.value/100
+	context.beginPath();
+	context.moveTo(x+5,y);
+	context.lineTo(x-5,y);
+	context.stroke();
+	
+	context.beginPath();
+	context.moveTo(x,y+5);
+	context.lineTo(x,y-5);
+	context.stroke();
+	
+	context.beginPath();
+	if (Rotation.value>0) context.arc(x,y,10,0,Rotation.value/180*Math.PI);
+	else if (Rotation.value<0) context.arc(x,y,10,Rotation.value/180*Math.PI,0);
+	context.stroke();
+}
+</script>
