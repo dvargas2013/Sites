@@ -4,40 +4,68 @@
 	p {display: inline;}
 </style>
 
-<div><input id="Scale"    type="range" min="-4"   max="4"   step="0.1"><p></p></div>
-<div><input id="Rotation" type="range" min="-180" max="180" step="1">  <p></p></div>
-<div><input id="XAxis"    type="range" min="0"    max="100" step="1">  <p></p></div>
-<div><input id="YAxis"    type="range" min="0"    max="100" step="1">  <p></p></div>
-<div><input id="Recurse"  type="range" min="1"    max="20"  step="1">  <p></p></div>
+<div><input id="Scale"    type="range" min="-4"   max="4" step="0.1"><p></p></div>
+<div><input id="Rotation" type="range" min="-180" max="180" step="1"><p></p></div>
+<div><input id="XAxis"    type="range" min="0"    max="100" step="1"><p></p></div>
+<div><input id="YAxis"    type="range" min="0"    max="100" step="1"><p></p></div>
+<div><input id="Recurse"  type="range" min="1"    max="20"  step="1"><p></p></div>
 
 <canvas id="canvas" style="border:1px dotted;display:block">
 <script>
 var context = canvas.getContext("2d");
-var click=[],interrupt=false;
-var W,H,W2,H2;
+var click=[],clickdup;
+var W,H,xaxisvalue,yaxisvalue,scalevalue;
+var SS,SC,xxSCySS,yxSSySC;
+
+TwoLayerArrayCopy = function(a) {
+	var c = [];
+	for (var i = 0; i < a.length; i++)
+	    c[i] = a[i].slice(0); // .slice is a 1 layer array copy
+	return c;
+}
+
+recalc = function() {
+	xaxisvalue=W*XAxis.value/100;
+	yaxisvalue=H*YAxis.value/100;
+	var rv180p = Rotation.value/180*Math.PI,
+	x=xaxisvalue,
+	y=yaxisvalue;
+	SS = scalevalue * Math.sin(rv180p);
+	SC = scalevalue * Math.cos(rv180p);
+	xxSCySS = x-x*SC+y*SS;
+	yxSSySC = y-x*SS-y*SC;
+	console.log('recalc')
+}
 
 Scale.oninput = function(){
-	this.nextElementSibling.textContent = this.id+":"+(2**this.value);
+	scalevalue = 2**this.value;
+	if (this.value >= 0) {
+		this.nextElementSibling.textContent = this.id+":"+Math.round(scalevalue*100)/100+"x";
+	} else {
+		this.nextElementSibling.textContent = this.id+":1/"+Math.round(2**(-this.value)*100)/100+"x";
+	}
+	recalc();
 	redraw();
 }
 Rotation.oninput = XAxis.oninput = YAxis.oninput = Recurse.oninput = function() {
 	this.nextElementSibling.textContent = this.id+":"+this.value;
+	recalc();
 	redraw();
 }
-Scale.oninput()
-Rotation.oninput()
-XAxis.oninput()
-YAxis.oninput()
-Recurse.value = 1; Recurse.oninput(); 
-// TODO turn these into a transformation matrix
-// should be easy im just too tired atm. 
+function init() {
+	Scale.oninput();
+	Rotation.oninput();
+	XAxis.oninput();
+	YAxis.oninput();
+	Recurse.value = 1;
+	Recurse.oninput(); 
+}
 
 window.onresize = canvas.ondblclick = clear = function clear() {
 	// define dimentions of drawable section
 	canvas.width  = W = document.body.clientWidth -16;
 	canvas.height = H = document.body.clientHeight - canvas.offsetTop -8;
-	H2=H/2;
-	W2=W/2;
+	recalc();
 	
 	// if you're clearing since uve started drawing
 	if (click.length) {
@@ -60,6 +88,29 @@ canvas.onmouseup = function(e) {
 	addClick(e.pageX - canvas.offsetLeft, e.pageY - canvas.offsetTop);
 }
 
+function drawClicks(ca) {
+	context.beginPath();
+	if (ca.length<3) context.moveTo(W/2,H/2);
+	for (var i = 0; i < ca.length; i++)
+		context.lineTo(ca[i][0], ca[i][1]);
+	if (ca.length<3) context.lineTo(W/2,H/2);
+	else context.lineTo(ca[0][0], ca[0][1]);
+	context.stroke();
+}
+
+function transformClick(ca){
+	var p0,p1;
+	for (var i = 0; i < ca.length; i++) {
+		p0 = ca[i][0];
+		p1 = ca[i][1];
+		ca[i] = [
+			p0*SC - p1*SS + xxSCySS,
+			p0*SS + p1*SC + yxSSySC
+		]
+	}
+ 
+}
+
 function redraw() {
 	context.clearRect(0, 0, W, H);
 	context.strokeStyle = "black";
@@ -67,15 +118,17 @@ function redraw() {
 	context.lineWidth = 2;
 	context.font = "32px sans-serif";
 	
-	if (click.length===0) context.strokeText('click here',W2,H2)
+	if (click.length===0) context.strokeText('click here',W/2,H/2)
 	
-	context.beginPath();
-	if (click.length<3) context.moveTo(W2,H2);
-	for (var i = 0; i < click.length; i++)
-		context.lineTo(click[i][0], click[i][1]);
-	if (click.length<3) context.lineTo(W2,H2);
-	else context.lineTo(click[0][0], click[0][1]);
-	context.stroke();
+	drawClicks(click);
+	
+	// my programmers intuition is telling me not to do complex math in redraw
+	// ... but i dunno when else to do it and not have to store 6000 numbers
+	clickdup = TwoLayerArrayCopy(click);
+	for (var i = 0; i < Recurse.value; i++) {
+		transformClick(clickdup);
+		drawClicks(clickdup);
+	}
 	
 	var x=W*XAxis.value/100,y=H*YAxis.value/100
 	context.beginPath();
@@ -93,4 +146,38 @@ function redraw() {
 	else if (Rotation.value<0) context.arc(x,y,10,Rotation.value/180*Math.PI,0);
 	context.stroke();
 }
+
+init();
 </script>
+<!--
+// creation of the transformation matrix from SCALE and ROTATION according to X,Y
+P = [p0],
+    [p1],
+    [1]
+// translate xy to origin
+T1 = [1,0,-x],
+     [0,1,-y],
+     [0,0,1] // if P is x,y TP should be 0,0
+T1P = [p0 + 0 - x],
+      [0 + p1 - y],
+      [1]
+// rotate and scale
+SC = S*cos(ø)
+SS = S*sin(ø)
+T2 = [SC,-SS,0]
+     [SS, SC,0]
+     [ 0,  0,1]
+T2T1 = [SC , -SS , -xSC+ySS]
+       [SS , SC , -xSS-ySC]
+       [0,0,1]
+// translate everything back to xy
+T3 = [1,0,x],
+     [0,1,y],
+     [0,0,1]
+T3T2T1 = [SC , -SS , x-xSC+ySS]
+         [SS , SC , y-xSS-ySC] // google confirms this matrix
+         [0,0,1]
+T3T2T1P = [p0*SC - p1*SS + x-x*SC+y*SS]
+          [p0*SS + p1*SC + y-xSS-ySC] 
+          [1]
+-->
