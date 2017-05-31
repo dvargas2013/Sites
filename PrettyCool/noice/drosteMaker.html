@@ -70,7 +70,7 @@ function init() {
 	Rotation.oninput();
 	XAxis.oninput();
 	YAxis.oninput();
-	Recurse.value = 1;
+	Recurse.value = 20;
 	Recurse.oninput(); 
 }
 
@@ -158,6 +158,23 @@ function redraw() {
 	if (Rotation.value>0) context.arc(x,y,10,0,Rotation.value/180*Math.PI);
 	else if (Rotation.value<0) context.arc(x,y,10,Rotation.value/180*Math.PI,0);
 	context.stroke();
+}
+
+canvas.tabIndex = 1000;
+// allows to be clicked
+canvas.onkeydown = function(e){
+switch (e.which) {
+		// values are string and + with strings dont work like youd hope
+		// but other math stuff casts the string like youd hope
+		case 37:// left
+			e.preventDefault(); XAxis.value-=1;XAxis.oninput(); break;
+		case 38:// up
+			e.preventDefault(); YAxis.value-=1;YAxis.oninput(); break;
+		case 39:// right
+			e.preventDefault(); XAxis.value-=-1;XAxis.oninput(); break;
+		case 40:// down
+			e.preventDefault(); YAxis.value-=-1;YAxis.oninput(); break;
+	}
 }
 
 init();
