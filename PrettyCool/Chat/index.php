@@ -59,16 +59,15 @@ request = function request(mess) {
 }
 submit = function submit() {
 	if (!blocking) {
-		var message = thecoolest.value;
 		data.innerHTML+="<div class='you'><p>"+thecoolest.value+"</p></div>";
 		data.scrollTop = data.scrollHeight;
 		thecoolest.value = "";
 		thecoolest.blur();
 		var abss="",s=(data.children.length>8)?data.children.length-8:0;
-		for (var d=s; d<data.children.length; d++) {
-			abss += data.children[d].textContent + " ";
+		for (var d=s; d<data.children.length; d++) { // the newly added div is contained in this
+			abss += data.children[d].textContent + "  ";
 		}
-		request(abss+" "+message);
+		request(abss);
 	} else {
 		tapped = true;
 	}
