@@ -1,32 +1,36 @@
 <?php
-function goodFileType($file) {
-	return substr_compare($file, '.html', -5) === 0 or (substr_compare($file, '.php', -4) === 0 and substr_compare($file, 'index.php', -9) !== 0) or substr_compare($file, '.swf', -4) === 0;
-	return false;
+@require "header.php";
+
+if (empty($_GET["q"])) {
+	
+	@require "indexgen.php";
+	ListFolder("PrettyCool");
+
+} else {
+	// HTA sends us ?q=[path] if it doesnt exist
+	$file = $_GET["q"];
+	// if its not there using root. Use PrettyCool as if it were root.
+	chdir("PrettyCool");
+	if (file_exists($file)) {
+		if (is_dir($file)) {
+			chdir($file);
+			if (file_exists("index.html")) {
+				@require "index.html";
+			} else if (file_exists("index.php")) {
+				@require "index.php";
+			}
+		} else {
+			@require $file;
+		}
+	} else {
+		if (file_exists($file.".html")) {
+			@require $file.".html";
+		} else if (file_exists($file.".php")) {
+			@require $file.".php";
+		}
+	}
+
 }
 
-function ListFolder($path) {
-    //using the opendir function
-    $dir_handle = @opendir($path) or die("Unable to open $path");
-    
-    //Leave only the lastest folder name
-    $dirname = end(explode("/", $path));
-    
-    //display the target folder.
-    //echo "<li><a>$dirname</a>";
-    while (false !== ($file = readdir($dir_handle))) {
-        if($file[0]!=".") {
-			if (is_dir($path."/".$file)) {
-				if (strpos($file, '.') == false)
-				echo "<ul><a href=".$file.">".$file."/</a></ul>";
-			} elseif (goodFileType($file)) {
-               echo "<ul><a href=".$file.">".$file."</a></ul>";
-            } 
-        }
-    }
-    //echo "</li>";
-    
-    //closing the directory
-    closedir($dir_handle);
-}
-ListFolder('.');
+@require "footer.php";
 ?>
