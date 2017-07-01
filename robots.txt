@@ -1,5 +1,6 @@
 User-Agent: *
 Disallow: /Games./
-
-User-Agent: *
 Disallow: /Server.Stuff/
+Disallow: /*.DS_Store$
+Disallow: /PrettyCool/ChainedTalker
+Disallow: /PrettyCool/deviantart/*/
