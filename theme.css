@@ -1,0 +1,4 @@
+body { margin: 0; }
+h1 { line-height: 2em; margin: 0; padding-left: 10px; }
+body div#main { padding: 8px; }
+iframe.bigframe {height: calc(100% - 50px - 3em); width: calc(100% - 20px - 1em);}
