@@ -1,0 +1,5 @@
+User-Agent: *
+Disallow: /Games./
+
+User-Agent: *
+Disallow: /Server.Stuff/
