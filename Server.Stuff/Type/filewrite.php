@@ -1,5 +1,5 @@
 <h2>File Writing PHP</h2>
-<form method="post" action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']);?>">  
+<form method="post" action="filewrite.php">  
   <input type="text" name="name" placeholder="Type Something Yay" style="margin:auto;width:100%;display:block"></input>
     <input type="submit" name="submit" value="Submit (or just press Enter)" style="margin:auto;display:block">
 	    <input type="submit" name="erase" value="Be a Jerk and Erase the File" style="position: absolute;right: 0;bottom: 0;opacity: .1;">
@@ -15,7 +15,7 @@ function validate_input($data) {
 $data="<p>".validate_input($_POST['name'])."</p>\n";
 
 $file = 'people.txt';
-
+chdir(dirname(__FILE__));
 if (empty($_POST['erase'])) {
 	file_put_contents($file, $data, FILE_APPEND);
 	$print=str_replace("<p></p>","",file_get_contents($file));

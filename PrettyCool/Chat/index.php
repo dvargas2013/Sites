@@ -54,7 +54,7 @@ request = function request(mess) {
 			},a);
 		}
 	};
-	req.open('GET',"display.php?name="+person+"&message="+mess,true);
+	req.open('GET',"display.php?raw=1&name="+person+"&message="+mess,true);
 	req.send();
 }
 submit = function submit() {

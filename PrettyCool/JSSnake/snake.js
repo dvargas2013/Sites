@@ -434,20 +434,22 @@ BinaryHeap.prototype = {
   }
 };
 
-var canvas, ctx, state = {},
+var framer, canvas, ctx, state = {},
 	frames, init, loop, mainboard;
 
 window.onresize = function () {
 	frames = 0;
-	canvas.height = document.body.clientHeight;
-	canvas.width = document.body.clientWidth;
+	canvas.height = framer.clientHeight;
+	canvas.width = framer.clientWidth;
 	mainboard = new BOARD(Math.floor(canvas.width / TILE.SIZE) - 1, Math.floor(canvas.height / TILE.SIZE) - 1);
 };
 
 init = function () {
+	framer=document.body;
 	canvas = document.createElement("canvas");
 	ctx = canvas.getContext("2d");
-	document.body.appendChild(canvas);
+	if (document.getElementById('main')) framer=document.getElementById('main');
+	framer.appendChild(canvas);
 	document.addEventListener("keyup", function (evt) {
 		state[evt.keyCode] = true;
 	});

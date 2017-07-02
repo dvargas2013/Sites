@@ -10,11 +10,15 @@ tumblrSound = function tumblrSound() {
 	if (this.clicked = !this.clicked) 
 		 this.style.borderWidth = "7px"
 	else this.style.borderWidth = ""
-	var audiosource = this.children[0];
-    if (audiosource === undefined) {
-    	this.innerHTML += '<audio loop="loop" id="' + this.data + '" autoplay="autoplay"><source src="http://a.tumblr.com/tumblr_' + this.data + 'o1.mp3" type="audio/mpeg" /><embed hidden="true" autostart="true" loop="loop" src="http://a.tumblr.com/tumblr_' + this.data +'o1.mp3" /></audio>';
+	
+    if (this.children[0] === undefined) {
+    	this.innerHTML += '<div><audio loop="loop" id="' + this.data + '" autoplay="autoplay"><source src="http://a.tumblr.com/tumblr_' + this.data + 'o1.mp3" type="audio/mpeg" /><embed hidden="true" autostart="true" loop="loop" src="http://a.tumblr.com/tumblr_' + this.data +'o1.mp3" /></audio></div>';
     	//this.analyser = getAnalyser(this.children[0]);
-    } else if (audiosource.paused) audiosource.play();
+		return;
+    }
+	
+	var audiosource = this.children[0].children[0];
+	if (audiosource.paused) audiosource.play();
     else audiosource.pause();
 }
 youtubeSound = function youtubeSound() {
@@ -23,7 +27,7 @@ youtubeSound = function youtubeSound() {
 	else this.style.borderWidth = ""
     var youtubeframe = this.children[0];
     if (youtubeframe === undefined) {
-        this.innerHTML += '<iframe id="' + this.data + '" src="' + youtubes.create(this.data) + '"></iframe>';
+        this.innerHTML += '<div><iframe id="' + this.data + '" src="' + youtubes.create(this.data) + '"></iframe><div>';
         //this.analyser = getAnalyser(this.children[0]);
         var daddy = this;
         document.getElementById(this.data).onload = function() {
@@ -44,10 +48,11 @@ youtubeSound = function youtubeSound() {
 // }
 // ctx = new (AudioContext || window.webkitAudioContext)();
 
+var framer = document.body;
 // META FOR MOVEMENT OF LINKS
 window.onresize = function() {
-   W = document.body.clientWidth -r-r;
-   H = document.body.clientHeight -r-r;
+   W = framer.clientWidth -r-r;
+   H = framer.clientHeight -r-r;
 }
 var hexDigits = ["0","1","2","3","4","5","6","7","8","9","a","b","c","d","e","f"]; 
 //Function to convert rgb color to hex format
@@ -71,10 +76,10 @@ move = function move(thiss) {
 	thiss.y = parseFloat(thiss.style.top);
 	var x = thiss.x += thiss.vx;
 	var y = thiss.y += thiss.vy;
-	if (x-r < 0) {thiss.x = 2*r-x;     thiss.vx = -thiss.vx;}
-    if (x+r > W) {thiss.x = 2*(W-r)-x; thiss.vx = -thiss.vx;}
-    if (y-r < 0) {thiss.y = 2*r-y;     thiss.vy = -thiss.vy;}
-    if (y+r > H) {thiss.y = 2*(H-r)-y; thiss.vy = -thiss.vy;}    
+	if (x < 0) {thiss.x = -x;     thiss.vx = -thiss.vx;}
+    if (x > W-.5*r) {thiss.x = 2*W-r-x; thiss.vx = -thiss.vx;}
+    if (y < framer.offsetTop-.5*r) {thiss.y = 2*(framer.offsetTop)-r-y;     thiss.vy = -thiss.vy;} 
+    if (y > H+framer.offsetTop-.5*r) {thiss.y = 2*(H+framer.offsetTop)-r-y; thiss.vy = -thiss.vy;}    
     thiss.style.top  = thiss.y;
 	thiss.style.left = thiss.x;
 }
@@ -118,8 +123,9 @@ collide = function collide(thiss,ball) {
 
 </script>
 <style>
-div * {display:none;}
-div { width: 50px; height: 50px; margin:15px; border: 1px grey dashed; cursor: pointer; display: inline-flex; position: absolute; border-radius:25px;}
+div.balls div {width: 40px; height: 40px; border-radius: 20px; background-color: black; margin:5px; pointer-events: none; }
+div.balls div * {display:none;}
+div.balls { width: 50px; height: 50px; margin:15px; border: 1px grey dashed; cursor: pointer; display: inline-flex; position: absolute; border-radius:25px;}
 </style>
 <script>
 // META FOR GENERATION OF SOUND LINKS
@@ -156,40 +162,4 @@ gens = [
 // 	}
 // 	requestAnimationFrame(renderFrame);
 // }
-</script>
-<body>
-<script>
-// SET W, H
-window.onresize();
-// CREATE THE SOUND LINKS PHYSICALLY
-for (var i = 0; i<gens.length; i++) {
-	var f;
-	       if (gens[i].domain === 'youtube') { f = youtubeSound;
-	} else if (gens[i].domain === 'tumblr') {  f = tumblrSound;
-	} else continue;
-	document.body.appendChild(gens[i].content = document.createElement('div'));
-	gens[i].content.onclick = f;
-	gens[i].content.data = gens[i].data;
-	var bb = Math.floor(Math.random()*16777215).toString(16);
-	while (bb.length < 6) { bb = '0' + bb; }
-	gens[i].content.style.background = '#'+bb// ['#ff0000','#00ff00','#0000ff'][Math.floor(Math.random() * 3)];
-	gens[i].content.style.top = Math.random() * H;
-	gens[i].content.style.left = Math.random() * W;
-	gens[i].content.vx = Math.random() * 6 - 3;
-    gens[i].content.vy = Math.random() * 6 - 3;
-    move(gens[i].content);
-}
-//ACTIVATE SOUND ANALYSIS
-//renderFrame();
-// ACTIVATE MOVEMENT
-f=function(){
-    for (var i=0; i<gens.length; i++) move(gens[i].content);
-    for (var i=0; i<gens.length; i++) {
-        for (var j=i+1; j<gens.length; j++) {
-            collide(gens[i].content,gens[j].content);
-        }
-    }
-    requestAnimationFrame(f);
-}
-f();
 </script>

@@ -1,18 +1,17 @@
 <style>
-	div {}
 	input {display:inline;}
-	p {display: inline-block; margin:0; width: 7em;}
+	div.input p {display: inline-block; margin:0; width: 7em;}
 </style>
 
-<div><input id="Scale"    type="range" min="-2"   max="2" step="0.1"><p></p></div>
-<div><input id="Rotation" type="range" min="-180" max="180" step="0.1"><p></p><input type="button" value="PLAY" onclick="toggle()"></div>
-<div><input id="XAxis"    type="range" min="0"    max="100" step="1"><p></p></div>
-<div><input id="YAxis"    type="range" min="0"    max="100" step="1"><p></p></div>
-<div><input id="Recurse"  type="range" min="1"    max="20"  step="1"><p></p></div>
+<div class="input"><input id="Scale"    type="range" min="-2"   max="2" step="0.1"><p></p></div>
+<div class="input"><input id="Rotation" type="range" min="-180" max="180" step="0.1"><p></p><input type="button" value="PLAY" onclick="toggle()"></div>
+<div class="input"><input id="XAxis"    type="range" min="0"    max="100" step="1"><p></p></div>
+<div class="input"><input id="YAxis"    type="range" min="0"    max="100" step="1"><p></p></div>
+<div class="input"><input id="Recurse"  type="range" min="1"    max="20"  step="1"><p></p></div>
 
 <canvas id="canvas" style="border:1px dotted;display:block">
 <script>
-var context = canvas.getContext("2d");
+var context = canvas.getContext("2d"), framer;
 var click=[],clickdup;
 var W,H,xaxisvalue,yaxisvalue,scalevalue;
 var SS,SC,xxSCySS,yxSSySC;
@@ -66,6 +65,11 @@ Rotation.oninput = XAxis.oninput = YAxis.oninput = Recurse.oninput = function() 
 	redraw();
 }
 function init() {
+	framer = document.body;
+	if (document.getElementById('main')) {
+		framer=document.getElementById('main');
+		framer.style.height="80%";
+	}
 	Scale.oninput();
 	Rotation.oninput();
 	XAxis.oninput();
@@ -76,8 +80,8 @@ function init() {
 
 window.onresize = canvas.ondblclick = clear = function clear() {
 	// define dimentions of drawable section
-	canvas.width  = W = document.body.clientWidth -16;
-	canvas.height = H = document.body.clientHeight - canvas.offsetTop -8;
+	canvas.width  = W = framer.clientWidth - 16;
+	canvas.height = H = framer.clientHeight - canvas.offsetTop + framer.offsetTop - 8;
 	recalc();
 	
 	// if you're clearing since uve started drawing
@@ -88,6 +92,7 @@ window.onresize = canvas.ondblclick = clear = function clear() {
 	
 	redraw();
 }
+init();
 clear();
 
 function addClick(x, y) {
