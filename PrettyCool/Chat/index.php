@@ -18,15 +18,14 @@ while (false !== ($file = readdir($dir_handle))) {
     }
 }
 closedir($dir_handle);
-?>
-<p>or</p>
-<form action="index.php" method="get">
-	<input type="text" name="name" value="" />
-	<input type="submit" value="parse new tumblererer" /></p>
-</form>
-<p>Warning: Generating a chat file takes a while</p>
 
-<?
+// <p>or</p>
+// <form action="index.php" method="get">
+// 	<input type="text" name="name" value="" />
+// 	<input type="submit" value="parse new tumblererer" /></p>
+// </form>
+// <p>Warning: Generating a chat file takes a while</p>
+
 } else {
 ?>
 <script>

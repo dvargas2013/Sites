@@ -1,7 +1,7 @@
 char = {
 	Name:{char:{Bell:"Bell U."}},
 	Species:"Unipegasysicicorn",
-	Color:"Pink",
+	Color:{colors:{Pink:"Pink"}},
 	ColorPlus: {colors:{Hair:"Purple",Tail:'Purple'}},
 	Gender:"Female",
 	Age:"Adult",

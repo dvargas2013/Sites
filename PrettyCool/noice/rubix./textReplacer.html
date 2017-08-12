@@ -1,0 +1,22 @@
+<style>
+	canvas {} /* make sure they align line by line with some css */
+</style>
+<p contenteditable oninput="display(this.innerText)"></p>
+<input type="button" onclick="window.open('edit.html')" value="Open Editor"/>
+<script>
+var Replaces = {},reader = new FileReader();
+Replaces = (localStorage?JSON.parse(localStorage.Replaces):{}) || {};
+reader.onload = function(){
+	var newplaces = JSON.parse(this.result);
+	// TODO input checking for Replaces
+	Replaces = newplaces;
+};
+// TODO parse replaces from longest key to shortest
+
+display = function display(text) {
+	// TODO make a canvas with variable width but 100x height
+	// newlines in the text make more canvases
+	// search through the text for places to draw stuff
+}
+</script>
+<input type="file" value="Open Saved File" onchange="reader.readAsText(this.files[0])"/>

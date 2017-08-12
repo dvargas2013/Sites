@@ -1,4 +1,7 @@
 /*globals document, window, setInterval*/
+	// TODO learn about hamiltonian paths in a grid and about solution rotation to minimize travel
+	// or find an algorithm that takes you from 1 end to food and then from food to tail
+	// can u just learn how to fken code already
 var TILE,
 	BOARD,
 	SNAKE,
@@ -217,6 +220,15 @@ BOARD.prototype.draw = function (ctx) {
 		}
 	}
 	this.get(this.snake.head().x, this.snake.head().y).setKind(TILE.SNAKE);
+
+	var ts2=TILE.SIZE/2
+	var s = this.snake.queue[0];
+	ctx.beginPath();
+	ctx.moveTo(s.x*TILE.SIZE+ts2,s.y*TILE.SIZE+ts2);
+	for (var s of this.snake.queue) {
+		ctx.lineTo(s.x*TILE.SIZE+ts2,s.y*TILE.SIZE+ts2);
+	}
+	ctx.stroke();
 };
 BOARD.prototype.sameas = function (b) {
 	if (b.food.x !== this.food.x || b.food.y !== this.food.y) return false;
@@ -551,7 +563,7 @@ STATE.prototype.coolmoves = function() {
 		if (oldmove === b) return 1;
 		return 0;
 	}).sort(function(a,b){ // amount of moves
-		return moves[a] - moves[b];
+		return -Math.abs(2-moves[a]) + Math.abs(2-moves[b]);
 	}).sort(function(a,b){ // min farthest from tail
 		return - maxdttail[a] + maxdttail[b];
 	}).sort(function(a,b){ // Shortest path to food

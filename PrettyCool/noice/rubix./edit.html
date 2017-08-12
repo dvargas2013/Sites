@@ -1,0 +1,158 @@
+<style>
+	div { display: inline-grid; }
+	canvas { border: 1px solid black; }
+	input { width: 102px; }
+</style>
+<input type="button" onclick="Output()" value="Save and Quit"/>
+<input type="button" onclick="AddCanvas()" value="Add Replacer"/>
+<script>
+document.title = "Not Connected To a Typer";
+if (window.opener!==null && window.opener.Replaces!==undefined){
+	var Replaces = window.opener.Replaces || {};
+	document.title = "Connected! Editor Open";
+} else {
+	window.close();
+}
+document.body.onselectstart = function(e){ e.preventDefault(); }
+
+
+var activeCanvas;
+CANVAS = function(Name,data) {
+	this.name = Name;
+	
+	this.canvas = document.createElement('canvas');
+	this.context = this.canvas.getContext("2d");
+	this.canvas.width=this.canvas.height="100";
+
+	this.canvas.dude = this;
+	this.canvas.ondblclick = function(){this.dude.clear()};
+	this.clear(data);
+	
+	this.canvas.onmousedown = startThisCanvas;
+}
+startThisCanvas = function(e){
+	this.dude.start(e.pageX - this.offsetLeft, e.pageY - this.offsetTop);
+}
+CANVAS.prototype.clear = function(data){
+	if (typeof data === typeof ''){
+		var O = JSON.parse(data)
+		this.clickX = O.clickX || new Array();
+		this.clickY = O.clickY || new Array();
+		this.clickD = O.clickD || new Array();
+	} else {
+		this.clickX = new Array();
+		this.clickY = new Array();
+		this.clickD = new Array();
+	}
+	this.paint = false;
+	this.redraw();
+}
+CANVAS.prototype.addClick = function(x, y, dragging) {
+	this.clickX.push(x);
+	this.clickY.push(y);
+	if (!dragging && this.clickX.length!=1)
+		this.clickD.push(this.clickX.length-1);
+	this.redraw();
+}
+CANVAS.prototype.redraw = function() {
+	this.context.clearRect(0, 0, 100, 100);
+	this.context.strokeStyle = "black";
+	this.context.lineJoin = "round";
+	this.context.lineWidth = 2;
+	var ind = 0;
+	for (var i = 0; i < this.clickX.length; i++) {
+		this.context.beginPath();
+		if (this.clickD[ind]!==i && i) {
+			this.context.moveTo(this.clickX[i - 1], this.clickY[i - 1]);
+		} else {
+			this.context.moveTo(this.clickX[i], this.clickY[i]);
+			if (this.clickD[ind]===i) ind++;
+		}
+		this.context.lineTo(this.clickX[i], this.clickY[i]);
+		this.context.closePath();
+		this.context.stroke();
+	}
+}
+CANVAS.prototype.start = function(x,y) {
+	if (activeCanvas && activeCanvas.paint) activeCanvas.stop();
+	this.paint = true;
+	activeCanvas = this;
+	this.addClick(x,y);
+}
+CANVAS.prototype.stop = function() {
+	this.paint = false;
+	if (this.name) Replaces[this.name] = this.stringify();
+}
+CANVAS.prototype.stringify = function(){
+	return JSON.stringify({
+		clickD: this.clickD,
+		clickX   : this.clickX,
+		clickY   : this.clickY
+	})
+}
+
+
+
+Output = function Output(){
+	var atag = document.createElement('a');
+	atag.href = 'data:text/javascript;charset=utf-8,' + encodeURIComponent(JSON.stringify(Replaces));
+	atag.target = '_blank';
+	atag.download = 'save.js';
+	document.body.appendChild(atag);
+	atag.click();
+	document.body.removeChild(atag);
+	localStorage.Replaces = JSON.stringify(Replaces);
+	window.close();
+}
+
+inputblur=function(){
+	var pname = this.previousElementSibling.dude.name;
+	if (this.value && this.value!==pname) {
+		for (var i in Replaces) {
+			if (this.value === i) {
+				this.value = null;
+				break;
+			}
+		}
+	}
+	if (this.value){
+		if (pname !== this.value) delete Replaces[pname];
+		Replaces[this.value] = this.previousElementSibling.dude.stringify();
+		this.previousElementSibling.dude.name = this.value;
+		return;
+	}
+	if (pname) this.value = pname;
+}
+AddCanvas = function AddCanvas(Name,data) {
+	var canvas = (new CANVAS(Name,data)).canvas;
+	var input = document.createElement('input');
+	input.placeholder="Text To Replace";
+	input.onblur = inputblur;
+	if (Name) input.value = Name;
+	var div = document.createElement('div');
+	document.body.appendChild(div).appendChild(input).parentElement.insertBefore(canvas,input);
+}
+
+
+
+document.body.onmouseup = function() {
+	if (activeCanvas && activeCanvas.paint) activeCanvas.stop();
+}; 
+document.body.onmousemove = function(e) {
+	if (activeCanvas && activeCanvas.paint) activeCanvas.addClick(e.pageX - activeCanvas.canvas.offsetLeft, e.pageY - activeCanvas.canvas.offsetTop, true);
+}
+
+
+
+getKeys = Object.keys || function(obj){
+	var keys = [];
+	for(var key in obj) keys.push(key);
+	return keys;
+}
+if (getKeys(Replaces).length === 0) {
+	AddCanvas();
+} else {
+	for (var i in Replaces) { AddCanvas(i,Replaces[i]); }
+}
+
+</script>
