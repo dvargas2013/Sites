@@ -1,7 +1,4 @@
 /*globals document, window, setInterval*/
-	// TODO learn about hamiltonian paths in a grid and about solution rotation to minimize travel
-	// or find an algorithm that takes you from 1 end to food and then from food to tail
-	// can u just learn how to fken code already
 var TILE,
 	BOARD,
 	SNAKE,
