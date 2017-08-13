@@ -82,7 +82,7 @@ SNAKE.LEFT = 0;
 SNAKE.UP = 1;
 SNAKE.RIGHT = 2;
 SNAKE.DOWN = 3;
-SNAKE.updatetime = 5;
+SNAKE.updatetime = 1;
 SNAKE.prototype.clone = function () {
 	var s = new SNAKE(this.direction);
 	s.queue = this.queue.slice();
@@ -462,28 +462,17 @@ init = function () {
 	ctx = canvas.getContext("2d");
 	if (document.getElementById('main')) framer=document.getElementById('main');
 	framer.appendChild(canvas);
-	document.addEventListener("keydown", function (evt) {
-		var d = evt.keyCode-37;
-		if (d<0 || d>3) return;
-		state[d] = true;
-		evt.preventDefault();
-	});
-
 	window.onresize();
-
 	loop();
 };
 paused=false;
 loop = function () {
 	frames++;
 	if (frames % SNAKE.updatetime === 0) {
-		if (!paused)
-			mainboard.updatesnake();
+		if (!paused) mainboard.updatesnake();
 		frames = 0;
 	}
-
 	mainboard.draw(ctx);
-
 	window.requestAnimationFrame(loop, canvas);
 };
 
@@ -498,12 +487,14 @@ STATE = function (board) {
 	this.board = board.clone();
 	
 	var me = this;
+	try {
 	this.clones = [0, 1, 2, 3].map(function (i) {
 		var b = me.board.clone();
 		b.snake.direction = i;
 		b.updatesnake();
 		return b;
 	});
+	} catch (e) { this.stop = true; return; }
 	this.moves = [0, 1, 2, 3].filter(function (i) {
 		// no illegal moves.
 		return me.clones[i].snake.direction !== SNAKE.PAUSE;
@@ -548,6 +539,7 @@ STATE.prototype.coolmoves = function() {
 		if (oldmove === a) return -1;
 		if (oldmove === b) return 1;
 		return 0;
+	// TODO sometimes gets stuck trying to follow tail when it could take alternate path and still return to tail
 	}).sort(function(a,b){ // amount of moves
 		return moves[a] - moves[b];
 	}).sort(function(a,b){ // min farthest from tail
@@ -561,6 +553,7 @@ STATE.prototype.coolmoves = function() {
 
 AI = function () {
  	var s = new STATE(mainboard.clone());
+	if (s.stop) return;
 	if (s.moves.length === 1) {
 		mainboard.snake.direction = s.moves[0];
 	} else if (s.moves.length > 1) {
@@ -574,7 +567,4 @@ AI = function () {
 	}
 };
 
-// setInterval(AI, 50);
-// Replace the setInterval and uncomment the updatetime for SPEED
-setInterval(AI, 20);
-SNAKE.updatetime = 2;
+setInterval(AI, SNAKE.updatetime*10);
