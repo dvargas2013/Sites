@@ -7,7 +7,7 @@ function xymult(a,b) { return {x:(a.x||0)*(b.x||0),y:(a.y||0)*(b.y||0)}; }
 // taxi dist
 function xydist(a,b){ return Math.abs((a.x||0)-(b.x||0)) + Math.abs((a.y||0)-(b.y||0)); }
 
-var BOARD,SNAKE, blocksize = 20, updatetime = 5;
+var BOARD,SNAKE, blocksize = 20, updatetime = 1;
 function draw(ctx,x,y,color){
 	ctx.fillStyle = "#000";
 	ctx.fillRect(x * blocksize, y * blocksize, blocksize, blocksize);
@@ -74,6 +74,14 @@ SNAKE.prototype.update= function() {
 	}
 }
 
+function* xymatrix(mx,my) {
+	var xy={};
+	for (xy.x=0; xy.x<mx; xy.x++) {
+		for (xy.y=0;xy.y<my; xy.y++){
+			yield {x:xy.x,y:xy.y};
+		}
+	}
+}
 function last(array){ return array[array.length-1]; }
 function makePathMatrix(mx,my){
 	// at least 1 need be even
@@ -94,12 +102,8 @@ function makePathMatrix(mx,my){
 	
 	// create a matrix with node
 	var matrix = [];
-	for (var x=0; x<mx; x++) {
-		matrix.push([]);
-		for (var y=0;y<my; y++){
-			matrix[x].push(0);
-		}
-	}
+	for (var x=0; x<mx; x++) matrix.push([]);
+	for (var xy of xymatrix(mx,my)) matrix[xy.x].push(0);
 	
 	var p = last(l);
 	for (var n of l) {
@@ -125,12 +129,8 @@ BOARD = function (mx, my) {
 		}
 	}
 	this.matrix = [];
-	for (var x=0; x<this.mx; x++) {
-		this.matrix.push([]);
-		for (var y=0;y<this.my; y++){
-			this.matrix[x].push(0);
-		}
-	}
+	for (var x=0; x<this.mx; x++) this.matrix.push([]);
+	for (var xy of xymatrix(this.mx,this.my)) this.matrix[xy.x].push(0);
 	this.pathmatrix = makePathMatrix(this.mx,this.my);
 	this.snake = new SNAKE(SNAKE.PAUSE, randint(this.mx), randint(this.my), this);
 	this.randFood();
@@ -138,41 +138,31 @@ BOARD = function (mx, my) {
 };
 BOARD.prototype.randFood=function(){
 	var ES = [];
-	for (var x=0; x<this.mx; x++) {
-		for (var y=0;y<this.my; y++){
-			var e = {x:x,y:y};
-			if (this.matrix[x][y] == 0 && (!this.food || !xysame(this.food,e)))
-				ES.push(e);
-		}
+	for (var xy of xymatrix(this.mx,this.my)){
+		if (this.matrix[xy.x][xy.y] == 0 && (!this.food || !xysame(this.food,xy)))
+			ES.push(xy);
 	}
 	this.food = choice(ES);
 }
 BOARD.prototype.draw=function(ctx){
-	for (var x = 0; x < this.mx; x++) {
-		for (var y = 0; y < this.my; y++) {
-			if (this.matrix[x][y]) draw(ctx,x,y,"#0ff");
-			else draw(ctx,x,y,"#fff");
-		}
+	for (var xy of xymatrix(this.mx,this.my)) {
+		if (this.matrix[xy.x][xy.y]) draw(ctx,xy.x,xy.y,"#0ff");
+		else draw(ctx,xy.x,xy.y,"#fff");
 	}
 	
 	var ts2=blocksize/2;
 	// Draw the Path
-	for (var x = 0; x < this.mx; x++) {
-		for (var y = 0; y < this.my; y++) {
-			var s = this.pathmatrix[x][y];
-			ctx.strokeStyle = "#bbb";
-			ctx.beginPath();
-			ctx.moveTo(s.x*blocksize+ts2,s.y*blocksize+ts2);
-			ctx.lineTo(s.n.x*blocksize+ts2,s.n.y*blocksize+ts2);
-			ctx.stroke();
-		}
+	for (var xy of xymatrix(this.mx,this.my)) {
+		var s = this.pathmatrix[xy.x][xy.y];
+		ctx.strokeStyle = "#bbb";
+		ctx.beginPath();
+		ctx.moveTo(  s.x*blocksize+ts2,  s.y*blocksize+ts2);
+		ctx.lineTo(s.n.x*blocksize+ts2,s.n.y*blocksize+ts2);
+		ctx.stroke();
 	}
 	
 	draw(ctx,this.food.x,this.food.y,"#f00");
 	this.snake.draw(ctx);
-}
-BOARD.prototype.update=function(){
-	this.snake.update();
 }
 
 var frames, canvas, ctx, mainboard, state=[0,0,0,0], stateAdd=0, stateRem=0, paused=false, snakedir=[SNAKE.LEFT,SNAKE.UP,SNAKE.RIGHT,SNAKE.DOWN];
@@ -181,16 +171,26 @@ window.onresize = function () {
 	canvas.height = framer.clientHeight;
 	canvas.width = framer.clientWidth;
 	mainboard = new BOARD(Math.floor(canvas.width / blocksize) - 1, Math.floor(canvas.height / blocksize) - 1);
+	canvas.width = mainboard.mx * blocksize;
+	canvas.height = mainboard.my * blocksize;
 };
+function clickToXY(e){ return {x:Math.floor((e.pageX-canvas.offsetLeft)/blocksize-.5),y:Math.floor((e.pageY-canvas.offsetTop)/blocksize-.5)}; }
+function inArray(array,item,comp) {
+	for (var i of array) {
+		if (comp(item,i))
+			return true;
+	}
+	return false;
+}
+var p1, ps;
 var init = function () {
 	framer=document.body;
 	canvas = document.createElement("canvas");
-	canvas.onmousedown = function(e) { p1 = clickToXY(e); }
-	canvas.onmouseup = function(e) {
-		p2 = clickToXY(e);
-		if (p1) rot(mainboard,p1,p2);
-		p1 = false;
+	canvas.onclick = function(e) {
+		p1 = clickToXY(e);
+		_rot(mainboard,p1);
 	}
+	canvas.onmousemove = function(e) { p1 = clickToXY(e); }
 	
 	ctx = canvas.getContext("2d");
 	if (document.getElementById('main')) framer=document.getElementById('main');
@@ -221,88 +221,90 @@ var loop = function () {
 			state[stateRem] = false;
 			stateRem = (stateRem+1)%4;
 		}
-		mainboard.update();
+		mainboard.snake.update();
 		if (paused) mainboard.snake.direction = SNAKE.PAUSE;
 		frames = 0;
 	}
 	mainboard.draw(ctx);
+	
+	if (p1) {
+		ctx.globalAlpha = .1;
+		ctx.fillStyle = "#000";
+		var bs2 = blocksize*2;
+		ctx.fillRect(p1.x * blocksize, p1.y * blocksize, bs2, bs2);
+		ctx.fillStyle = "#f0f";
+		ctx.fillRect(p1.x * blocksize+1, p1.y * blocksize+1, bs2-2, bs2-2);
+		ctx.globalAlpha = 1;
+	}
+	
+	if (ps) {
+		ctx.globalAlpha = .1;
+		var ts2 = blocksize/2;
+		var ts3 = 3*blocksize/4;
+		for (var p of ps) {
+			ctx.fillStyle = "#000";
+			ctx.fillRect(p.x * blocksize+ts3, p.y * blocksize+ts3, ts2, ts2);
+			ctx.fillStyle = "#ff0";
+			ctx.fillRect(p.x * blocksize+ts3+1, p.y * blocksize+ts3+1, ts2-2, ts2-2);
+		}
+		ctx.globalAlpha = 1;
+	}
+	
 	window.requestAnimationFrame(loop, canvas);
 };
 
-// onmousedown and onmouseup
-var p1;
-function clickToXY(e){ return {x:Math.floor((e.pageX-canvas.offsetLeft)/blocksize),y:Math.floor((e.pageY-canvas.offsetTop)/blocksize)}; }
-
 var cycle8 = [{x:1,y:1},{x:-1,y:-1},{x:1,y:0},{x:0,y:1},{x:1,y:-1},{x:-1,y:1},{x:-1,y:0},{x:0,y:-1}];
-function check(n1,n2) { return (diag(n1.n,n2.n)?{n:"n",p:"p"}:0) || (diag(n1.p,n2.p)?{n:"p",p:"n"}:0); }
+function check(n1,n2) { return (diag(n1,n2,"n")?{n:"n",p:"p"}:0) || (diag(n1,n2,"p")?{n:"p",p:"n"}:0); }
 function getNP(board,xy){ var X = board.pathmatrix[xy.x]; return X?X[xy.y]:undefined; }
-function diag(d1,d2) {
-	return xydist(d1,d2) === 2 && d1.x!==d2.x && d1.y!==d2.y;
+function diag(n1,n2,n) {
+	var d1 = n1[n], d2 = n2[n];
+	return xydist(d1,d2) === 2 && d1.x!==d2.x && d1.y!==d2.y && Math.min(d1.x,d2.x) == n1.x && Math.max(d1.y,d2.y) == n2.y;
 }
-function rot(board,n1,n2) {
-	if (!n1 || !n2 || !diag(n1,n2)) return false;
-	n1 = getNP(board,n1);;
-	n2 = getNP(board,n2);
-	// find the matching diagonals
-	var d1=n1.n,d2=n2.n,n='n',p='p';
-	if (!diag(d1,d2))
-		var d1=n1.p,d2=n2.p,n='p',p='n';
-	if (!diag(d1,d2)) return false;
-	// assert n1[n] === d1 && n2[n] === d2;
-	n1[n]=d2; n2[n]=d1; // flip assertion
-	// assert d1[p] === n1 && d1[p] === n2;
-	d1[p]=n2; d2[p]=n1; // flip assertion
-
-	// There are now 2 cycles
-	// Things in the same cycle will be marked with same number
+function cycleGen(board,n) {
 	cycle = [];
-	for (var x=0; x<board.mx; x++) {
-		cycle.push([]);
-		for (var y=0;y<board.my; y++){
-			cycle[x].push(0);
-		}
-	}
-	var s = n1;
+	for (var x=0; x<board.mx; x++) cycle.push([]);
+	for (var xy of xymatrix(board.mx,board.my)) cycle[xy.x].push(0);
+	
+	var s = n;
 	do {
 		cycle[s.x][s.y] = 1;
 		s = s.n;
-	} while (s !== n1);
-	// TODO Using the original rot and the cycle table
-	// find 2x2 sections that match one of the following [[00][11]] [[10][10]] [[01][01]] [[11][00]] 
-	// basically leave the conditions but change q (or change n1q,n2q directly)
-	// This is good but not perfect
-	// It is better to start in that area and traverse the boundary looking for the pattern match
-	// clockwise = (-y,x)
-	// counter = (y,-x)
-	var m = xyminus(n2,n1);
-	// for the 8 directions
-	// TODO figure out a way to traverse a boundary
-	// youre given a binary heat mat
-	// and a initial 4x4 with half in half out
-	// you need to return the closest 4x4 with halfin halfout condition met
-	for (var q of cycle8){
-		q = xymult(q,m);
-		// get new diagonals
-		var n1q = getNP(board,xyplus(q,n1)),
-			n2q = getNP(board,xyplus(q,n2));
-		// make sure it's in bounds
-		if (!(n1q&&n2q)) continue;
-		// should be 2 for each cycle
-		if (cycle[n1q.x][n1q.y] + cycle[n2q.x][n2q.y] + cycle[n1q.x][n2q.y] + cycle[n2q.x][n1q.y] !== 2) continue;
-		var np = check(n1q,n2q);
-		// checks that diagonals lead to each other
-		if (!np) continue;
-		var d1q = n1q[np.n], d2q = n2q[np.n];
-		
-		n1q[np.n]=d2q; n2q[np.n]=d1q;
-		d1q[np.p]=n2q; d2q[np.p]=n1q;
-
-		return true;
-	}
+	} while (s !== n);
 	
-	// reverse the original rot if failed
-	n1[n]=d1; n2[n]=d2;
-	d1[p]=n1; d2[p]=n2;
+	return cycle;
+}
+function _rot(board,n) {
+	if (ps && !inArray(ps,n,xysame)) return;
+	if (!n) return false;
+	var n1 = getNP(board,n);
+	if (!n1) return false;
+	var n2 = getNP(board,{x:n.x+1,y:n.y+1});
+	if (!n2) return false; // it was in max side edge
+	
+	var np = check(n1,n2); // get next or prev and check if they're diagonals
+	if (!np) return false;
+	var d1 = n1[np.n], d2 = n2[np.n];
+
+	n1[np.n]=d2; n2[np.n]=d1;
+	d1[np.p]=n2; d2[np.p]=n1;
+	
+	if (!ps) {
+		var cycle = cycleGen(board,(Math.random()<.5)?n1:n2);
+		ps = [];
+		
+		// TODO figure out a way to traverse a boundary instead of looking through all of the array
+		for (var xy of xymatrix(board.mx-1,board.my-1)) {
+			var n1 = getNP(board,xy),
+				n2 = getNP(board,{x:xy.x+1,y:xy.y+1});
+			if (cycle[n1.x][n1.y] + cycle[n2.x][n2.y] + cycle[n1.x][n2.y] + cycle[n2.x][n1.y] !== 2) continue;
+			
+			var np = check(n1,n2);
+			if (!np) continue;
+			// var d1 = n1[np.n], d2 = n2[np.n];
+			
+			ps.push(xy);
+		}
+	} else { ps = undefined; }
 }
 
 // TODO use rot to make shorter paths to food
