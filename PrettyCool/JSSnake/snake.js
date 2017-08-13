@@ -462,8 +462,11 @@ init = function () {
 	ctx = canvas.getContext("2d");
 	if (document.getElementById('main')) framer=document.getElementById('main');
 	framer.appendChild(canvas);
-	document.addEventListener("keyup", function (evt) {
-		state[evt.keyCode] = true;
+	document.addEventListener("keydown", function (evt) {
+		var d = evt.keyCode-37;
+		if (d<0 || d>3) return;
+		state[d] = true;
+		evt.preventDefault();
 	});
 
 	window.onresize();
@@ -473,26 +476,26 @@ init = function () {
 paused=false;
 loop = function () {
 	frames++;
-
-	if (state[37 + SNAKE.LEFT]) {
-		state[37 + SNAKE.LEFT] = false;
-		mainboard.snake.direction = SNAKE.LEFT;
-	}
-	if (state[37 + SNAKE.UP]) {
-		state[37 + SNAKE.UP] = false;
-		mainboard.snake.direction = SNAKE.UP;
-	}
-	if (state[37 + SNAKE.RIGHT]) {
-		state[37 + SNAKE.RIGHT] = false;
-		mainboard.snake.direction = SNAKE.RIGHT;
-	}
-	if (state[37 + SNAKE.DOWN]) {
-		state[37 + SNAKE.DOWN] = false;
-		mainboard.snake.direction = SNAKE.DOWN;
-	}
-
 	if (frames % SNAKE.updatetime === 0) {
-		if (!paused) mainboard.updatesnake();
+		if (!paused){
+			if (state[SNAKE.LEFT]) {
+				state[SNAKE.LEFT] = false;
+				mainboard.snake.direction = SNAKE.LEFT;
+			}
+			if (state[SNAKE.UP]) {
+				state[SNAKE.UP] = false;
+				mainboard.snake.direction = SNAKE.UP;
+			}
+			if (state[SNAKE.RIGHT]) {
+				state[SNAKE.RIGHT] = false;
+				mainboard.snake.direction = SNAKE.RIGHT;
+			}
+			if (state[SNAKE.DOWN]) {
+				state[SNAKE.DOWN] = false;
+				mainboard.snake.direction = SNAKE.DOWN;
+			}
+			mainboard.updatesnake();
+		}
 		frames = 0;
 	}
 
@@ -563,7 +566,7 @@ STATE.prototype.coolmoves = function() {
 		if (oldmove === b) return 1;
 		return 0;
 	}).sort(function(a,b){ // amount of moves
-		return -Math.abs(2-moves[a]) + Math.abs(2-moves[b]);
+		return moves[a] - moves[b];
 	}).sort(function(a,b){ // min farthest from tail
 		return - maxdttail[a] + maxdttail[b];
 	}).sort(function(a,b){ // Shortest path to food
@@ -588,4 +591,7 @@ AI = function () {
 	}
 };
 
-setInterval(AI, 50);
+// setInterval(AI, 50);
+// Replace the setInterval and uncomment the updatetime for SPEED
+setInterval(AI, 20);
+SNAKE.updatetime = 2;
