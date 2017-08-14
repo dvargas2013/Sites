@@ -7,7 +7,7 @@ function xymult(a,b) { return {x:(a.x||0)*(b.x||0),y:(a.y||0)*(b.y||0)}; }
 // taxi dist
 function xydist(a,b){ return Math.abs((a.x||0)-(b.x||0)) + Math.abs((a.y||0)-(b.y||0)); }
 
-var BOARD,SNAKE, blocksize = 20, updatetime = 1;
+var BOARD,SNAKE, blocksize = 20, updatetime = 2.5;
 function draw(ctx,x,y,color){
 	ctx.fillStyle = "#000";
 	ctx.fillRect(x * blocksize, y * blocksize, blocksize, blocksize);
@@ -36,7 +36,6 @@ SNAKE.LEFT = {x:-1};
 SNAKE.UP = {y:-1};
 SNAKE.RIGHT = {x:1};
 SNAKE.DOWN = {y:1};
-SNAKE.updatetime = 5;
 SNAKE.prototype.push = function (x, y) {
 	var X = this.board.matrix[x]
 	if (!X || y<0 || y>=X.length) return;
@@ -195,26 +194,10 @@ var init = function () {
 	ctx = canvas.getContext("2d");
 	if (document.getElementById('main')) framer=document.getElementById('main');
 	framer.appendChild(canvas);
-	document.addEventListener("keydown", function (evt) {
-		if (forceai>0) return ai=1;
-		var l = evt.keyCode - 37;
-		if (l<0 || l>3) {
-			ai = 1;
-			return;
-		}
-		var d = snakedir[l];
-		for (var s of state) { if (s == d) return; }  // dont add if its already in the queue
-		state[stateAdd] = d;
-		stateAdd = (stateAdd+1)%4;
-		evt.preventDefault();
-		ai = 0;
-	});
 	window.onresize();
 	loop();
 	setInterval(AI,updatetime*10)
 };
-// TODO remove movement other than AI
-// TODO dont update if ps
 var loop = function () {
 	frames++;
 	if (frames % updatetime === 0) {
@@ -223,12 +206,11 @@ var loop = function () {
 			state[stateRem] = false;
 			stateRem = (stateRem+1)%4;
 		}
-		mainboard.snake.update();
+		if (!ps) mainboard.snake.update();
 		if (paused) mainboard.snake.direction = SNAKE.PAUSE;
 		frames = 0;
 	}
 	mainboard.draw(ctx);
-	
 	if (p1) {
 		ctx.globalAlpha = .1;
 		ctx.fillStyle = "#000";
@@ -238,7 +220,6 @@ var loop = function () {
 		ctx.fillRect(p1.x * blocksize+1, p1.y * blocksize+1, bs2-2, bs2-2);
 		ctx.globalAlpha = 1;
 	}
-	
 	if (ps) {
 		ctx.globalAlpha = .1;
 		var ts2 = blocksize/2;
@@ -255,7 +236,6 @@ var loop = function () {
 	window.requestAnimationFrame(loop, canvas);
 };
 
-var cycle8 = [{x:1,y:1},{x:-1,y:-1},{x:1,y:0},{x:0,y:1},{x:1,y:-1},{x:-1,y:1},{x:-1,y:0},{x:0,y:-1}];
 function check(n1,n2) { return (diag(n1,n2,"n")?{n:"n",p:"p"}:0) || (diag(n1,n2,"p")?{n:"p",p:"n"}:0); }
 function getNP(board,xy){ var X = board.pathmatrix[xy.x]; return X?X[xy.y]:undefined; }
 function diag(n1,n2,n) {
@@ -309,12 +289,11 @@ function _rot(board,n) {
 	} else { ps = undefined; }
 }
 
-var AI, ai = 0, forceai = 0;
+var AI, ai = 1;
 // negative force deactivates ai
 // positive force keeps it on forever
 // 0 is neutral - arrow clicks turn off - other keys turn on
 AI = function () {
-	if (forceai<0) ai = 0;
 	if (!ai) return;
 	h = mainboard.snake.queue[0];
 	var n = mainboard.pathmatrix[h.x][h.y].n;

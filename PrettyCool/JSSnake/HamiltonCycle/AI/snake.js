@@ -1,4 +1,5 @@
 function randint(l) { return Math.floor(Math.random()*l); }
+	
 function choice(array){ return array[Math.floor(Math.random()*array.length)]; }
 function xysame(a,b){ return (a.x||0)==(b.x||0) && (a.y||0)==(b.y||0); }
 function xyminus(a,b){ return {x:(a.x||0)-(b.x||0),y:(a.y||0)-(b.y||0)}; }
@@ -7,7 +8,7 @@ function xymult(a,b) { return {x:(a.x||0)*(b.x||0),y:(a.y||0)*(b.y||0)}; }
 // taxi dist
 function xydist(a,b){ return Math.abs((a.x||0)-(b.x||0)) + Math.abs((a.y||0)-(b.y||0)); }
 
-var BOARD,SNAKE, blocksize = 20, updatetime = 1;
+var BOARD,SNAKE, blocksize = 20, updatetime = 2.5;
 function draw(ctx,x,y,color){
 	ctx.fillStyle = "#000";
 	ctx.fillRect(x * blocksize, y * blocksize, blocksize, blocksize);
@@ -36,7 +37,6 @@ SNAKE.LEFT = {x:-1};
 SNAKE.UP = {y:-1};
 SNAKE.RIGHT = {x:1};
 SNAKE.DOWN = {y:1};
-SNAKE.updatetime = 5;
 SNAKE.prototype.push = function (x, y) {
 	var X = this.board.matrix[x]
 	if (!X || y<0 || y>=X.length) return;
@@ -61,7 +61,7 @@ SNAKE.prototype.update= function() {
 			return;
 		}
 		
-		if (xysame(this.board.food,xy)) {
+		if (this.board.food && xysame(this.board.food,xy)) {
 			this.board.score += 1;
 			this.board.randFood();
 		} else if (this.board.matrix[xy.x][xy.y]) {
@@ -117,9 +117,10 @@ function makePathMatrix(mx,my){
 	
 	return matrix;
 }
+var showpath = false;
 BOARD = function (mx, my) {
-	this.mx = mx || 4;
-	this.my = my || 4;
+	this.mx = Math.min(20,mx || 4);
+	this.my = Math.min(10,my || 4);
 	if (this.mx%2==1 && this.my%2==1){
 		// If they're both odd there is no hamiltonian cycle
 		if (this.mx>this.my){
@@ -150,8 +151,9 @@ BOARD.prototype.draw=function(ctx){
 		else draw(ctx,xy.x,xy.y,"#fff");
 	}
 	
-	var ts2=blocksize/2;
 	// Draw the Path
+	if (showpath){
+	var ts2=blocksize/2;
 	for (var xy of xymatrix(this.mx,this.my)) {
 		var s = this.pathmatrix[xy.x][xy.y];
 		ctx.strokeStyle = "#bbb";
@@ -159,13 +161,28 @@ BOARD.prototype.draw=function(ctx){
 		ctx.moveTo(  s.x*blocksize+ts2,  s.y*blocksize+ts2);
 		ctx.lineTo(s.n.x*blocksize+ts2,s.n.y*blocksize+ts2);
 		ctx.stroke();
-	}
+	}}
 	
-	draw(ctx,this.food.x,this.food.y,"#f00");
+	if (this.food) draw(ctx,this.food.x,this.food.y,"#f00");
 	this.snake.draw(ctx);
 }
+BOARD.prototype.snakeFoodDist=function(){
+	if (!this.food) return Infinity;
+	var f = this.food,
+		g = this.pathmatrix[f.x][f.y], 
+		h = this.snake.queue[0],
+		n = this.pathmatrix[h.x][h.y],
+		s = 0,
+		ns = n;
+	do {
+		s += 1;
+		ns = ns.n;
+		if (ns === n) return Infinity;
+	} while (ns !== g);
+	return s;
+}
 
-var frames, canvas, ctx, mainboard, state=[0,0,0,0], stateAdd=0, stateRem=0, paused=false, snakedir=[SNAKE.LEFT,SNAKE.UP,SNAKE.RIGHT,SNAKE.DOWN];
+var frames, canvas, ctx, mainboard, paused=false, snakedir=[SNAKE.LEFT,SNAKE.UP,SNAKE.RIGHT,SNAKE.DOWN];
 window.onresize = function () {
 	frames = 0;
 	canvas.height = framer.clientHeight;
@@ -174,7 +191,6 @@ window.onresize = function () {
 	canvas.width = mainboard.mx * blocksize;
 	canvas.height = mainboard.my * blocksize;
 };
-function clickToXY(e){ return {x:Math.floor((e.pageX-canvas.offsetLeft)/blocksize-.5),y:Math.floor((e.pageY-canvas.offsetTop)/blocksize-.5)}; }
 function inArray(array,item,comp) {
 	for (var i of array) {
 		if (comp(item,i))
@@ -182,33 +198,14 @@ function inArray(array,item,comp) {
 	}
 	return false;
 }
-var p1, ps;
+var ps; // when a rot is midway and needs another rot to keep condition. These are the rots around cycle
 var init = function () {
 	framer=document.body;
 	canvas = document.createElement("canvas");
-	canvas.onclick = function(e) {
-		p1 = clickToXY(e);
-		_rot(mainboard,p1);
-	}
-	canvas.onmousemove = function(e) { p1 = clickToXY(e); }
-	
+	canvas.onclick = function() { showpath = !showpath; }
 	ctx = canvas.getContext("2d");
 	if (document.getElementById('main')) framer=document.getElementById('main');
 	framer.appendChild(canvas);
-	document.addEventListener("keydown", function (evt) {
-		if (forceai>0) return ai=1;
-		var l = evt.keyCode - 37;
-		if (l<0 || l>3) {
-			ai = 1;
-			return;
-		}
-		var d = snakedir[l];
-		for (var s of state) { if (s == d) return; }  // dont add if its already in the queue
-		state[stateAdd] = d;
-		stateAdd = (stateAdd+1)%4;
-		evt.preventDefault();
-		ai = 0;
-	});
 	window.onresize();
 	loop();
 	setInterval(AI,updatetime*10)
@@ -216,40 +213,11 @@ var init = function () {
 var loop = function () {
 	frames++;
 	if (frames % updatetime === 0) {
-		if (state[stateRem]) {
-			mainboard.snake.direction = state[stateRem];
-			state[stateRem] = false;
-			stateRem = (stateRem+1)%4;
-		}
-		mainboard.snake.update();
+		if (!(ps || paused)) mainboard.snake.update();
 		if (paused) mainboard.snake.direction = SNAKE.PAUSE;
 		frames = 0;
 	}
 	mainboard.draw(ctx);
-	
-	if (p1) {
-		ctx.globalAlpha = .1;
-		ctx.fillStyle = "#000";
-		var bs2 = blocksize*2;
-		ctx.fillRect(p1.x * blocksize, p1.y * blocksize, bs2, bs2);
-		ctx.fillStyle = "#f0f";
-		ctx.fillRect(p1.x * blocksize+1, p1.y * blocksize+1, bs2-2, bs2-2);
-		ctx.globalAlpha = 1;
-	}
-	
-	if (ps) {
-		ctx.globalAlpha = .1;
-		var ts2 = blocksize/2;
-		var ts3 = 3*blocksize/4;
-		for (var p of ps) {
-			ctx.fillStyle = "#000";
-			ctx.fillRect(p.x * blocksize+ts3, p.y * blocksize+ts3, ts2, ts2);
-			ctx.fillStyle = "#ff0";
-			ctx.fillRect(p.x * blocksize+ts3+1, p.y * blocksize+ts3+1, ts2-2, ts2-2);
-		}
-		ctx.globalAlpha = 1;
-	}
-	
 	window.requestAnimationFrame(loop, canvas);
 };
 
@@ -278,12 +246,16 @@ function _rot(board,n) {
 	if (!n) return false;
 	var n1 = getNP(board,n);
 	if (!n1) return false;
+	if (board.matrix[n1.x][n1.y]) return false;
 	var n2 = getNP(board,{x:n.x+1,y:n.y+1});
 	if (!n2) return false; // it was in max side edge
+	if (board.matrix[n2.x][n2.y]) return false;
 	
 	var np = check(n1,n2); // get next or prev and check if they're diagonals
 	if (!np) return false;
 	var d1 = n1[np.n], d2 = n2[np.n];
+	if (board.matrix[d1.x][d1.y]) return false;
+	if (board.matrix[d2.x][d2.y]) return false;
 
 	n1[np.n]=d2; n2[np.n]=d1;
 	d1[np.p]=n2; d2[np.p]=n1;
@@ -297,25 +269,54 @@ function _rot(board,n) {
 			var n1 = getNP(board,xy),
 				n2 = getNP(board,{x:xy.x+1,y:xy.y+1});
 			if (cycle[n1.x][n1.y] + cycle[n2.x][n2.y] + cycle[n1.x][n2.y] + cycle[n2.x][n1.y] !== 2) continue;
-			
 			var np = check(n1,n2);
 			if (!np) continue;
-			// var d1 = n1[np.n], d2 = n2[np.n];
-			
 			ps.push(xy);
 		}
 	} else { ps = undefined; }
+	return true;
 }
 
-// TODO use rot to make shorter paths to food
+// TODO I'm searching WAAAAY too many things that i dont need to
+function _minrot(board) {
+	var mrot = {d:Infinity};
+	for (pxy of ps) {
+		if (!_rot(board,pxy)) continue; // didnt make a move
+		var d = board.snakeFoodDist();
+		_rot(board,pxy) // undo loop rot
+		if (mrot.d < d) continue;
+		mrot.n = pxy;
+		mrot.d = d;
+	}
+	return mrot;
+}
+function minrot(board) {
+	if (ps) return;
+	var mrot = {d:Infinity};
+	for (var xy of xymatrix(board.mx-1,board.my-1)) {
+		if (!_rot(board,xy)) continue; // didnt make a move
+		var minps = _minrot(board); // find the min ps move
+		_rot(board,xy); // undo the original rot
+		if (mrot.d < minps.d) continue;
+		mrot = {n:xy,n2:minps.n,d:minps.d};
+	}
+	if (!(mrot.d === Infinity || xysame(mrot.n,mrot.n2))){
+		_rot(board,mrot.n);
+		_rot(board,mrot.n2);
+		return mrot;
+	}
+}
 
-var AI, ai = 0, forceai = 0;
-// negative force deactivates ai
-// positive force keeps it on forever
-// 0 is neutral - arrow clicks turn off - other keys turn on
+var AI, ai = 1, minded = 0;
 AI = function () {
-	if (forceai<0) ai = 0;
-	if (!ai) return;
+	if (!ai || paused) return;
+	
+	if (mainboard.food && minded--<0) {
+		while (minrot(mainboard));
+		minded = mainboard.snakeFoodDist()
+		if (minded>10) minded/=2;
+	}
+	
 	h = mainboard.snake.queue[0];
 	var n = mainboard.pathmatrix[h.x][h.y].n;
 	var m = xyminus(n,h);
