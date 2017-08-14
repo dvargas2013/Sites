@@ -251,10 +251,23 @@ window.onresize = function () {
 var init = function () {
 	framer=document.body;
 	canvas = document.createElement("canvas");
+	canvas.onmousemove = function(evt) {
+		var h = mainboard.snake.queue[0],
+			x=evt.offsetX/TILE.SIZE,
+			y=evt.offsetY/TILE.SIZE,
+			sd1 = (y-h.y > x-h.x)?0:1, // above or below
+			sd2 = (y-h.y > h.x-x)?0:1,
+			l = 2*(!sd2) + (sd2?sd1:!sd1); // figure out which triangle quadrant you clicked on
+		
+		if (l<0 || l>3) return;
+		var d = SNAKE.dirs[l];
+		for (var s of state) { if (s == d) return; }  // dont add if its already in the queue
+		state[stateAdd] = d;
+		stateAdd = (stateAdd+1)%4;
+	}
 	ctx = canvas.getContext("2d");
 	if (document.getElementById('main')) framer=document.getElementById('main');
 	framer.appendChild(canvas);
-	// TODO onclick movement
 	document.addEventListener("keydown", function (evt) {
 		var l = evt.keyCode - 37;
 		if (l<0 || l>3) return;
