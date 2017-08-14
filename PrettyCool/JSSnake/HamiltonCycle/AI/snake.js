@@ -119,8 +119,8 @@ function makePathMatrix(mx,my){
 }
 var showpath = false;
 BOARD = function (mx, my) {
-	this.mx = Math.min(20,mx || 4);
-	this.my = Math.min(10,my || 4);
+	this.mx = Math.min(20,Math.max(4,mx || 3));
+	this.my = Math.min(10,Math.max(4,my || 3));
 	if (this.mx%2==1 && this.my%2==1){
 		// If they're both odd there is no hamiltonian cycle
 		if (this.mx>this.my){
