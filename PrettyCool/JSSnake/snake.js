@@ -122,7 +122,7 @@ SNAKE.prototype.distFrom = function (x, y) {
 
 BOARD = function (mx, my) {
 	this.mx = Math.max(3,mx || 2);
-	this.my = Math.min(3,my || 2);
+	this.my = Math.max(3,my || 2);
 	this.matrix = [];
 	for (var x = 0; x < this.mx; x++) {
 		this.matrix.push([]);
