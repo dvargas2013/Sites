@@ -20,4 +20,21 @@ foreach ($sect as $index => $string) {
 }
 ?>
 </H1>
+<?php
+if (!empty($description_data)) {
+	echo "<div id='description'>";
+	echo $description_data;
+	echo "</div>";
+}
+else if (!empty($description_file) && file_exists($description_file)) {
+	echo "<div id='description'>";
+	include $description_file;
+	echo "</div>";
+}
+else if (!empty("desc.htm") && file_exists("desc.htm")) {
+	echo "<div id='description'>";
+	include "desc.htm";
+	echo "</div>";
+}
+?>
 <div id="main">

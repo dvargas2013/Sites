@@ -5,13 +5,13 @@ function getHttp(name) {
 }
 
 function putOn(lis) {
-	var div = document.createElement("div"),
-		img,
-		a,
-		i,
-		item;
+	var div = document.createElement("div"), img, a, i, item;
+	div.classList.add('boundy');
+	
 	for (item = lis[i = 0]; i < lis.length; item = lis[i += 1]) {
 		a = document.createElement("a");
+		a.classList.add('dALink');
+		
 		a.href = getHttp(item.name);
 
 		img = document.createElement("img");
@@ -32,32 +32,36 @@ function run() {
 		document.querySelector('link[rel="icon"]').href = YOU.src;
 
 		temp = putOn(followed);
-		document.body.appendChild(temp);
+		addTo.appendChild(temp);
 		temp.insertBefore(document.createElement("h2"), temp.children[0]).textContent = "People " + YOU.name + " Watches: " + followed.length;
 
 		temp = putOn(mutuals);
-		document.body.appendChild(temp);
+		addTo.appendChild(temp);
 		temp.insertBefore(document.createElement("h2"), temp.children[0]).textContent = "People With Mutual Watchage: " + mutuals.length;
 
 		temp = putOn(watchers);
-		document.body.appendChild(temp);
+		addTo.appendChild(temp);
 		temp.insertBefore(document.createElement("h2"), temp.children[0]).textContent = "People Who Watch " + YOU.name + ": " + watchers.length;
 	}
 	
 	document.head.appendChild(fileref);
 }
 
+var addTo;
 window.onload = function() {
-	document.body.innerHTML = "";
+	addTo = document.getElementById('main');
+	if (!addTo) addTo = document.body;
+	addTo.innerHTML = "";
 	if (window.location.hash.substr(1)!="") {
 		run();
-	} else { 
+	} else {
 		for (var i=0; i<mains.length; i++) {
 			var a = document.createElement("a");
 			a.setAttribute('onclick','callPage("'+mains[i]+'")');
-			document.body.appendChild(a).innerHTML = mains[i]+"<br>";
+			addTo.appendChild(a).innerHTML = mains[i]+"<br>";
 			a.href = "#"+mains[i];
 		}
+		
 	}
 }
 window.onpopstate = window.onload;

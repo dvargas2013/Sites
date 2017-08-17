@@ -8,11 +8,17 @@ li {display:inline;}
 #MMAPPED li:hover {cursor:hand;}
 .editable { height: 25%; }
 </style>
+<div id="description">
+<p>Move the 2nd Line around to change what letters map to.<br>If you have localStorage enabled (which is it by default) it will remember the code you set up in it.</p>
+<p>Examples:
+<br><a href="#OPQRSTUVWXYZNMABCDEFGHIJKL" onclick="mmapped='OPQRSTUVWXYZNMABCDEFGHIJKL';init();">half and half</a>: A code I made as a child that maps vowels to each other and consonants to each other.
+<br><a href="#OPQRSTUVWXYZNMABCDEFGHIJKL" onclick="mmapped='YZXWUVTSORQPNMILKJHGEFDCAB';init();">crosc</a>: A code I made as a child that maps vowels to each other and consonants to each other. (its inverse is itself)
+<br><a href="#ZYXWVUTSRQPONMLKJIHGFEDCBA" onclick="mmapped='ZYXWVUTSRQPONMLKJIHGFEDCBA';init();">reversed</a>: reverses all letters (its inverse is also itself)</p>
+</div>
 <ul class="top" id="LETTERS"></ul>
 <ul class="top" id="MMAPPED"></ul>
 <div class="editable" id="Words" contenteditable onkeyup="code(this.innerText,mmapped,Code)" onblur="if (this.innerText==='') this.innerText='Type WORDS Here'">Type WORDS Here</div>
 <div class="editable" id="Code" contenteditable onkeyup="code(this.innerText,_letters,Words)" onblur="if (this.innerText==='') this.innerText='Type CODE Here'">Type CODE Here</div>
-<input style="bottom:0px;right:0px;position:absolute;"type="button" value='reset mapped memory' onclick="localStorage.removeItem('mappingmapp');location.reload();"></input>
 <script>
 letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
 mmapped = location.hash.substring(1).toUpperCase() || localStorage.getItem('mappingmapp') || 'OPQRSTUVWXYZNMABCDEFGHIJKL';
@@ -47,12 +53,15 @@ read = function read() {
 $('.top').mouseleave(read);
 
 // initialize
-LETTERS.innerHTML = ''
-MMAPPED.innerHTML = ''
-for (var i=0;i<letters.length;i++) {
-	LETTERS.innerHTML += '<li>'+letters[i]+'</li>';
-	MMAPPED.innerHTML += '<li>'+mmapped[i]+'</li>';
-	_letters[mmapped.charCodeAt(i)-numA] = letters[i];
+init = function init() {
+	LETTERS.innerHTML = ''
+	MMAPPED.innerHTML = ''
+	for (var i=0;i<letters.length;i++) {
+		LETTERS.innerHTML += '<li>'+letters[i]+'</li>';
+		MMAPPED.innerHTML += '<li>'+mmapped[i]+'</li>';
+		_letters[mmapped.charCodeAt(i)-numA] = letters[i];
+	}
+	$( "#MMAPPED" ).sortable().disableSelection();
 }
-$( "#MMAPPED" ).sortable().disableSelection();
+init();
 </script>
