@@ -7,8 +7,7 @@ adif = function adif(a0,a1,EE,EEE){ if (!a0.includes('/')) { if (EE[a0]) { if (t
 shuf = function shuf(p) { var i = p.length, r, item; while (0 !== i) { r = Math.floor(Math.random() * i); i -= 1; item = p[i]; p[i] = p[r]; p[r] = item; }}
 pick = function pick(p) { return p[Math.floor(p.length*Math.random())]; }
 function createLanguage() {
-var L = `
-Insha - How are you
+var L = `Insha - How are you
 Insha - What are you
 Rar uklar - Do you
 Shest - Does it matter
