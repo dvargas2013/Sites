@@ -1,0 +1,79 @@
+<title>Molendish</title>
+<style>
+div { height: 25%; }
+</style>
+<div id="Words" contenteditable onkeyup="fromEnglish(this.innerText,Code)" onblur="if (this.innerText==='') this.innerText='Type WORDS Here'">Type WORDS Here</div>
+<div id="Code" contenteditable onkeyup="toEnglish(this.innerText,Words)" onblur="if (this.innerText==='') this.innerText='Type CODE Here'">Type CODE Here</div>
+<script>
+fromEnglish = function fromEnglish(text,to) {
+	text = text.toLowerCase();
+	var store = "";
+	text.split(/\s/).forEach(function(w){
+		store += (fE[w] || w) + " ";
+	});
+	to.innerText = store;
+}
+toEnglish = function toEnglish(text,to) {
+	text = text.toLowerCase();
+	var store = "";
+	text.split(/\s/).forEach(function(w){
+		store += (tE[w] || w) + " ";
+	});
+	to.innerText = store;
+}
+
+function createLanguage() {
+var L = `Aberige-se - god
+at - see
+ata - seen
+Bluvlen - Bluuven
+Cupquicia - sweet cupcake
+dada - like
+Drourkun - Dragon
+enda - have
+endoke - smallest
+eta - saw
+ha - the
+Hesh - yes
+hik - choke
+Insha - How are you?
+Insha uuk - How are you doing/what are you doing?
+Khaar - inside
+Linvala - ocean
+nada - calm down
+nodo - was/were
+noheh - theirs
+nok - they
+nokeh - them
+Orru - no
+Papah - daddy
+Rar uklar dada _ - Do you like _?
+Shest - Does it matter?
+tanada - fuck
+tanano - fucked
+ti - we/us
+tii - will
+tiya - am
+toh/ik - I/me
+Tova - mommy
+uk - do
+ukki - did
+ukku - does
+uklar - you/your
+Undorneto - dick
+uuk - doing
+va - is/are
+vonke - ever
+wondada - love`.toLowerCase().split('\n');
+	L = L.map(function(a){ return a.split(" - "); });
+	fE = {};
+	tE = {};
+	L.forEach(function(a){
+		if (!a[0].includes('/')) tE[a[0]] = a[1];
+		else a[0].split('/').forEach(function(b){ tE[b] = a[1]; });
+		if (!a[1].includes('/')) fE[a[1]] = a[0];
+		else a[1].split('/').forEach(function(b){ fE[b] = a[0]; });
+	});
+}
+createLanguage();
+</script>
