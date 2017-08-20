@@ -2,8 +2,10 @@
 <div id="Word" contenteditable onkeyup="tt(this.innerText,fE,ffE,Code)" onblur="if (this.innerText==='') this.innerText='Type WORDS Here'">Type WORDS Here</div>
 <div id="Code" contenteditable onkeyup="tt(this.innerText,tE,ttE,Word)" onblur="if (this.innerText==='') this.innerText='Type MOLENDISH Here'">Type MOLENDISH Here</div>
 <script>
-tt = function tt(text,EE,EEE,to) { text = text.toLowerCase(); EEE.forEach(function(a){ text = text.replace(a[0],a[1]); }); to.innerText = text.split(/\s/).map(function(w){ return EE[w] || w; }).join(' '); }
-adif = function adif(a0,a1,EE,EEE){ if (!a0.includes('/')) { EE[a0] = a1; if (a0.includes(' ')) EEE.push([RegExp(a0,'g'),a1]); } else { a0.split('/').forEach(function(b){ EE[b] = a1; if (b.includes(' ')) EEE.push([RegExp(b,'g'),a1]); }); } }
+tt = function tt(text,EE,EEE,to) { shuf(EEE); text = text.toLowerCase(); EEE.forEach(function(a){ text = text.replace(a[0],a[1]); }); to.innerText = text.split(/\s/).map(function(w){ if (!EE[w]) return w; if (typeof EE[w] === "string") return EE[w]; return pick(EE[w]); }).join(' '); }
+adif = function adif(a0,a1,EE,EEE){ if (!a0.includes('/')) { if (EE[a0]) { if (typeof EE[a0] === "string") EE[a0]=[EE[a0],a1]; else EE[a0].push(a1); } else EE[a0] = a1; if (a0.includes(' ')) EEE.push([RegExp(a0,'g'),a1]); } else { a0.split('/').forEach(function(b){ if (EE[b]) { if (typeof EE[b] === "string") EE[b]=[EE[b],a1]; else EE[b].push(a1); } else EE[b] = a1; if (b.includes(' ')) EEE.push([RegExp(b,'g'),a1]); }); } }
+shuf = function shuf(p) { var i = p.length, r, item; while (0 !== i) { r = Math.floor(Math.random() * i); i -= 1; item = p[i]; p[i] = p[r]; p[r] = item; }}
+pick = function pick(p) { return p[Math.floor(p.length*Math.random())]; }
 function createLanguage() {
 var L = `Aberige-se - god
 at - see
@@ -23,6 +25,11 @@ Khaar - inside
 Linvala - ocean
 nada - calm down
 nodo - was/were
+uklar nodo - you were
+toh nodo - i was
+ik nodo - i was
+nok nodo - they were
+ti nodo - we were
 noheh - theirs
 nok - they
 nokeh - them
@@ -32,21 +39,29 @@ Rar uklar - Do you
 Shest - Does it matter
 tanada - fuck
 tanano - fucked
-teffa - hello/hi/hey
+teffa - hello
+teffa - hi
+teffa - hey
 ti - we/us
 tii - will
 tiya - am
-toh/ik - I/me
+toh - I/me
+ik - I/me
 Tova - mommy
 uk - do
+toh enda - i have
+ik tiya - i am
+toh tiya - i am
 ukki - did
 ukku - does
 uklar - you/your
+uklar va - you are
 Undorneto - dick
 uuk - doing
 va - is/are
 vonke - ever
-werna - goodbye/bye
+werna - goodbye
+werna - bye
 wondada - love`.toLowerCase().split('\n'); L = L.map(function(a){ return a.split(" - "); }); fE = {}; ffE = []; tE = {}; ttE = []; L.forEach(function(a){ adif(a[0],a[1],tE,ttE); adif(a[1],a[0],fE,ffE); }); }
 createLanguage();
 </script>
