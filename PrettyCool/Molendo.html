@@ -7,61 +7,78 @@ adif = function adif(a0,a1,EE,EEE){ if (!a0.includes('/')) { if (EE[a0]) { if (t
 shuf = function shuf(p) { var i = p.length, r, item; while (0 !== i) { r = Math.floor(Math.random() * i); i -= 1; item = p[i]; p[i] = p[r]; p[r] = item; }}
 pick = function pick(p) { return p[Math.floor(p.length*Math.random())]; }
 function createLanguage() {
-var L = `Aberige-se - god
-at - see
-ata - seen
+var L = `
+Insha - How are you
+Insha - What are you
+Rar uklar - Do you
+Shest - Does it matter
+Aberige-se - god
 Bluvlen - Bluuven
 Cupquicia - sweet cupcake
-dada - like
 Drourkun - Dragon
-enda - have
-endoke - smallest
-eta - saw
-ha - the
-Hesh - yes
-hik - choke
-Insha - How are you/what are you
-Khaar - inside
+Fii - chocolate
+Freen - feather
+Freena - feathers
+Khaar - Inside
 Linvala - ocean
+Papah - daddy
+Pran - oats
+Theya - cheese
+Tova - mommy
+Traere - boredom
+Undorneto - dick
+Vuden - book/books
+Vudenata - Bookcase
+Vudenata - bookshelf
+toh - I/me/my
+ik - I/me/my
+ti - we/us
+uklar - you/your
+nok - they
+nokeh - them
+noheh - theirs
+vonke - ever
+endoke - smallest
+ha - the
+ve - on
+te - off
+wel - some
+Hesh - yes
+Orru - no
+Teffa - hello
+Teffa - hi
+Teffa - hey
+Werna - goodbye
+Werna - bye
+dada - like
+enda - have
+toh enda - i have
+hik - choke
 nada - calm down
+ponten - want
+tanada - fuck
+tanano - fucked
+trear - bore
+treare - bored
+wondada - love
+at - see
+eta - saw
+ata - seen
+uk - do
+uuk - doing
+ukki - did
+ukku - does
+tiya - am
+ik tiya - i am
+toh tiya - i am
+va - is/are
+uklar va - you are
 nodo - was/were
-uklar nodo - you were
+tii- will
+unklar nodo - you were
 toh nodo - i was
 ik nodo - i was
 nok nodo - they were
-ti nodo - we were
-noheh - theirs
-nok - they
-nokeh - them
-Orru - no
-Papah - daddy
-Rar uklar - Do you
-Shest - Does it matter
-tanada - fuck
-tanano - fucked
-teffa - hello
-teffa - hi
-teffa - hey
-ti - we/us
-tii - will
-tiya - am
-toh - I/me
-ik - I/me
-Tova - mommy
-uk - do
-toh enda - i have
-ik tiya - i am
-toh tiya - i am
-ukki - did
-ukku - does
-uklar - you/your
-uklar va - you are
-Undorneto - dick
-uuk - doing
-va - is/are
-vonke - ever
-werna - goodbye
-werna - bye
-wondada - love`.toLowerCase().split('\n'); L = L.map(function(a){ return a.split(" - "); }); fE = {}; ffE = []; tE = {}; ttE = []; L.forEach(function(a){ adif(a[0],a[1],tE,ttE); adif(a[1],a[0],fE,ffE); }); }
+ti nodo - we were`.toLowerCase().split('\n'); L = L.map(function(a){ return a.split(" - "); }); fE = {}; ffE = []; tE = {}; ttE = []; L.forEach(function(a){ adif(a[0],a[1],tE,ttE); adif(a[1],a[0],fE,ffE); }); }
 createLanguage();
 </script>
