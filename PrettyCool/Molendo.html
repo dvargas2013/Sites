@@ -2,15 +2,72 @@
 <div id="Word" contenteditable onkeyup="tt(this.innerText,fE,ffE,Code)" onblur="if (this.innerText==='') this.innerText='Type WORDS Here'">Type WORDS Here</div>
 <div id="Code" contenteditable onkeyup="tt(this.innerText,tE,ttE,Word)" onblur="if (this.innerText==='') this.innerText='Type MOLENDISH Here'">Type MOLENDISH Here</div>
 <script>
-tt = function tt(text,EE,EEE,to) { shuf(EEE); text = text.toLowerCase(); EEE.forEach(function(a){ text = text.replace(a[0],a[1]); }); to.innerText = text.split(/\s/).map(function(w){ if (!EE[w]) return w; if (typeof EE[w] === "string") return EE[w]; return pick(EE[w]); }).join(' '); }
-adif = function adif(a0,a1,EE,EEE){ if (!a0.includes('/')) { if (EE[a0]) { if (typeof EE[a0] === "string") EE[a0]=[EE[a0],a1]; else EE[a0].push(a1); } else EE[a0] = a1; if (a0.includes(' ')) EEE.push([RegExp(a0,'g'),a1]); } else { a0.split('/').forEach(function(b){ if (EE[b]) { if (typeof EE[b] === "string") EE[b]=[EE[b],a1]; else EE[b].push(a1); } else EE[b] = a1; if (b.includes(' ')) EEE.push([RegExp(b,'g'),a1]); }); } }
+/*
+	translates text using translation machines EE and EEE.
+	EE is a hashlike with string -> string or string -> array
+	EEE is an arraylike with pairs of (regexs,replace)
+	to.innerText is where we are storing the output
+*/
+tt = function tt(text,EE,EEE,to) {
+	shuf(EEE);
+	text = text.toLowerCase();
+	EEE.forEach(function(a){ text = text.replace(a[0],a[1]); });
+	to.innerText = text.split(/\s/).map(function(w){
+		if (!EE[w]) return w;
+		if (typeof EE[w] === "string") return EE[w];
+		return pick(EE[w]);
+	}).join(' ');
+}
+adif = function adif(a0,a1,EE,EEE){
+	a0.split('/').forEach(function(b){
+		if (EE[b]) {
+			if (typeof EE[b] === "string") EE[b]=new Set([EE[b],a1]);
+			else EE[b].add(a1);
+		} else EE[b] = a1;
+		if (b.includes(' ')) EEE.push([RegExp("\b"+b+"\b",'g'),a1]);
+	});
+}
 shuf = function shuf(p) { var i = p.length, r, item; while (0 !== i) { r = Math.floor(Math.random() * i); i -= 1; item = p[i]; p[i] = p[r]; p[r] = item; }}
 pick = function pick(p) { return p[Math.floor(p.length*Math.random())]; }
+fE = {}; ffE = []; tE = {}; ttE = [];
+function turn(a){
+	switch (a.length) {
+	case 1:
+		var a = a[0];
+		// * is similar to 3 signifying to add a S for the he/she version
+		if (a.endsWith('*')) {
+			a = a.slice(0,-1);
+			return { a:a, b:a+"s", c:a };
+		}
+		// 1 - all pronouns use the same word
+		return {a:a,b:a,c:a};
+	case 2:
+		var c=a[1],a=a[0];
+		// 2 - toh/ik/he/she and uklar/nok/ti
+		return {a:a,b:a,c:c};
+	case 3:
+		var b=a[1],c=a[2],a=a[0];
+		// 3 note: if the last one is blank use the 1st one
+		if (!c) c = a;
+		// 3 note: if the second one is blank use the last one
+		if (!b) b = c;
+		// 3 - toh/ik and he/she and uklar/nok/ti
+		return {a:a,b:b,c:c};
+	default: return false;
+	}
+}
+function ador(p0,p1,a0,a1) {
+	adif(p0+' '+a0,p1+' '+a1,tE,ttE);
+	adif(p1+' '+a1,p0+' '+a0,fE,ffE);
+	adif(a0,a1,tE,ttE);
+	adif(a1,a0,fE,ffE);
+}
 function createLanguage() {
-var L = `Insha - How are you
+`Insha - How are you
 Insha - What are you
 Rar uklar - Do you
 Shest - Does it matter
+
 Aberige-se - god
 Bluvlen - Bluuven
 Cupquicia - sweet cupcake
@@ -26,22 +83,30 @@ Theya - cheese
 Tova - mommy
 Traere - boredom
 Undorneto - dick
-Vuden - book/books
+Vuden - book
+Vuden - books
 Vudenata - Bookcase
 Vudenata - bookshelf
+Quenter - human
+Quenterrs - humans
+Feeh - person
+Feehe - people
+
 toh - I/me/my
 ik - I/me/my
-ti - we/us
+ti - we/us/our
 uklar - you/your
 nok - they
 nokeh - them
 noheh - theirs
+
 vonke - ever
 endoke - smallest
 ha - the
 ve - on
 te - off
 wel - some
+
 Hesh - yes
 Orru - no
 Teffa - hello
@@ -49,35 +114,73 @@ Teffa - hi
 Teffa - hey
 Werna - goodbye
 Werna - bye
-dada - like
-enda - have
-toh enda - i have
-hik - choke
-nada - calm down
-ponten - want
-tanada - fuck
-tanano - fucked
-trear - bore
+
+sazu - trying
 treare - bored
-wondada - love
+ata - seen
+uuk - doing
+
+tou - to
+`.toLowerCase().split('\n').map(function(a){ return a.split(" - "); }).forEach(function(a){
+	if (!(a[0] && a[1])) return;
+	adif(a[0],a[1],tE,ttE); adif(a[1],a[0],fE,ffE);
+});
+
+// Verbs. For tracking subjective pronouns
+`saz - try/tries/
+sazi - tried
+dada - like*
+enda - have/has/
+hik - choke*
+nada - calm down/calms down/
+ponten - want*
+tanada - fuck*
+tanano - fucked
+trear - bore*
+wondada - love*
 at - see
 eta - saw
-ata - seen
-uk - do
-uuk - doing
+uk/ukku/ - do/does/
 ukki - did
-ukku - does
-tiya - am
-ik tiya - i am
-toh tiya - i am
-va - is/are
-uklar va - you are
+tii - will
 nodo - was/were
-tii- will
-unklar nodo - you were
-toh nodo - i was
-ik nodo - i was
-nok nodo - they were
-ti nodo - we were`.toLowerCase().split('\n'); L = L.map(function(a){ return a.split(" - "); }); fE = {}; ffE = []; tE = {}; ttE = []; L.forEach(function(a){ adif(a[0],a[1],tE,ttE); adif(a[1],a[0],fE,ffE); }); }
+tiya//va - am/is/are
+`.toLowerCase().split('\n').map(function(a){ return a.split(" - "); }).forEach(function(a){
+	if (!(a[0] && a[1])) return;
+	a[0] = turn(a[0].split("/"));
+	a[1] = turn(a[1].split("/"));
+	if (!(a[0] && a[1])) return;
+	
+	ador('toh','i',a[0].a,a[1].a);
+	ador('ik','i',a[0].a,a[1].a);
+	
+	adif('he '+a[1].b,'nok '+a[0].b,fE,ffE);
+	adif('she '+a[1].b,'nok '+a[0].b,fE,ffE);
+	adif(a[0].b,a[1].b,tE,ttE);
+	adif(a[1].b,a[0].b,fE,ffE);
+	
+	ador('uklar','you',a[0].c,a[1].c);
+	ador('nok','they',a[0].c,a[1].c);
+	ador('ti','we',a[0].c,a[1].c);
+});
+
+// Only from English to Molendish
+`he - nok
+she - nok
+`.toLowerCase().split('\n').map(function(a){ return a.split(" - "); }).forEach(function(a){
+	if (!(a[0] && a[1])) return;
+	adif(a[0],a[1],fE,ffE);
+});
+var tk = function(a,EE) {
+	if (a.includes(' ')) return delete EE[a];
+	if (typeof EE[a] === "string") return;
+	EE[a] = Array.from(EE[a]);
+	if (EE[a].length == 0) delete EE[a];
+	if (EE[a].length == 1) EE[a] = EE[a][0];
+}
+for (a in fE) tk(a,fE);
+for (a in tE) tk(a,tE);
+
+}
 createLanguage();
 </script>
