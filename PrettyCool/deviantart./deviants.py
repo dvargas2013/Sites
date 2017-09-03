@@ -37,7 +37,7 @@ site='http://'+urName+'.deviantart.com/modals/{}/?offset=%s'
 def getWatchers():
     i=0
     saved = set()
-    while True:
+    while True: #TODO dA changed format . maybe it's time i use the api ...
         s = waitForSite(site.format('watchers')%i).split('<span class="username-with-symbol')[1:]
         for line in s:
             sub = 'href="http://'
