@@ -1,0 +1,44 @@
+<script>
+reset = function reset() {
+	var string = input.value.toUpperCase(),
+		upperString = string.toLowerCase(),
+		stringlist = [""],
+		stringMap = function(v){ return v+string.charAt(i); },
+		upperStringMap = function(v){ return v+upperString.charAt(i); },
+		stringtemp;
+	for (var i=0; i < string.length; i++) {
+		stringtemp = stringlist.map(stringMap);
+		if (string[i] !== upperString[i])
+			stringtemp = stringtemp.concat(stringlist.map(upperStringMap));
+		stringlist = stringtemp;
+	}
+	
+	results.innerHTML = "";
+	stringlist.forEach(addToResults);
+}
+
+addToResults = function addToResults(string) {
+	results.appendChild(makeDiv(string));
+}
+makeDiv = function(s) {
+	var div = document.createElement("div");
+	var hx = "#"+hexify(s);
+	div.innerHTML = "<p>"+ s + " -> " + hx + "</p>";
+	div.style.backgroundColor = hx;
+	return div;
+}
+char0hex = function(i){ return i.charCodeAt(0).toString(16); };
+hexify = function(s){ return s.split('').map(char0hex).join(''); };
+</script>
+<div id="description">Type in a 3-Letter String and get a Set of Options of HexValues that Decode to that String</div>
+<input id='input' onkeyup="if (event.which===13) reset();" maxlength="3"></input>
+<input type="Submit" onclick="reset()"></input>
+<div id="results"></div>
+<style>
+	p { background-color: white;}
+	#results div, #results p {display: inline-flex; padding: 1em;}
+</style>
+<script>
+input = document.getElementById('input');
+results 
+</script>
