@@ -23,11 +23,27 @@ addToResults = function addToResults(string) {
 makeDiv = function(s) {
 	var div = document.createElement("div");
 	if (directencoding.checked)
-		var hx = "#"+hexify(s);
+		var hx = hexify(s);
 	if (base62encoding.checked)
-		var hx = "#"+encode(s);
+		var hx = encode(s);
+	
+	// acceptable values are rgb = 3, rgba = 4, rrggbb = 6, rrggbbaa = 8;
+	var color = hx.substr(0,8); // max 8
+	if (FixErrorsButton.checked) {
+		if (color.length === 7) color = color.substr(0,6);
+		if (color.length === 5) color = color.substr(0,4);
+	}
+	
+	if (!OpacityButton.checked) {
+		if (color.length === 8) color = color.substr(0,6);
+		if (color.length === 4) color = color.substr(0,3);
+	}
+	
+	hx = "#" + hx;
+	color = "#" + color;
+	
 	div.innerHTML = "<p>"+ s + " -> " + hx + "</p>";
-	div.style.backgroundColor = hx;
+	div.style.backgroundColor = color;
 	return div;
 }
 char0hex = function(i){ return i.charCodeAt(0).toString(16); };
@@ -74,6 +90,8 @@ encode = function(base62String) {
 <br>Seriously though. I recommend a 4-Letter Word on Base62 Mode. If you only have a 3-Letter Word, add a 0 at the end or something.
 <br>Note: If the hex has 6 characters, it's RGB; 8 characters is RGBA. I think 4 character hex colors mean something but I forget.</div>
 <input id='input' onkeyup="encoding(); if (event.which===13) reset();" maxlength="6"></input>
+<input id="OpacityButton" type="checkbox" checked><label for="OpacityButton">Allow Opacity</label>
+<input id="FixErrorsButton" type="checkbox"><label for="FixErrorsButton">Autofix Errors</label>
   <div>
 <script>
 	function encoding() {
