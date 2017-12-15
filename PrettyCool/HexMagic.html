@@ -69,7 +69,10 @@ encode = function(base62String) {
 	return num.toString(16);
 };
 </script>
-<div id="description">Type in a 3-Letter or 4-Letter String and get a Set of Options of HexValues that Decode to that String. <br>Direct encoding works best with 3 Letter Strings and Base62 encoding works best for 4 Letter Strings. But you can do Whatever.</div>
+<div id="description">Type in a 3-Letter or 4-Letter String and get a Set of Options of HexValues that Decode to that String.
+<br>Direct encoding works best with 3 Letter Strings and Base62 encoding works best for 4 Letter Strings. But you can do Whatever.
+<br>Seriously though. I recommend a 4-Letter Word on Base62 Mode. If you only have a 3-Letter Word, add a 0 at the end or something.
+<br>Note: If the hex has 6 characters, it's RGB; 8 characters is RGBA. I think 4 character hex colors mean something but I forget.</div>
 <input id='input' onkeyup="encoding(); if (event.which===13) reset();" maxlength="6"></input>
   <div>
 <script>
