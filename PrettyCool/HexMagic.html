@@ -22,16 +22,67 @@ addToResults = function addToResults(string) {
 }
 makeDiv = function(s) {
 	var div = document.createElement("div");
-	var hx = "#"+hexify(s);
+	if (directencoding.checked)
+		var hx = "#"+hexify(s);
+	if (base62encoding.checked)
+		var hx = "#"+encode(s);
 	div.innerHTML = "<p>"+ s + " -> " + hx + "</p>";
 	div.style.backgroundColor = hx;
 	return div;
 }
 char0hex = function(i){ return i.charCodeAt(0).toString(16); };
 hexify = function(s){ return s.split('').map(char0hex).join(''); };
+
+/*modified from https://github.com/andrew/base62.js/blob/master/base62.js*/
+characterSet = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+
+/*encode = function(i) {
+	i = Math.floor(i);
+	if (i === 0) return '0';
+	var s = '';
+	while (i > 0) {
+		s = characterSet[i % 62] + s;
+		i = Math.floor(i / 62);
+	}
+	return s;
+};*/
+
+encode = function(base62String) {
+	var num = 0,
+		i = 0,
+		c;
+
+	for (; i < base62String.length; i++) {
+		c = base62String.charCodeAt(i);
+
+		if (c < 58) {
+			c -= 48;
+		} else if (c < 91) {
+			c -= 29;
+		} else {
+			c -= 87;
+		}
+
+		num += c * Math.pow(62, base62String.length - i - 1);
+	}
+
+	return num.toString(16);
+};
 </script>
-<div id="description">Type in a 3-Letter String and get a Set of Options of HexValues that Decode to that String</div>
-<input id='input' onkeyup="if (event.which===13) reset();" maxlength="3"></input>
+<div id="description">Type in a 3-Letter or 4-Letter String and get a Set of Options of HexValues that Decode to that String. <br>Direct encoding works best with 3 Letter Strings and Base62 encoding works best for 4 Letter Strings. But you can do Whatever.</div>
+<input id='input' onkeyup="encoding(); if (event.which===13) reset();" maxlength="6"></input>
+  <div>
+<script>
+	function encoding() {
+		if (input.value.length < 4)
+			directencoding.checked = 1;
+		if (input.value.length > 3)
+			base62encoding.checked = 1;
+	}
+</script>
+    <input type="radio" name="encoding" id="directencoding" value="direct"><label for="directencoding">Direct</label>
+    <input type="radio" name="encoding" id="base62encoding" value="base62"><label for="base62encoding">Base62</label>
+  </div>
 <input type="Submit" onclick="reset()"></input>
 <div id="results"></div>
 <style>
@@ -40,5 +91,5 @@ hexify = function(s){ return s.split('').map(char0hex).join(''); };
 </style>
 <script>
 input = document.getElementById('input');
-results 
+results = document.getElementById('results');
 </script>
