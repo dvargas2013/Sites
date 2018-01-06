@@ -2,7 +2,9 @@
 <div id="Word" contenteditable onkeyup="tt(this.innerText,fE,ffE,Code)" onblur="if (this.innerText==='') this.innerText='Type WORDS Here'">Type WORDS Here</div>
 <div id="Code" class="molendish" contenteditable onkeyup="tt(this.innerText,tE,ttE,Word)" onblur="if (this.innerText==='') this.innerText='Type MOLENDISH Here'">Type MOLENDISH Here</div>
 <input type="button" value="swap font" onclick="Code.classList.toggle('molendish')"/>
+<input type="range" min="8" max="100" step="2" oninput="Code.style.fontSize=this.value;this.nextElementSibling.innerText=this.value;" value="32"/><label>32</label>
 <script>
+Code.style.fontSize=32;
 /*
 	translates text using translation machines EE and EEE.
 	EE is a hashlike with string -> string or string -> array
@@ -72,6 +74,7 @@ Poca Nachi - You’re welcome
 
 Aberige-se - god
 Bluvlen - Bluuven
+Colla - rainbow
 Cupquicia - sweet cupcake
 Drourkun - Dragon
 Fii - chocolate
@@ -80,7 +83,9 @@ Freena - feathers
 Khaar - Inside
 Linvala - ocean
 Papah - daddy
+Plenton - pussy
 Pran - oats
+Stiih - paddlepop
 Theya - cheese
 Tova - mommy
 Traere - boredom
@@ -136,27 +141,28 @@ tou - to
 });
 
 // Verbs. For tracking subjective pronouns
-`saz - try/tries/
-sazi - tried
+`asshee/aasee - assist*
+at - see
 dada - like*
 enda - have/has/
+eta - saw
+ferre/eerre - eradicate*
 hik - choke*
 nada - calm down/calms down/
+nodo - was/were
 ponten - want*
+saz - try/tries/
+sazi - tried
 tanada - fuck*
 tanano - fucked
+tii - will
+tiya//va - am/is/are
 trear - bore*
-wondada - love*
-at - see
-eta - saw
 uk/ukku/ - do/does/
 ukki - did
-tii - will
-nodo - was/were
-tiya//va - am/is/are
 wen - discover*
-asshee/aasee - assist*
-ferre/eerre - eradicate*
+wondada - love*
+wvren - lick*
 `.toLowerCase().split('\n').map(function(a){ return a.split(" - "); }).forEach(function(a){
 	if (!(a[0] && a[1])) return;
 	a[0] = turn(a[0].split("/"));
