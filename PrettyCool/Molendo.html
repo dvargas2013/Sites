@@ -1,6 +1,7 @@
-<title>Molendish</title><style> #Word,#Code { height: 25%; } </style>
+<title>Molendish</title><style> @font-face { font-family: "molendish"; src: url("https://static.tumblr.com/a63okwe/9FIp23zdt/molendish.ttf"); } .molendish { font-family: "molendish"; text-transform: uppercase;} #Word,#Code { height: 25%; } </style>
 <div id="Word" contenteditable onkeyup="tt(this.innerText,fE,ffE,Code)" onblur="if (this.innerText==='') this.innerText='Type WORDS Here'">Type WORDS Here</div>
-<div id="Code" contenteditable onkeyup="tt(this.innerText,tE,ttE,Word)" onblur="if (this.innerText==='') this.innerText='Type MOLENDISH Here'">Type MOLENDISH Here</div>
+<div id="Code" class="molendish" contenteditable onkeyup="tt(this.innerText,tE,ttE,Word)" onblur="if (this.innerText==='') this.innerText='Type MOLENDISH Here'">Type MOLENDISH Here</div>
+<input type="button" value="swap font" onclick="Code.classList.toggle('molendish')"/>
 <script>
 /*
 	translates text using translation machines EE and EEE.
