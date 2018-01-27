@@ -1,0 +1,22 @@
+I made this when I was like 12 or something. I found it on a piece of paper with horrible handwriting.
+
+Each player receives the same number of dice
+Best with 3 players or more
+Players Roll the Dice, peek at their own dice
+(Do whatever you want to figure out who goes first)
+
+The Name of the Game is to "Bluff" about what everyone's Dice are (variation could be everyone writes down multiple numbers from 1-6)
+
+A "bluff" would be something like "there are at least 3 threes" which is possible for them to know if they have all threes.
+
+The Next Player needs to call a bluff of "higher" power
+
+Basically multiply the numbers together to get the power rating. "3 threes" is power 9 so the bluff "there are 10 ones" is stronger
+
+You can combine bluffs to add together the power "there are at least 2 threes and at least 4 ones" is also power 10
+
+Anyone can accuse the bluffer.
+Players can choose a side or stay neutral.
+Everyone reveals their numbers and the latest bluff is checked.
+-1,0,+1 score system 
+Rinse and Repeat

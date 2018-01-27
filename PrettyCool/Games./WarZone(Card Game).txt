@@ -1,0 +1,40 @@
+I made this when I was like 12 or something. I found it on a piece of paper with horrible handwriting.
+
+• 2 is low, Aces high
+
+Prep:
+1. Separate the RED and BLACK suits
+2. Every Player chooses which suit goes on the Board and which are the WarZone cards
+3. Set up Boards: The Board is cards placed face down in 7x7 grid
+	• Cards on further behind ranks are Protected by the cards on the front rank
+	• But this will also prevent them from Attacking until the front rank is sent to the WarZone
+	• Aka only the front rank can attack
+	• The only way to move cards is to retreat them to the WarZone and bring them back to defend, if you have lucky rng
+4. Shuffle WarZone Cards
+
+Basically you should know your Board but not ur opponents
+No one should know what order their WarZone is in
+
+GamePlay:
+Using the WarZone Cards:
+	1. Both players take the top 4 cards off their WarZone (called the WarCards) (without looking at the cards) and randomly select one
+	2. The Highest Card is the Winner: The Winner shuffles in the cards back into their WarZone
+	3. The loser loses their WarCards. Discard. Place in a Pile somewhere. Never to be used again.
+	4. In the case of a Tie:
+		from the unrevealed WarCards, both players randomly select a different card
+	5. In the case all 4 WarCards have been revealed:
+		The three lowest revealed WarCards are Shuffled back into the WarZone and the top three cards are placed facedown again to serve as "new" WarCards. Continue as if only 2 Ties have occurred. (Even in the worst case, this process will end eventually)
+
+(Choose however you want to figure out who goes first m8)
+Turn Based Play:
+	1. The player chooses one of their front rank cards and one of their opponent's front rank cards
+	2. Both cards are flipped and the losing card is sent into the WarZone and Shuffled
+	3. In the case of a Tie:
+		a. Use the WarZone cards to determine winner
+		b. Winner keeps chosen card faceup on the Board
+		c. Loser's card gets sent to the WarZone (Loser's WarCards are discarded as seen in GamePlay.3)
+	4. Before and After the attack, the player can choose to "Retreat" or "Defend"
+		a. Retreating: One of any of the back ranks of any file can be Shuffled into the WarZone
+		b. Defending: The current Top Card of the WarZone can be placed in any file (as long as its the new back rank of that file)
+			i. The Player may look at the Top Card before placing
+			ii. The Player can choose to cancel their Defense and shuffle the Card back into the WarZone (This ends the Phase and the Player must continue to Attack or End their turn depending)

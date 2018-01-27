@@ -1,0 +1,47 @@
+I made this when I was like 12 or something. I found it on a piece of paper with horrible handwriting.
+
+Color - Amount of Moves - Power
+White  - 1 - Kill 4 Pieces
+Yellow - 2 - Freeze 4 Pieces
+Green  - 3 - Revive 2 (Placed Anywhere not occupied or on Star)
+Blue   - 4 - Move 3 of any piece (yours or opponent)
+Purple - 5 - Freeze 2 Pieces
+Red    - 6 - Unfreeze 3 Pieces
+
+Initial Position Set Up
+6142   *
+5113    
+4111    
+2311    
+    1132
+    1114
+    3115
+*   2416
+
+• When reaching the Star Space, it activates the piece's power
+• You can't use the same Star Corner Twice in a row; once you use the power of one star, you must use the other corner
+• Examples
+	P1: TopRight, P2: BottomLeft, P1: BottomLeft, P2: TopRight (√ valid)
+	P1: TopRight, P2: BottomLeft, P1: TopRight (X invalid)
+
+3-Dice Turn-Based Game!
+
+Roll The Dice
+You may Re-roll any pair of Doubles if you so choose
+Any two can be added or subtracted (modulo 6) (but only positive modulos!)
+	Examples:
+	2 and 5 -> 3 or 1 (aka 7)
+	5 and 5 -> 4 (aka 10)
+
+When Numbers have been Created you may move corresponding piece
+	Whites can only move 1 square at a time
+	Reds can move up to 6 Squares!!
+	All pieces can "jump" over pieces
+	If it ends up at a location occupied by another piece, it "kills" that piece (including your own but why would u do that)
+
+Pro Tips:
+You can move the same piece twice in same turn if you get lucky and want to
+	a double 5 will let you move the Purple enough spaces to get to the star most likely.
+	triple 5 is enough to go from star to opposite star wow!
+	1 5 6 can be converted into a double 5 by subtracting the 6 and 1
+ 

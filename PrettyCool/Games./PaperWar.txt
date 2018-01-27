@@ -1,0 +1,46 @@
+I made this in middle school with a friend
+Its a great paper based game
+It's technically 1 dimensional but its great to visualize on a sheet of looseleaf paper
+
+One Person is X and the other is O
+Separate the paper into 3 sections 5 or more lines for each "territory" and the rest for the central section
+The Topmost and Bottommost Sections are the Territories (Peaceful), the Central Section is the Fight Zone
+While in a territory you are invulnerable (enemy or not) but you also cannot attack while in a territory
+(A rule of war is that it's uncool to kill civilians so it totally makes sense XD)
+The goal is to get 3 of your dots behind enemy lines at the same time
+Or to kill all of the opponents dots
+
+Pro Tip:
+	Once you are down to 1 or 2 dots, it is possible to get the enemy down to 1 or 2 dots as well (Hard but possible)
+	If that happens and all pieces get safely behind a territory (or it is obvious that no more fighting will occur),
+	The Person with the most total HP win. Is same amount of HP ... wow. Both players worked really hard. Congrats!
+
+
+
+There are 3 types of dots to use
+
+Tanks: 20HP 4MovementUnits
+	grenade: -5HP 4MU 2RadiusUnits (Can hit up to 2 enemies)
+	gun: -2HP 6MU 0RU (Hits everyone on chosen line)
+
+Sprinters: 15HP 5MU
+	knife: -100HP 0MU 0RU land on line to insta-kill 1 enemy on that line (cannot hurt tank)
+	gun: (same as tank except 5MU)
+
+Regulars: 12HP 3MU (weapons are same as sprinters)
+
+knife note: if you land on a line with 2 enemies, choose one to kill but you will die in the process
+knife note 2: they still work even when in a peaceful zone . watch out
+
+
+The Standard Game is 2 Tanks, 3 Sprinters and 5 Regulars. but it can be adjusted
+In the beginning, you place ur dots anywhere you want in your territory
+There must be at least 1 dot on every line of territory
+
+
+
+Turns:
+All dots can either move OR use a weapon (with the exception of knife which is a movement based weapon)
+Can only move up to 50% of ur dots (if 3 dots on board can only move 1 dot)
+Any dot that hasn't moved, can shoot.
+These operations can be done in any order as long as you're able to keep track of it
