@@ -1,0 +1,135 @@
+<style>
+	div.center { justify-content: center; display: flex; position: relative; top: 50%; }
+	div.hide {display:none;}
+	.hide {display:none;}
+	div.die {display: inline-block; border: 1px black solid; height: 50px; width: 50px;}
+</style>
+
+<div id="GameSelector">
+	<div><label>Amount of Players: </label><select id="PlayersN"><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option></select></div>
+	<div><label>Number of Dice: </label><select id="DiceN"><option value="2">2</option><option selected="selected" value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option></select></div>
+	<input type="Button" value="Start Game" onclick="startGame()">
+</div>
+<div id="Game" class="hide">
+	<div id="hiddenDice"></div>
+	<script>
+		function addOpponents(N) {
+			for (var i = 0; i < N; i++) hiddenDice.innerHTML += "<div class='oppHand'><label>Opponent #" + (hiddenDice.childElementCount+1) + "'s Dice:</label><div class='Dice'></div><label class='bluff'></label><input type='Button' class='hide bluffChecker' value='Check Bluff'></div>"
+		}
+		function removeAllOpponents() { hiddenDice.innerHTML = ""; }
+		function showOpponentDice() {
+			var d = hiddenDice.querySelectorAll('.die > .center.hide');
+			for (var i = d.length - 1; i >= 0; i--) {
+				d[i].classList.remove('hide');
+			}
+		}
+		function addDice() {
+			var dice = document.getElementsByClassName("Dice");
+			if (Players.length != dice.length) return;
+			for (var i = 0; i < PN; i++) {
+				dice[i].innerHTML = "";
+				for (var j = 0; j < DN; j++) dice[i].innerHTML += "<div class='die'><div class='center hide'>" + (Players[i][j]+1) + "</div></div>";
+			}
+			var hand = diceHand.getElementsByClassName("hide");
+			// Not the last one cause that one's the bluff checker
+			for (var i = hand.length - 2; i >= 0; i--) hand[i].classList.remove("hide");
+		}
+	</script>
+	<div id="diceHand">
+		<label>Your Dice:<label><div class="Dice"></div><label class="bluff"></label><input type='Button' class="hide bluffChecker" value="Check Bluff">
+	</div>
+	<script>
+		var hiddenDice = document.getElementById("hiddenDice"),
+			diceHand = document.getElementById("diceHand");
+	</script>
+
+	<div id="Selector">
+		<div><label>At Least this Many Ones Total:  </label><input class="MaxIsPxDMinusSumOfOthers" id="Ones" type="range" min="0" value="0" step="1"><label>0</label></div>
+		<div><label>At Least this Many Twos Total:  </label><input class="MaxIsPxDMinusSumOfOthers" id="Twos" type="range" min="0" value="0" step="1"><label>0</label></div>
+		<div><label>At Least this Many Threes Total:</label><input class="MaxIsPxDMinusSumOfOthers" id="Thrs" type="range" min="0" value="0" step="1"><label>0</label></div>
+		<div><label>At Least this Many Fours Total: </label><input class="MaxIsPxDMinusSumOfOthers" id="Fors" type="range" min="0" value="0" step="1"><label>0</label></div>
+		<div><label>At Least this Many Fives Total: </label><input class="MaxIsPxDMinusSumOfOthers" id="Fivs" type="range" min="0" value="0" step="1"><label>0</label></div>
+		<div><label>At Least this Many Sixes Total: </label><input class="MaxIsPxDMinusSumOfOthers" id="Sixs" type="range" min="0" value="0" step="1"><label>0</label></div>
+		<div><label>Bluff Power: </label><label id="PowerLabel">0</label>&nbsp;<input class="hide" id="bluffSubmit" type="Button" value="Submit Bluff" onclick="bluff()"></div>
+		<script>
+			var selectorInputs = document.getElementsByClassName("MaxIsPxDMinusSumOfOthers"), bluffSubmit = document.getElementById('bluffSubmit');
+			var selectorFunction = function() {
+				this.nextElementSibling.textContent=this.value;
+				var sumSelects = 0, power = 0;
+				for (var i = selectorInputs.length - 1; i >= 0; i--) {
+					sumSelects += parseInt(selectorInputs[i].value);
+					power += (i+1)*parseInt(selectorInputs[i].value);
+				}
+				for (var i = selectorInputs.length - 1; i >= 0; i--) selectorInputs[i].max = PN*DN-sumSelects+parseInt(selectorInputs[i].value);
+				PowerLabel.textContent = power;
+				if (power > prevBluffPower) bluffSubmit.classList.remove("hide");
+				else bluffSubmit.classList.add("hide");
+			}
+			for (var i = selectorInputs.length - 1; i >= 0; i--) selectorInputs[i].oninput = selectorFunction;
+		</script>
+	</div>
+</div>
+
+<script>
+var Players, PN, DN, amounts,
+	PlayersN=document.getElementById('PlayersN'),
+	DiceN=document.getElementById('DiceN'),
+	PowerLabel=document.getElementById('PowerLabel'),
+	bluffs, activeBluffer, prevBluffPower = 0;
+var NAMES = [{n:"One",s:"s"},{n:"Two", s:"s"},{n:"Three", s:"s"},{n:"Four", s:"s"},{n:"Five", s:"s"},{n:"Six", s:"es"}];
+
+function rollDice(pN, dN) {
+	var a = [], v;
+	amounts = [0,0,0,0,0,0];
+	for (var i=0; i<pN; i++) {
+		a.push([]);
+		for (var j = 0; j < dN; j++) {
+			v = Math.floor(Math.random()*6);
+			a[i].push(v);
+			amounts[v] += 1;
+		}
+	}
+	return a;
+}
+var startGame = function startGame() {
+	GameSelector.classList.add('hide');
+	Game.classList.remove('hide');
+	PN = PlayersN.value;
+	DN = DiceN.value;
+	Players = rollDice(PN,DN);
+	addOpponents(PN-1);
+	addDice();
+	for (var i = selectorInputs.length - 1; i >= 0; i--) {
+		selectorInputs[i].value = 0;
+		selectorInputs[i].oninput();
+	}
+	bluffs = document.getElementsByClassName("bluff");
+	for (var i = bluffs.length - 1; i >= 0; i--) bluffs[i].nextElementSibling.onclick = checkBluff;
+	activeBluffer = PN-1;
+} 
+var bluff = function bluff() {
+	var v, t="Power: "+PowerLabel.textContent, a = [];
+	for (var i = 0; i < selectorInputs.length; i++) {
+		v = parseInt(selectorInputs[i].value);
+		a.push(v);
+		if (v>0) t += ", At least " + v + " " + NAMES[i].n + (v==1?"":NAMES[i].s);
+	}
+	
+	Selector.classList.add('hide');
+	bluffs[PN-1].textContent = t;
+	bluffs[PN-1].data = a;
+	diceHand.getElementsByClassName('bluffChecker')[0].classList.remove('hide');
+}
+var checkBluff = function checkBluff() {
+	this.classList.add('hide');
+	showOpponentDice();
+	var b = bluffs[activeBluffer];
+	for (var i = 0; i < amounts.length; i++) {
+		if (b.data[i] > amounts[i]) {
+			b.textContent += " . . . That's too many " + NAMES[i].n + NAMES[i].s;
+			return;
+		}
+	}
+	b.textContent += " . . . Congrats! That's was the Truth!";
+}
+</script>
