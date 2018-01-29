@@ -1,0 +1,200 @@
+<style>
+	.card { float:left; height: 2em; text-align: center; }
+	.card { background-color: #f007; width: 3em; border: 1px solid black; }
+	.line { height: calc(2em + 2px); }
+	#info {margin: 1px 2px 1px 2px; padding: 0px 2px 0 2px; border-bottom: 1px solid black; border-top: 1px solid black; }
+	.war > div { margin: 0px 2px 0 2px; }
+	.pointing { background-color: green; }
+	.selected { background-color: yellow; }
+</style>
+
+<div id="Game">
+<div class="cpu line"><span class="cpu play"><div class="card"></div><div class="card"></div><div class="card"></div><div class="card"></div><div class="card"></div><div class="card"></div><div class="card"></div></span><span class="cpu war"><div class="card"></div><div class="card"></div><div class="card"></div><div class="card"></div></span><span class="cpu shuffle"><div class="card"></div></span></div>
+<div class="cpu line"><span class="cpu play"><div class="card"></div><div class="card"></div><div class="card"></div><div class="card"></div><div class="card"></div><div class="card"></div><div class="card"></div></span></div>
+<div class="cpu line"><span class="cpu play"><div class="card"></div><div class="card"></div><div class="card"></div><div class="card"></div><div class="card"></div><div class="card"></div><div class="card"></div></span></div>
+<div class="cpu line"><span class="cpu play"><div class="card"></div><div class="card"></div><div class="card"></div><div class="card"></div><div class="card"></div><div class="card"></div><div class="card"></div></span></div>
+<div class="cpu line"><span class="cpu play"><div class="card"></div><div class="card"></div><div class="card"></div><div class="card"></div><div class="card"></div><div class="card"></div><div class="card"></div></span></div>
+<div class="cpu line"><span class="cpu play"><div class="card"></div><div class="card"></div><div class="card"></div><div class="card"></div><div class="card"></div><div class="card"></div><div class="card"></div></span></div>
+<div class="cpu line"><span class="cpu play"><div class="card"></div><div class="card"></div><div class="card"></div><div class="card"></div><div class="card"></div><div class="card"></div><div class="card"></div></span></div>
+<p id="info"></p>
+<div class="p1 line"><span class="p1 play"><div class="card"></div><div class="card"></div><div class="card"></div><div class="card"></div><div class="card"></div><div class="card"></div><div class="card"></div></span></div>
+<div class="p1 line"><span class="p1 play"><div class="card"></div><div class="card"></div><div class="card"></div><div class="card"></div><div class="card"></div><div class="card"></div><div class="card"></div></span></div>
+<div class="p1 line"><span class="p1 play"><div class="card"></div><div class="card"></div><div class="card"></div><div class="card"></div><div class="card"></div><div class="card"></div><div class="card"></div></span></div>
+<div class="p1 line"><span class="p1 play"><div class="card"></div><div class="card"></div><div class="card"></div><div class="card"></div><div class="card"></div><div class="card"></div><div class="card"></div></span></div>
+<div class="p1 line"><span class="p1 play"><div class="card"></div><div class="card"></div><div class="card"></div><div class="card"></div><div class="card"></div><div class="card"></div><div class="card"></div></span></div>
+<div class="p1 line"><span class="p1 play"><div class="card"></div><div class="card"></div><div class="card"></div><div class="card"></div><div class="card"></div><div class="card"></div><div class="card"></div></span></div>
+<div class="p1 line"><span class="p1 play"><div class="card"></div><div class="card"></div><div class="card"></div><div class="card"></div><div class="card"></div><div class="card"></div><div class="card"></div></span><span class="p1 war"><div class="card"></div><div class="card"></div><div class="card"></div><div class="card"></div></span><span class="p1 shuffle"><div class="card"></div></span></div>
+</div>
+
+<script>
+function Player(cards,select,shuffle) {
+	this.cardElements = cards;
+	for (var i = this.cardElements.length - 1; i >= 0; i--) {
+		var ce = this.cardElements[i];
+		ce.up = false;
+		ce.index = i;
+		ce.data = -1;
+	}
+	this.selectElements = select;
+	for (var i = this.selectElements.length - 1; i >= 0; i--) {
+		var se = this.selectElements[i];
+		se.up = false;
+		se.index = i;
+		se.data = -1;
+	}
+	this.pileElement = shuffle;
+	this.pile = Player.CARDS.slice();
+}
+Player.N = document.querySelector('.play').children.length;
+Player.CARDS = [1,2,3,4,5];
+Player.selected = [];
+mouseOverMark = function(e) {
+	if (this.up || this.data === -1) return;
+	this.textContent = this.data;
+}
+mouseLeaveMark = function(e) {
+	if (this.up || this.data === -1) return;
+	this.textContent = "?";
+}
+warPlaceClick = function(e) {
+	if (!this.classList.contains('pointing')) return;
+	if (Player.selected.length == 0) { // if first click
+		Player.selected.push(this); // select
+		this.classList.add('selected');
+		p1.pointAtEmpty();
+	} else { // if swapping click
+		var s = Player.selected[0];
+		s.classList.remove('selected'); // remove selection
+		var d = this.data; // swap
+		this.data = s.data;
+		s.data = d;
+		this.up = true;
+		if (s.parentElement.classList.contains('war')) p1.pileToSelect(s); // add new from pile
+		Player.selected = []; // clear selecteds
+		p1.display();
+		p1.pointAtSelects();
+		if (p1.pile.length === 0 && !document.querySelector('.p1.war > .pointing')) {
+			p1.pileElement.classList.add('pointing');
+			info.textContent = "Click on the Draw Pile to BEGIN";
+			p1.pileElement.onclick = boardSet;
+		}
+	}
+}
+attackClick = function(e) {
+	if (!this.classList.contains('pointing')) return;
+	
+	
+}
+boardSet = function(e) {
+	p1.pile = Player.CARDS.slice();
+	p1.shuffle();
+	p1.cardElements.forEach(function(i){ i.up = false; });
+	p1.pileElement.classList.remove('pointing');
+	if (Player.selected.length !== 0) { Player.selected[0].classList.remove('selected'); Player.selected = []; }
+
+	// TODO set up cpu board
+
+	p1.pointAtTop();
+	info.textContent = "Click on one of your Top Rank Cards and attack one of your opponent's Top Rank Cards"
+	p1.cardElements.forEach(function(i){i.onclick = attackClick;});
+	cpu.cardElements.forEach(function(i){i.onclick = attackClick;});
+	cpu.display();
+	p1.display();
+}
+
+Player.prototype = {
+	shuffle : function() {
+		var i = this.pile.length, r, item;
+		while (0 !== i) {
+			r = Math.floor(Math.random() * i); // Pick a number to be the last card
+			i -= 1; // Decrement so next time its the second-to-last card. etc
+			item = this.pile[i]; // Swap the last card with the selected card
+			this.pile[i] = this.pile[r];
+			this.pile[r] = item;
+		}
+	},
+	placeCardsGUI : function() {
+		this.initWar(true); // get 4 cards from pile, show them
+		info.textContent = "Click on Card to Select. Then Click on Board to Place Card.";
+		for (var i = this.selectElements.length - 1; i >= 0; i--) this.selectElements[i].onclick = warPlaceClick;
+		for (var i = this.cardElements.length - 1; i >= 0; i--) this.cardElements[i].onclick = warPlaceClick;
+		this.display();
+		this.pointAtSelects();
+	},
+	pointAtTop : function() {
+		var vis = false, i;
+		for (i = 0; i < this.cardElements.length; i++) {
+			if (this.cardElements[i].data !== -1) {
+				this.cardElements[i].classList.add('pointing');
+				vis = true;
+			} else {
+				this.cardElements[i].classList.remove('pointing');
+			}
+			if (vis && (i+1)%Player.N===0) break;
+		}
+		for (i++; i<this.cardElements.length; i++) {
+			this.cardElements[i].classList.remove('pointing');
+		}
+	},
+	pointAtEmpty : function() {
+		for (var i = this.cardElements.length - 1; i >= 0; i--) {
+			if (this.cardElements[i].data === -1) this.cardElements[i].classList.add('pointing');
+		}
+		for (var i = this.selectElements.length - 1; i >= 0; i--) this.selectElements[i].classList.remove('pointing');
+	},
+	pointAtSelects : function() {
+		for (var i = this.cardElements.length - 1; i >= 0; i--) {
+			if (this.cardElements[i].data === -1) this.cardElements[i].classList.remove('pointing');
+		}
+		for (var i = this.selectElements.length - 1; i >= 0; i--)
+			if (this.selectElements[i].data !== -1) this.selectElements[i].classList.add('pointing');
+	},
+	initWar : function(selUp) {
+		var pl = this;
+		this.selectElements.forEach(function(i){ pl.pileToSelect(i,selUp); });
+	},
+	pileToSelect : function(elem,selUp) {
+		var c = this.pile.pop();
+		if (c === undefined) return;
+		elem.data = c;
+		if (selUp !== undefined) elem.up = selUp;
+	},
+	selectToPile : function(elem) {
+		var c = parseInt(elem.data);
+		if (c === undefined || c === NaN) return;
+		this.pile.push(c);
+		elem.data = "";
+		elem.up = false;
+		elem.classList.remove('pointing');
+	},
+	display : function() {
+		for (var i = this.cardElements.length - 1; i >= 0; i--) {
+			var ce = this.cardElements[i];
+			if (ce.data === -1) ce.textContent = "";
+			else ce.textContent = (ce.up)?ce.data:"?";
+		}
+		for (var i = this.selectElements.length - 1; i >= 0; i--) {
+			var se = this.selectElements[i];
+			if (se.data === -1) se.textContent = "";
+			else se.textContent = (se.up)?se.data:"?";
+		}
+		this.pileElement.textContent = "[" + this.pile.length + "]";
+	}
+};
+var cpuCards = Array.from(document.querySelectorAll('.cpu.play > .card')),
+	cpuSelect = Array.from(document.querySelectorAll('.cpu.war > .card')),
+	cpuShuffle = document.querySelector('.cpu.shuffle > .card'),
+	p1Cards = Array.from(document.querySelectorAll('.p1.play > .card')),
+	p1Select = Array.from(document.querySelectorAll('.p1.war > .card')),
+	p1Shuffle = document.querySelector('.p1.shuffle > .card');
+	cpuCards.reverse(),
+	info = document.getElementById('info');
+
+p1Cards.forEach(function(i) {
+	i.onmouseover = mouseOverMark;
+	i.onmouseout = mouseLeaveMark;
+});
+
+var p1 = new Player(p1Cards,p1Select,p1Shuffle), cpu = new Player(cpuCards,cpuSelect,cpuShuffle);
+p1.placeCardsGUI();
+</script>
