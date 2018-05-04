@@ -2,7 +2,7 @@ char = {
 	Name:{char:{Smoth:"Mr. Smoth"}}, // Lex (wizard)
 	Species:"Bear",
 	Color:"White",
-	ColorsPlus:{colors:{Tie:"Red",WWShirt:"Black",}}
+	ColorsPlus:{colors:{Tie:"Red",WWShirt:"Black"}},
 	Gender:"Male",
 	Age:"Ancient",
 	Power:"???",

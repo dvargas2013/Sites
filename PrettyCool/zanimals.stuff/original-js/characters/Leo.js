@@ -2,7 +2,7 @@ char = {
 	Name:{char:{Leo:"Leo"}},
 	Species:"Lion",
 	Color:"OrangeYellow",
-	ColorPlus:{colors:{TailTip:"Brown",Snout:"White",Mane:"Brown",Collar:"Blue"}}
+	ColorPlus:{colors:{TailTip:"Brown",Snout:"White",Mane:"Brown",Collar:"Blue"}},
 	Gender:"Male",
 	Age:"Young",
 	Alignment:"Chaotic Good",

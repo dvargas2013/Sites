@@ -10,5 +10,5 @@ char = {
 	Generation: 1,
 	hasTail:"no",
 	Extras:['Fluffy Ears','Dead Fish Necklace'],
-	Children:{char:{Dogger:"Dogger",Fluffy:"Fluffy"}},
+	Children:{char:{Dogger:"Dogger",Fluffy:"Fluffy"}}
 };

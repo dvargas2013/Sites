@@ -2,7 +2,7 @@ char = {
 	Name:{char:{MrsSmith:"Mrs. Smith"}}, // Cams Mom
 	Species:"Bear",
 	Color:"White",
-	ColorsPlus:{colors:{HospitalShirt:"White"}}
+	ColorsPlus:{colors:{HospitalShirt:"White"}},
 	Gender:"Female",
 	Age:"Ancient",
 	Power:"Is God",

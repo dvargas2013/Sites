@@ -2,7 +2,7 @@ char = {
 	Name:{char:{Fletch:"Fletch Dog"}}, // Bandit
 	Species:"Dog",
 	Color:"Tan Yellow",
-	ColorPlus: {colors:{Hat:"Red and Yellow",LostCollar:'Blue'}}
+	ColorPlus: {colors:{Hat:"Red and Yellow",LostCollar:'Blue'}},
 	Gender:"Male",
 	Age:"Tween",
 	Power:["Speed","WaterBender"],

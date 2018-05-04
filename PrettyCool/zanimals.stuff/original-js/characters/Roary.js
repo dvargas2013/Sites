@@ -2,7 +2,7 @@ char = {
 	Name:{char:{Roary:"Roary"}},
 	Species:"Lion",
 	Color:"OrangeYellow",
-	ColorPlus:{colors:{TailTip:"Brown",Snout:"White",Mane:"Brown"}} // Red-White ??? does it mean a collar?
+	ColorPlus:{colors:{TailTip:"Brown",Snout:"White",Mane:"Brown"}}, // Red-White ??? does it mean a collar?
 	Gender:"Male",
 	Age:"Young",
 	Alignment:"Chaotic Good",
