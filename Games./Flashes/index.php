@@ -1,32 +1,37 @@
 <?php
-function goodFileType($file) {
-	return substr_compare($file, '.html', -5) === 0 or (substr_compare($file, '.php', -4) === 0 and substr_compare($file, 'index.php', -9) !== 0) or substr_compare($file, '.swf', -4) === 0;
-	return false;
-}
-
 function ListFolder($path) {
-    //using the opendir function
-    $dir_handle = @opendir($path) or die("Unable to open $path");
-    
-    //Leave only the lastest folder name
-    $dirname = end(explode("/", $path));
-    
-    //display the target folder.
-    //echo "<li><a>$dirname</a>";
-    while (false !== ($file = readdir($dir_handle))) {
-        if($file[0]!=".") {
-			if (is_dir($path."/".$file)) {
-				if (strpos($file, '.') == false)
-				echo "<ul><a href=".$file.">".$file."/</a></ul>";
-			} elseif (goodFileType($file)) {
-               echo "<ul><a href=".$file.">".$file."</a></ul>";
-            } 
-        }
-    }
-    //echo "</li>";
-    
-    //closing the directory
-    closedir($dir_handle);
+	$dir_handle = @opendir($path) or die("Unable to open $path");
+	$dirname = end(explode("/", $path));
+	while (false !== ($file = readdir($dir_handle))) {
+		if( $file[0] != "." ) {
+			if ( substr_compare($file, '.swf', -4) === 0 ) {
+				echo "<ul><div class='swf' onclick=\"swfClick('".$file."')\">".$file."</a></ul>";
+			}
+		}
+	}
+	closedir($dir_handle);
 }
+echo "<div id='delete'>";
 ListFolder('.');
+echo "</div>";
 ?>
+<style>
+	div.swf {
+		color: -webkit-link;
+		cursor: pointer;
+		text-decoration: underline;
+	}
+</style>
+<embed id="swfLoader"></embed>
+<script>
+	swfClick = function swfClick (file) {
+		var loader = document.getElementById('swfLoader');
+		if (loader) loader.src = file;
+		
+		loader.width="95%";
+		loader.height="95%";
+		
+		var del = document.getElementById('delete');
+		if (del) del.innerText = "";
+	};
+</script>
