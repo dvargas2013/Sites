@@ -82,8 +82,22 @@ warPlaceClick = function(e) {
 }
 attackClick = function(e) {
 	if (!this.classList.contains('pointing')) return;
-	
-	
+	if (Player.selected.length == 0) { // if first click
+		Player.selected.push(this); // select
+		this.classList.add('selected');
+		p1.pointAtNone(); // point at none except for selected
+		this.classList.add('pointing');
+		cpu.pointAtTop();
+	} else { // if attacking click
+		var s = Player.selected[0];
+		s.classList.remove('selected'); // remove selection
+		
+		// TODO what do when attacking . . . it'll be complex 
+		
+		Player.selected = []; // clear selecteds
+		cpu.pointAtNone();
+		p1.pointAtTop();
+	}
 }
 boardSet = function(e) {
 	p1.pile = Player.CARDS.slice();
@@ -148,6 +162,10 @@ Player.prototype = {
 		}
 		for (var i = this.selectElements.length - 1; i >= 0; i--)
 			if (this.selectElements[i].data !== -1) this.selectElements[i].classList.add('pointing');
+	},
+	pointAtNone : function() {
+		for (var i = this.cardElements.length - 1; i >= 0; i--) this.cardElements[i].classList.remove('pointing');
+		for (var i = this.selectElements.length - 1; i >= 0; i--) this.selectElements[i].classList.remove('pointing');
 	},
 	initWar : function(selUp) {
 		var pl = this;
