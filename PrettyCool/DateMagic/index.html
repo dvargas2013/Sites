@@ -1,29 +1,38 @@
 <input type="date" id="bday">
 <div id="fil"></div>
 <script>
-addline = function addline (line) {
-fil.innerHTML += "<p>"+line+"</p>"
-}
-
+addline = function addline (line) { fil.innerHTML += "<p>"+line+"</p>"; }
 bday.oninput = function(e) {
-    fil.innerHTML = "";
-    ymd = e.target.value.split('-');
-    addline(ymd);
-    addnums(ymd);
-    addline("<br>");
-    adddigits(ymd.join(''));
+	fil.innerHTML = "";
+	ymd = e.target.value.split('-');
+	addline(ymd);
+	addnums(ymd);
+	addline("<br>");
+	adddigits(ymd.join(''));
+	addline("<br>");
+	addSeperate(ymd[0],ymd[1],ymd[2]);
 }
-
 addnums = function addnums(ymd) {
-    var text = ymd.join('+'), sum = eval(text);
-    addline(text + " = " + sum);
-    adddigits(sum);
+	var text = ymd.join('+'), sum = eval(text);
+	addline(text + " = " + sum);
+	adddigits(sum);
 }
 adddigits = function adddigits(num) {
-    num = ""+num;
-    if (num.length < 2) return;
-    var text = num.split('').join('+'), sum = eval(text);
-    addline(text + " = " + sum);
-    adddigits(sum);
-} 
+	num = ""+num;
+	if (num.length < 2) return;
+	var text = num.split('').join('+'), sum = eval(text);
+	addline(text + " = " + sum);
+	adddigits(sum);
+}
+addSeperate = function addSeperate(y,m,d) {
+	var yy = y.split('').join("+"), mm = m.split('').join("+"), dd = d.split('').join("+");
+	addline("("+yy+")+("+mm+")+("+dd+") =");
+	y = eval(yy); m = eval(mm); d = eval(dd);
+	yy = eval((""+y).split('').join("+")); mm = eval((""+m).split('').join("+")); dd = eval((""+d).split('').join("+"));
+	var ymd = (y+m+d);
+	addline(""+y+"+"+m+"+"+d+" = "+ymd);
+	var bigspace = "&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;&nbsp;&nbsp;&nbsp;"
+	addline("md:"+y+"+"+(m+d)+bigspace+"ym:"+(y+m)+"+"+d+bigspace+"yd:"+(y+d)+"+"+m+bigspace+ymd);
+	addline("md:"+yy+"+"+(mm+dd)+bigspace+"ym:"+(yy+mm)+"+"+dd+bigspace+"yd:"+(yy+dd)+"+"+mm+bigspace+(yy+mm+dd));
+}
 </script>
