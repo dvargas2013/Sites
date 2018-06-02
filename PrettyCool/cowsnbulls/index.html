@@ -1,0 +1,257 @@
+<div>
+	<div id="colors"> <button value="0" onclick="addColor()">Add Color</button> </div>
+	<div id="rules">
+		<input type="range" min="3" max="10" value="5" oninput="changeBoxAmount()"/><span>5</span>
+		<button value="0" onclick="addRule()">Add Rule</button>
+		<button onclick="display()">Show Result</button>
+	</div>
+	<div id="answer"><div></div><div></div></div>
+	<div id="pickers">
+		<input style="display: none" type="color" />
+	</div>
+</div>
+<script>
+	var colors = document.getElementById('colors'),
+		rules = document.getElementById('rules'),
+		pickers = document.getElementById('pickers'),
+		answer = document.getElementById('answer'),
+		allBoxes = rules.getElementsByClassName('boxes'),
+		allRules = rules.getElementsByClassName('rule'),
+		addColorButton = colors.getElementsByTagName('button')[0],
+		ruleBoxRange = rules.getElementsByTagName('input')[0],
+		addRuleButton = rules.getElementsByTagName('button')[0],
+		colorChanger = pickers.getElementsByTagName('input')[0],
+		// colorPicker = pickers.getElementsByTagName('select')[0],
+		css = document.styleSheets[0],
+		colors10 = [];
+	for (var i=0; i<10; i++) colors10.push(i*36);
+	function chooseAndDelete() {
+		if (colors10.length > 0)
+			return colors10.splice(Math.floor(Math.random() * colors10.length), 1)[0];
+		return Math.random()*360;
+	}
+	function addColor() {
+		var acbv = parseInt(addColorButton.value);
+		if (acbv > 9) return;
+		var d = document.createElement('div');
+		acbv = d.innerText = addColorButton.value = acbv+1;
+		d.className='color c'+acbv;
+		d.onclick = changeColor;
+		colors.insertBefore(d, addColorButton);
+		
+		// d = document.createElement('option');
+		// d.value = "c"+acbv;
+		// d.innerText = acbv;
+		// colorPicker.appendChild(d);
+		
+		css.addRule(".c"+acbv,"background-color: hsl("+chooseAndDelete()+",90%,60%)");
+	}
+	
+	var ChosenBox = undefined;
+	document.body.onfocus = document.body.onclick = setColor; // when you close the color changer
+	function changeColor(e) { // changes the color of the color box / and the class
+		e.preventDefault();
+		ChosenBox = this;
+		openColor(getCssColor(ChosenBox.classList[1]));
+	}
+	function openColor(c) {
+		colorChanger.value = c || "#ffffff";
+		colorChanger.click();
+		colorChanger.select();
+	}
+	function getCssColor(className) {
+		if (!className.startsWith('.')) className = "."+className;
+		for (var cssRule of (css.rules || css.cssRules) ) {
+			if (cssRule.selectorText === className) return rgb2hex(cssRule.style['background-color']);
+		}
+	}
+	function setCssColor(className,color) {
+		if (!className.startsWith('.')) className = "."+className;
+		var cssRules = css.rules || css.cssRules;
+		for (var i=0; i<cssRules.length; i++) {
+			if (cssRules[i].selectorText === className) {
+				css.addRule(className,'background-color:'+colorChanger.value,i);
+				css.removeRule(i+1);
+				return;
+			}
+		}
+	}
+	function setColor() {
+		if (ChosenBox) {
+			var c = ChosenBox.classList[1];
+			if (getCssColor(c) !== colorChanger.value)
+				setCssColor(c,colorChanger.value);
+		}
+	}
+	function hex(x) { return ("0" + parseInt(x).toString(16)).slice(-2); }
+	function rgb2hex(rgb) {
+		if (/^#[0-9A-F]{6}$/i.test(rgb)) return rgb;
+		rgb = rgb.match(/^rgb\((\d+),\s*(\d+),\s*(\d+)\)$/);
+		return "#" + hex(rgb[1]) + hex(rgb[2]) + hex(rgb[3]);
+	}
+	
+	function makeBox() {
+		box = document.createElement('div');
+		box.className = 'box c1';
+		box.innerText = "1";
+		box.onmouseenter = boxHover;
+		box.onmouseleave = boxUnHover;
+		return box;
+	}
+	function makeInput() {
+		box = document.createElement('div');
+		box.className = 'box';
+		box.innerText = "0";
+		box.onmouseenter = boxHover;
+		box.onmouseleave = boxUnHover;
+		return box;
+	}
+	function addRule() {
+		var arbv = parseInt(addRuleButton.value);
+		if (arbv > 9) return;
+		
+		var rule = document.createElement('div');
+		rule.className='rule';
+		addRuleButton.value = arbv+1;
+		
+		var c = ruleBoxRange.value, box, boxes = document.createElement('div');
+		boxes.className = "boxes";
+		rule.appendChild(boxes);
+		for (var i=0; i<c; i+=1) boxes.appendChild(makeBox());
+		
+		rule.appendChild(makeInput());
+		rule.appendChild(makeInput());
+		
+		rules.insertBefore(rule, addRuleButton);
+	}
+	var HoveredBox = undefined;
+	document.body.onkeypress = function(e) {
+		var num = (e.which || e.charCode || e.keyCode) - 48;
+		if (num > 9 || num < 0) return;
+		setRuleColor(num);
+	}
+	function boxHover(e) {
+		HoveredBox = this;
+	}
+	function boxUnHover(e) {
+		HoveredBox = undefined;
+	}
+	function setRuleColor(n) {
+		if (!HoveredBox) return;
+		var cnum;
+		for (cnum of HoveredBox.classList) {
+			if (cnum.match(/^c\d+$/)) break;
+			cnum = 0;
+		} // figures out if its a colorbox or a inputbox (inputboxes dont have cnums)
+		if (cnum == 0) { // its a inputbox
+			if (n > ruleBoxRange.value) return; // too big for amount of boxes
+		} else { // its a colorbox
+			if (n > addColorButton.value) return; // too big for amount of colors
+			HoveredBox.classList.replace(cnum,'c'+n);
+		}
+		HoveredBox.innerText = n;
+	}
+	
+	function changeBoxAmount() {
+		var n = parseInt(ruleBoxRange.value);
+		ruleBoxRange.nextElementSibling.innerHTML=n;
+		var box;
+		for (var rule of allBoxes) {
+			while (rule.children.length < n) rule.appendChild(makeBox());
+			while (rule.children.length > n) rule.children[rule.children.length-1].remove();
+		}
+	}
+	function count(pssblAns, question) {
+		var i, hart, tiny, m = Math.min(pssblAns.length, question.length);;
+		i = hart = tiny = 0;
+		pssblAns = pssblAns.slice(0,m);
+		question = question.slice(0,m);
+		
+		while (i < pssblAns.length) {
+			if (pssblAns[i] === question[i]) {
+				hart += 1;
+				pssblAns.splice(i,1);
+				question.splice(i,1);
+			} else i += 1
+		}
+		
+		for (var i of pssblAns) {
+			m = question.indexOf(i);
+			if (m >= 0) {
+				question.splice(m,1);
+				tiny += 1
+			}
+		}
+		
+		return [hart, tiny];
+	}
+	function apply_rule(pssbls,rule,hart,tiny) {
+		var i = 0, ht;
+		while (i < pssbls.length) {
+			ht = count(pssbls[i],rule);
+			if (ht[0] === hart & ht[1] === tiny) i += 1;
+			else pssbls.splice(i,1);
+		}
+	}
+	function generateNoRepeats() {
+		var A = [], B;
+		var numBoxes = parseInt(ruleBoxRange.value)-1, numColors = addColorButton.value;
+		for (var i=1; i<=numColors; i++) A.push([i]);
+		for (var j=0; j<numBoxes; j++) {
+			B = A; A = [];
+			for (var i of B) {
+				for (var k=1; k<=numColors; k++) {
+					if (!i.includes(k)) {
+						A.push(i.concat([k]));
+					}
+				}
+			}
+		}
+		return A;
+	}
+	function generateWithRepeats() {
+		var A = [], B;
+		var numBoxes = parseInt(ruleBoxRange.value)-1, numColors = addColorButton.value;
+		for (var i=1; i<=numColors; i++) A.push([i]);
+		for (var j=0; j<numBoxes; j++) {
+			B = A; A = [];
+			for (var i of B) {
+				for (var k=1; k<=numColors; k++)
+					A.push(i.concat([k]));
+			}
+		}
+		return A;
+	}
+	
+	function calculate(ruleElement) {
+		var s = ruleElement.innerText.split('');
+		ruleElement.question = s.splice(0,s.length-2);
+		for (var i=0; i<ruleElement.question.length;i++) ruleElement.question[i] = parseInt(ruleElement.question[i]);
+		ruleElement.hart = parseInt(s[s.length-2]);
+		ruleElement.tiny = parseInt(s[s.length-1]);
+	}
+	function display() {
+		var pssbls = generateWithRepeats();
+		for (var i of allRules) {
+			calculate(i);
+			apply_rule(pssbls,i.question, i.hart, i.tiny);
+		}
+		
+		var textAnswer = answer.children[1],
+			prettyAnswer = answer.children[0];
+		prettyAnswer.innerHTML = textAnswer.innerHTML = "";
+		if (pssbls.length <= 0) return;
+		
+		for (var i of pssbls) textAnswer.innerHTML += "<p>"+ i +"</p>";
+		var choice = pssbls[Math.floor(Math.random() * pssbls.length)];
+		var box;
+		for (var i of choice) {
+			box = document.createElement('div');
+			box.className = 'box c'+i;
+			box.innerText = i;
+			prettyAnswer.appendChild(box);
+		}
+	}
+	
+	addColor();addColor();addColor();addRule();
+</script>
