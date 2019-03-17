@@ -1,0 +1,113 @@
+<table><tr>
+<td><input type="checkbox" id="s1"><label for="s1">Sine 1</label></td>
+<td><input type="checkbox" id="s2"><label for="s2">Sine 2</label></td>
+<td><input type="checkbox" id="s3"><label for="s3">Sine 3</label></td>
+</tr><tr>
+<td><input type="checkbox" id="t1"><label for="t1">Triangle 1</label></td>
+<td><input type="checkbox" id="t2"><label for="t2">Triangle 2</label></td>
+<td><input type="checkbox" id="t3"><label for="t3">Triangle 3</label></td>
+</tr><tr>
+<td><input type="checkbox" id="w1"><label for="w1">Saw 1</label></td>
+<td><input type="checkbox" id="w2"><label for="w2">Saw 2</label></td>
+<td><input type="checkbox" id="w3"><label for="w3">Saw 3</label></td>
+</tr><tr>
+<td><input type="checkbox" id="q1"><label for="q1">Square 1</label></td>
+<td><input type="checkbox" id="q2"><label for="q2">Square 2</label></td>
+<td><input type="checkbox" id="q3"><label for="q3">Square 3</label></td>
+</tr></table>
+
+<p>BPM:
+<input id="BPM" type="range" min="10" max="300" step="1" oninput="this.nextElementSibling.value = this.value; save();"/>
+<input onkeypress="if (event.keyCode !== 13) return; this.previousElementSibling.value = this.value; this.value = this.previousElementSibling.value; save();"/>
+</p>
+
+<p>Note Density:
+<input id="NTD" type="range" min="0" max="1" step=".01" oninput="this.nextElementSibling.value = this.value; save();"/>
+<input onkeypress="if (event.keyCode !== 13) return; this.previousElementSibling.value = this.value; this.value = this.previousElementSibling.value; save();"/>
+</p>
+
+<input type="button" value="Start" onclick="if (noteStop) {noteStop=0; this.value='Stop'; ac = new AudioContext(); randNotes(); } else {noteStop=1; this.value='Start'; } save();"/>
+
+<script>
+//global
+var ptcKeys = [0,2,5,7,9,12],
+types = {"sine":"s","triangle":"t","sawtooth":"w","square":"q"},
+lengths = [1,2,4,8],
+Octaves = 3,
+noteStop = 1.
+localstorageid = "musichtmldata";
+
+var save = function save() {
+	var data = {};
+	for (v in types) {
+	for (var o = 1; o<Octaves+1; o++) {
+		var name = types[v]+o; 
+		data[name] = document.getElementById(name).checked;;
+	}
+	}
+	data.BPM = BPM.value;
+	data.NTD = NTD.value;
+	localStorage.setItem(localstorageid,JSON.stringify(data));
+}
+
+function write() {
+	var data = JSON.parse(localStorage.getItem(localstorageid)) || {};
+	console.log(localStorage.getItem(localstorageid));
+	for (v in types) {
+	for (var o = 1; o<Octaves+1; o++) {
+		var name = types[v]+o; 
+		document.getElementById(name).checked = data[name] || false;
+	}
+	}
+	BPM.value = data.BPM || 120;
+	NTD.value = data.NTD || .4;
+	BPM.oninput();
+	NTD.oninput();
+}   
+
+function getSecondsPerBeat(){ return 60/parseInt(BPM.value); }
+function getNoteDensity() { return parseFloat(NTD.value); }
+function isChecked(inst,oct) {
+return document.getElementById(types[inst]+(1+Math.floor(oct/12))).checked;
+}
+// key 0 is A3 and 12 is A4 . etc
+function beep(note,secs,type){
+	if (note === undefined) note = 12;
+	if (secs === undefined) secs = 1;
+	if (type === undefined) type = "sine";
+
+	var o = ac.createOscillator();
+	var g = ac.createGain();
+
+	o.type = type;
+	o.frequency.value = 220 * Math.pow(2,note/12);
+
+	o.connect(g);
+	g.connect(ac.destination);
+
+	o.start(0);
+	g.gain.value = 0;
+	g.gain.linearRampToValueAtTime(.2, ac.currentTime + .05);
+	g.gain.linearRampToValueAtTime(0.00001, ac.currentTime + secs);
+	o.stop(ac.currentTime + secs);
+}
+
+function random_fromLen(l) { return Math.floor(l * Math.random()); }
+function random_fromArray(a) { return a[random_fromLen(a.length)]; }
+
+function randNote(oct,inst) {
+	var n = oct + random_fromArray(ptcKeys),
+	l = random_fromArray(lengths),
+	len = getSecondsPerBeat()/l;
+	if (Math.random() < getNoteDensity()) beep(n,len,inst);
+	if (!noteStop) setTimeout(randNote, 1000*len, oct, inst);
+}
+function randNotes() {
+	for (var octave=0; octave<Octaves*12; octave+=12) {
+	for (var inst in types) {
+		if (isChecked(inst,octave)) randNote(octave,inst);
+	}
+	}
+}
+write();
+</script>

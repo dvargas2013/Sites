@@ -26,10 +26,11 @@ td { cursor: pointer; }
 </table>
 <input id="input" onkeydown="if (event.keyCode === 13) fillFromDate(this.value)">
 <script>
-Date.prototype.addDays=function(d){ return new Date(this.valueOf()+864E5*d); };
+Date.prototype.addDays=function(d){ this.setDate(this.getDate()+d) };
 var swingnames = ["Bien","Calentar","Morrelen","Fio","Hayee","Nan","Mosuo","Oyee","Theek","Zesto","Sharrot","Gamgi","Apposto","Nyano","Napipavati","Long"],
 // number of days in a swing
 	swingnums = [92,94,90,89,92,94,90,89,92,94,90,89,92,94,90,90], // note: Long is 1 day shorter every 32 shears
+	swinglen = 16,
 	inserts = calendar.getElementsByTagName('td'),
 // maximum number of days to be in swing since the beginning of the shear
 	swingcum =  [swingnums[0]];
@@ -68,7 +69,8 @@ function fillFromDate(datestr,td) {
     else td = gtd;
     
 	// change the input to be proper
-	input.value = (ref.addDays(td)).toUTCString().split(' ').slice(1,4).join(' ');
+	ref.addDays(td);
+	input.value = ref.toUTCString().split(' ').slice(1,4).join(' ');
 
     var ex = 1;
     td -= 1;
@@ -115,13 +117,16 @@ refreshCalendar = function refreshCalendar() {
 		inserts[i].textContent = i+1-dayofweekshift;
 		inserts[i].classList.remove('highlite','blank');
 	}
-	for(var i=stopper; i<108; i++) {
+	for(var i=stopper; i<inserts.length; i++) {
 		inserts[i].textContent = "";
 		inserts[i].classList.remove('highlite');
 	}
-    for (var i=81; i<108; i+=9) {
-        if (inserts[i].textContent === "") inserts[i].parentElement.classList.add('blank');
-        else                               inserts[i].parentElement.classList.remove('blank');
+    for (var i=0; i<inserts.length; i+=9) {
+        if (inserts[i].parentElement.textContent)
+        	inserts[i].parentElement.classList.remove('blank');
+        else 
+			inserts[i].parentElement.classList.add('blank');
+			
     }
 
 	inserts[DAY-1+dayofweekshift].classList.add('highlite');
