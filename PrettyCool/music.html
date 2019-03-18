@@ -78,6 +78,8 @@ function beep(note,secs,type){
 
 	var o = ac.createOscillator();
 	var g = ac.createGain();
+	var v = .2;
+	if (type === "sawtooth" || type === "square") v = .15;
 
 	o.type = type;
 	o.frequency.value = 220 * Math.pow(2,note/12);
@@ -87,7 +89,7 @@ function beep(note,secs,type){
 
 	o.start(0);
 	g.gain.value = 0;
-	g.gain.linearRampToValueAtTime(.2, ac.currentTime + .05);
+	g.gain.linearRampToValueAtTime(v, ac.currentTime + .05);
 	g.gain.linearRampToValueAtTime(0.00001, ac.currentTime + secs);
 	o.stop(ac.currentTime + secs);
 }
