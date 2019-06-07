@@ -1,8 +1,0 @@
-<p id="P"></p>
-<form>
-<input id="low" value="0" onkeyup='event.which==13?(enter(),this.blur()):0'><input id="high" value="1022" onkeyup='event.which==13?(enter(),this.blur()):0'>
-<input id="submit" type="button" value="Submit" onclick="s=parseInt(document.querySelector('input#low').value);b=parseInt(document.querySelector('input#high').value);set();">
-</form>
-<input type="button" value="smaller" onclick="b=m; set();">
-<input type="button" value="bigger" onclick="s=m; set();">
-<script>enter=function enter(){document.querySelector('input#submit').click();};enter();function set(){m=Math.floor((s+b)/2);P.textContent=m;}set();</script>
