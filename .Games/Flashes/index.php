@@ -1,7 +1,8 @@
 <?php
 function ListFolder($path) {
 	$dir_handle = @opendir($path) or die("Unable to open $path");
-	$dirname = end(explode("/", $path));
+	$dirname = explode("/", $path);
+	$dirname = end($dirname);
 	while (false !== ($file = readdir($dir_handle))) {
 		if( $file[0] != "." ) {
 			if ( substr_compare($file, '.swf', -4) === 0 ) {
