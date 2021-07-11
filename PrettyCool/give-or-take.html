@@ -1,0 +1,262 @@
+<!-- Inspiration for this game is from https://www.youtube.com/watch?v=U33dsEcKgeQ
+
+Donate to or Take from everyone around a node
+-->
+<style>
+.bigboi { display:none; }
+div.bigboi div { display:inline; }
+</style>
+<div class="bigboi" >
+<!-- TODO : Make these work lol -->
+<input type="range" min="3" max="15" value="5" step="1"
+oninput="nodeAmount.textContent=this.value"/>
+<div>Number of Nodes:</div>
+<div id="nodeAmount">5</div>
+
+<br>
+
+<input type="range" min="20" max="100" value="20" step="5"
+oninput="edgePercent.textContent=this.value"/>
+<div>Amount of Edges:</div>
+<div id="edgePercent">20</div>
+<div>%</div>
+
+<br>
+
+<input type="range" min="0" max="200" value="5" step="5"
+oninput="toteValue.textContent=this.value"/>
+<div>Total Value on Board:</div>
+<div id="toteValue">5</div>
+<div>%</div>
+
+<br>
+
+<input type="button" value="New Game"/>
+<input type="button" value="Save"/>
+<input type="button" value="Load"/>
+</div>
+
+<canvas id='game' style="border:1px dotted">
+<script>
+var context = game.getContext("2d");
+window.onresize = function() {
+	game.width = W = document.body.clientWidth * .95;
+	game.height = H = document.body.clientHeight * .8;
+	redraw();
+}
+
+function circle(x,y,r,fill){
+	if (fill === undefined) fill = 'white'
+	context.beginPath();
+	context.arc(x,y,r, 0, 2 * Math.PI, false);
+	context.fillStyle = fill;
+	context.fill();
+	context.lineWidth = 1;
+	context.strokeStyle = 'black';
+	context.stroke();
+}
+
+function text(x,y,s,font,align,stroke) {
+	context.font = font;
+	context.fillStyle = 'black';
+	context.strokeStyle = 'black';
+	context.textAlign = align?align:"center";
+	context[stroke?'strokeText':'fillText'](s,x,y);
+}
+
+function line(x1,y1,x2,y2) {
+	context.beginPath();
+	context.moveTo(x1,y1);
+	context.lineTo(x2,y2);
+	context.stroke();
+}
+
+function randomFromArray(array){
+	return array.splice(Math.floor(Math.random()*array.length), 1)[0];
+}
+
+function eventGetX(e) { return e.pageX - game.offsetLeft; }
+function eventGetY(e) { return e.pageY - game.offsetTop; }
+
+Nodes = [];
+NODE = function(x,y,v) {
+	this.x = x;
+	this.y = y;
+	this.v = v;
+	Nodes.push(this);
+}
+NODE.prototype.getX = function() { return this.x * W; }
+NODE.prototype.getY = function() { return this.y * H; }
+NODE.prototype.draw = function() {
+	var x = this.getX(), y = this.getY();
+	circle(x,y,20, (this.v<0)?"red":"green" );
+	text(x,y+5,this.v,'20px comic sans');
+}
+
+EDGES = function(size){
+	this.size = size;
+	this.data = new Array(size);
+	for (var i=0; i<size; i++)
+		this.data[i] = new Array(size);
+}
+EDGES.prototype.add = function(n1,n2) {
+	this.data[n1][n2] = this.data[n2][n1] = 1;
+}
+EDGES.prototype.remove = function(n1,n2) {
+	this.data[n1][n2] = this.data[n2][n1] = 0;
+}
+EDGES.prototype.addRandom = function(amount) {
+	// TODO : random edge stuff
+	var rs = [];
+	for (var x=0; x<this.size; x++) {
+		for (var y=x+1;y<this.size; y++) {
+			if (!this.data[x][y])
+				rs.push([x,y]);
+		}
+	}
+	if (rs.length<amount) amount = rs.length;
+	var d;
+	while (amount > 0) {
+		d = randomFromArray(rs);
+		this.add(d[0],d[1]);
+		amount--;
+	}
+}
+EDGES.prototype.draw = function() {
+	var n1, n2;
+	for (var x=0; x<this.size; x++) {
+		n1 = Nodes[x];
+		for (var y=x+1;y<this.size; y++) {
+			n2 = Nodes[y];
+			if (this.data[x][y])
+				line(n1.getX(),n1.getY(),n2.getX(),n2.getY());
+		}
+	}
+}
+
+FLOWDIR = function() { this.set(); }
+FLOWDIR.prototype.set = function(){
+	this.bool = true;
+	this.mul = 1;
+}
+FLOWDIR.prototype.unset = function() {
+	this.bool = false;
+	this.mul = -1;
+}
+FLOWDIR.prototype.flip = function() {
+	this.bool = !this.bool;
+	this.mul *= -1;
+}
+FLOWDIR.prototype.draw = function(){
+	circle(15,15,10,this.bool?"green":"red");
+	text(15,17.5,this.bool?"+":"-","10px sans-serif");
+}
+FlowDir = new FLOWDIR();
+
+HOVER = function() { this.index = -1; }
+HOVER.prototype.draw = function() {
+	var b = this.index<0,
+		x = b?15:Nodes[this.index].getX(),
+		y = b?15:Nodes[this.index].getY(),
+		r = b?20:30;
+	circle(x,y,r,'yellow');
+}
+Hover = new HOVER();
+
+function reduxMin(min, n, i, arr) {
+	var mindex = min[0], m = min[1], x = min[2], y = min[3],
+		dx  = n.x-x,
+		dy  = n.y-y,
+		d2  = dx*dx + dy*dy,
+		b   = m<d2;
+	return [(b?mindex:i),(b?m:d2),x,y];
+}
+// hover highlights closest node
+function calcHover(e) {
+	var x = eventGetX(e)/W, y = eventGetY(e)/H;
+	if (x < .1 & y < .1) Hover.index = -1;
+	else Hover.index = Nodes.reduce(reduxMin,[0,Infinity,x,y])[0];
+}
+function click() {
+	if (Hover.index < 0) {
+		// click node in corner (change direction of flow)
+		FlowDir.flip();
+	} else {
+		// click for flow
+		var d = Edges.data[Hover.index],
+			n = Nodes[Hover.index];
+		n.v += FlowDir.mul * d.reduce((a,b)=>a+b,0);
+		for (var i=0; i<d.length; i++)
+			if (d[i])
+				Nodes[i].v -= FlowDir.mul;
+	}
+	redraw();
+}
+
+/*
+motion will just mousemove
+	LastDown should be unset
+	LastMove may or may not be set
+click will mousedown then mouseup
+	LastDown should be that first down
+	LastMove should be none!
+drag will mousedown then mousemove then mouseup
+	LastDown should be that first down
+	LastMove should be the current move happening
+	mouseup will see both variables set (and unset them)
+
+in conclusion:
+	mousemove should only change LastMove
+	mousedown and mouseup should set and unset LastDown respectively
+*/
+
+LastDown = null;
+LastMove = null;
+game.onmousemove = function(e) {
+	var ld = LastDown, lm = LastMove;
+	LastMove = e;
+
+	if (ld !== null) {
+		// drags are preformed here
+		if (Hover.index < 0) return;
+		var n = Nodes[Hover.index];
+		n.x = eventGetX(e)/W;
+		n.y = eventGetY(e)/H;
+	} else {
+		// motion is preformed here
+		calcHover(e);
+	}
+	redraw();
+}
+
+game.onmousedown = function(e) { LastDown = e; LastMove = null; }
+game.onmouseup = function(e) {
+	var ld = LastDown, lm = LastMove;
+	LastDown = null; LastMove = null;
+
+	if (ld === null) return; // last one should be a down
+	if (lm !== null) return; // last one should not be a move (drag)
+	// lastdown should be in same exact location
+	if (ld.clientX != e.clientX || ld.clientY != e.clientY) return;
+	game.onmousemove(e);
+	click();
+}
+document.body.onkeypress = click;
+
+function init() {	
+	for (var i=0; i<5; i++)
+		new NODE(.1+.8*Math.random(),.1+.8*Math.random(),i);
+	Edges = new EDGES(Nodes.length);
+	Edges.addRandom(5);
+	window.onresize();
+}
+function redraw() {
+	context.clearRect(0,0,W,H);
+	Hover.draw();
+	FlowDir.draw();
+	Edges.draw();
+	Nodes.forEach(i => i.draw());
+}
+
+init();
+</script>

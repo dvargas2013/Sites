@@ -1,0 +1,46 @@
+"A?B:C"
+(B AND NOT A) OR (A AND C)
+(B ANDNT A) OR (A AND C)
+(B? A : 1)? (A? C: 0) : 1
+
+(A ORNT B) NAND (A NAND C)
+(A? 1 : NOT B)? (A? C : 0) : 1
+
+"and"
+A? B : 0
+
+"or"
+A? 1 : B
+
+"xor"
+A? NOT B : B
+
+"not"
+A? 0 : 1
+
+"nand"
+NOT (A AND B)
+A? NOT B : 1
+
+"andnt"
+A AND NOT B
+
+"ornt"
+A OR NOT B
+A? 1 : NOT B
+
+simplification rules:
+1?A:B = A
+0?A:B = B
+!A?B:C = A?C:B
+
+manipulation rules:
+A?B:0 = B?A:0
+A?1:B = B?1:A
+B?A:!A = A?B:!B
+A?0:!B = !(A?1:B) = !(B?1:A) = B:0:!A
+A?!B:1 = !(A?B:0) = !(B?A:0) = B?!A:1
+
+simplification thru application of manipulation
+A?!B:0 = B?0:A
+A?1:!B = B?A:1
